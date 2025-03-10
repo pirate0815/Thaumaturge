@@ -3,7 +3,10 @@ package dev.overgrown.thaumaturge.block;
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public class ModBlocks {
     public static final Block AMBER_BEARING_STONE = BlockBuilder.create("amber_bearing_stone")
@@ -12,7 +15,12 @@ public class ModBlocks {
             .withItemSettings(settings -> settings.maxCount(64))
             .buildAndRegister(Block::new);
 
+    public static final Block AER_CRYSTAL_CLUSTER = BlockBuilder.create("aer_crystal_cluster")
+            .withBlockSettings(settings -> settings.nonOpaque().strength(3f).sounds(BlockSoundGroup.AMETHYST_BLOCK).requiresTool())
+            .withItemSettings(settings -> settings.maxCount(64))
+            .buildAndRegister(settings -> new ExperienceDroppingBlock(UniformIntProvider.create(2, 5), settings));
+
     public static void register() {
-        Thaumaturge.LOGGER.info("Registering Mod Blocks for " + Thaumaturge.MOD_ID);
+        Thaumaturge.LOGGER.info("Registering Blocks for " + Thaumaturge.MOD_ID);
     }
 }

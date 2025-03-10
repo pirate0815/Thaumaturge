@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:flint",
+    "minecraft:bowl",
+    "minecraft:redstone",
+    "#thaumaturge:vis_crystals",
+    "#thaumaturge:vis_crystals",
+    "#thaumaturge:vis_crystals"
+  ],
+  "result": {
+    "id": "thaumaturge:arcane_powder",
+    "count": 1
+  }
+}

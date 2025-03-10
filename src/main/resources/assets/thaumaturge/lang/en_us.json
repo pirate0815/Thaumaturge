@@ -1,4 +1,21 @@
 {
+  "item_group.thaumaturge.crystals": "Thaumaturge: Crystals",
+  "item.thaumaturge.aer_crystal_cluster": "Aer Crystal Cluster",
+  "item.thaumaturge.aer_vis_crystal": "Aer Vis Crystal",
+  "item.thaumaturge.terra_crystal_cluster": "Terra Crystal Cluster",
+  "item.thaumaturge.terra_vis_crystal": "Terra Vis Crystal",
+  "item.thaumaturge.ignis_crystal_cluster": "Ignis Crystal Cluster",
+  "item.thaumaturge.ignis_vis_crystal": "Ignis Vis Crystal",
+  "item.thaumaturge.aqua_crystal_cluster": "Aqua Crystal Cluster",
+  "item.thaumaturge.aqua_vis_crystal": "Aqua Vis Crystal",
+  "item.thaumaturge.ordo_crystal_cluster": "Ordo Crystal Cluster",
+  "item.thaumaturge.ordo_vis_crystal": "Ordo Vis Crystal",
+  "item.thaumaturge.perditio_crystal_cluster": "Perditio Crystal Cluster",
+  "item.thaumaturge.perditio_vis_crystal": "Perditio Vis Crystal",
+
   "item.thaumaturge.lesser_foci": "Lesser Foci",
-  "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"
+  "item.thaumaturge.arcane_powder": "Arcane Powder",
+
+  "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
+  "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"
 }

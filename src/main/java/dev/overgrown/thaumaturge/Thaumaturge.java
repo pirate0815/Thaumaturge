@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlocks;
+import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -19,5 +20,6 @@ public class Thaumaturge implements ModInitializer {
 	public void onInitialize() {
 		ModItems.register();
 		ModBlocks.register();
+		ModItemGroups.register();
 	}
 }

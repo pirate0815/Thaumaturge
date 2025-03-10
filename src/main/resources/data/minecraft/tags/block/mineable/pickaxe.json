@@ -1,0 +1,13 @@
+{
+  "replace":false,
+  "values":[
+    {
+      "id":"thaumaturge:aer_crystal_cluster",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:amber_bearing_stone",
+      "required":false
+    }
+  ]
+}
