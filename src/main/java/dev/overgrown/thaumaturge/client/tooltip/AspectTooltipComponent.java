@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge.client.tooltip;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import java.util.Map;
 
@@ -35,8 +36,8 @@ public class AspectTooltipComponent implements TooltipComponent {
             int value = entry.getValue();
 
             // Draw aspect icon
-            Identifier texture = new Identifier(aspectId.getNamespace(), "textures/aspects_icons/" + aspectId.getPath() + ".png");
-            context.drawTexture(texture, currentX, y, 0, 0, 0, 16, 16, 16, 16);
+            Identifier texture = Identifier.of(aspectId.getNamespace(), "textures/aspects_icons/" + aspectId.getPath() + ".png");
+            context.drawTexture(RenderLayer::getGuiTextured, texture, currentX, y, 0, 0, 16, 16, 16, 16);
 
             // Draw value text
             String valueStr = String.valueOf(value);
