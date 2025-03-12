@@ -16,8 +16,8 @@ public abstract class ItemStackMixin {
 	private void addAspectTooltipData(CallbackInfoReturnable<Optional<TooltipData>> cir) {
 		ItemStack stack = (ItemStack) (Object) this;
 		AspectComponent component = AspectComponent.getOrDefault(stack);
-		if (component != null && !component.aspects().isEmpty()) {
-			cir.setReturnValue(Optional.of(new AspectTooltipData(component.aspects())));
+		if (component != null && !component.aspects.isEmpty()) {
+			cir.setReturnValue(Optional.of(new AspectTooltipData(component.aspects)));
 		}
 	}
 }

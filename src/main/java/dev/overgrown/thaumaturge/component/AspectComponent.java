@@ -43,7 +43,7 @@ public final class AspectComponent {
             .build();
     public static final AspectComponent DEFAULT = new AspectComponent(Map.of());
 
-    private final Map<Identifier, Integer> aspects;
+    public final Map<Identifier, Integer> aspects;
 
     public AspectComponent(Map<Identifier, Integer> aspects) {
         this.aspects = Map.copyOf(aspects);
