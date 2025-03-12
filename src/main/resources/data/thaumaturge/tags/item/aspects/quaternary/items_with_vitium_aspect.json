@@ -1,0 +1,33 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "minecraft:mycelium",
+            "required": false
+        },
+        {
+			"id": "minecraft:nether_wart_block",
+			"required": false
+		},
+		{
+			"id": "minecraft:red_nether_bricks",
+			"required": false
+		},
+		{
+			"id": "minecraft:red_nether_brick_slab",
+			"required": false
+		},
+		{
+			"id": "minecraft:red_nether_brick_stairs",
+			"required": false
+		},
+		{
+			"id": "minecraft:red_nether_brick_wall",
+			"required": false
+		},
+        {
+			"id": "minecraft:nether_wart",
+			"required": false
+		}
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "minecraft:player_head",
+            "required": false
+        },
+        {
+            "id": "minecraft:zombie_head",
+            "required": false
+        },
+        {
+            "id": "minecraft:music_disc_mall",
+            "required": false
+        },
+        {
+            "id": "minecraft:rotten_flesh",
+            "required": false
+        }
+    ]
+}

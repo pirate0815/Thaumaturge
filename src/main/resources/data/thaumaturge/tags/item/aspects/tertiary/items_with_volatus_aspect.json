@@ -1,0 +1,29 @@
+{
+    "replace": false,
+    "values": [
+        {
+			"id": "minecraft:feather",
+			"required": false
+		},
+        {
+			"id": "minecraft:elytra",
+			"required": false
+		},
+        {
+			"id": "minecraft:phantom_membrane",
+			"required": false
+		},
+        {
+			"id": "minecraft:writable_book",
+			"required": false
+		},
+        {
+			"id": "minecraft:bow",
+			"required": false
+		},
+        {
+			"id": "minecraft:arrow",
+			"required": false
+		}
+    ]
+}

@@ -4,6 +4,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import java.util.Map;
 
@@ -43,6 +45,10 @@ public class AspectTooltipComponent implements TooltipComponent {
             String valueStr = String.valueOf(value);
             context.drawText(textRenderer, valueStr, currentX + 18, y + 4, 0xFFFFFF, true);
             currentX += 16 + textRenderer.getWidth(valueStr) + 4;
+
+            Text aspectName = Text.translatable("aspect." + aspectId.getNamespace() + "." + aspectId.getPath() + ".name").formatted (Formatting.GRAY);
+            context.drawText(textRenderer, aspectName, currentX + 18, y + 4, 0xFFFFFF, true);
+            currentX += 16 + textRenderer.getWidth(aspectName.getString()) + 4;
         }
     }
 }

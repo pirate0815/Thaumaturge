@@ -1,0 +1,25 @@
+{
+    "replace": false,
+    "values": [
+        {
+			"id": "minecraft:skeleton_skull",
+			"required": false
+		},
+        {
+			"id": "minecraft:wither_skeleton_skull",
+			"required": false
+		},
+        {
+			"id": "minecraft:end_crystal",
+			"required": false
+		},
+		{
+			"id": "minecraft:totem_of_undying",
+			"required": false
+		},
+		{
+			"id": "minecraft:ghast_tear",
+			"required": false
+		}
+    ]
+}

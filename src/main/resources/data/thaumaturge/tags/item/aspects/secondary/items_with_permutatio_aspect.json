@@ -1,0 +1,17 @@
+{
+    "replace": false,
+    "values": [
+		{
+			"id": "minecraft:ender_chest",
+			"required": false
+		},
+		{
+			"id": "minecraft:beacon",
+			"required": false
+		},
+		{
+			"id":"minecraft:hopper_minecart",
+			"required":false
+		 }
+    ]
+}

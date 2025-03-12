@@ -1,0 +1,25 @@
+{
+    "replace": false,
+    "values": [
+        {
+			"id": "minecraft:ghast_tear",
+			"required": false
+		},
+        {
+			"id": "#minecraft:skulls",
+			"required": false
+		},
+        {
+			"id": "minecraft:soul_sand",
+			"required": false
+		},
+		{
+			"id": "minecraft:soul_soil",
+			"required": false
+		},
+		{
+			"id": "minecraft:end_crystal",
+			"required": false
+		}
+    ]
+}
