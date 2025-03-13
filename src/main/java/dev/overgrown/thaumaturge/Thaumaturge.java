@@ -2,9 +2,13 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlocks;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.data.AspectManager;
 import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.registry.ReloadableRegistries;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,5 +27,7 @@ public class Thaumaturge implements ModInitializer {
 		ModBlocks.register();
 		ModItemGroups.register();
 		ModComponents.register();
+
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(Thaumaturge.identifier("aspects"), AspectManager::new);
 	}
 }

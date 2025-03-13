@@ -17,5 +17,8 @@
   "item.thaumaturge.arcane_powder": "Arcane Powder",
 
   "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
-  "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"
+  "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
+
+  "aspect.thaumaturge.ignis.name": "Ignis",
+  "aspect.thaumaturge.aer.name": "Aer"
 }
