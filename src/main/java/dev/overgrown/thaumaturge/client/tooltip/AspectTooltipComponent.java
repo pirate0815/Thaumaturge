@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.client.tooltip;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -7,6 +8,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screen.Screen;
 import java.util.Map;
 
 public class AspectTooltipComponent implements TooltipComponent {
@@ -24,31 +26,51 @@ public class AspectTooltipComponent implements TooltipComponent {
     @Override
     public int getWidth(TextRenderer textRenderer) {
         int width = 0;
+        // Decide which measurement to use based on shift state
+        boolean showTranslation = Screen.hasShiftDown();
         for (var entry : aspects.entrySet()) {
-            width += 16 + 2 + textRenderer.getWidth(entry.getValue().toString());
+            int valueWidth;
+            if (showTranslation) {
+                Text aspectName = Text.translatable("aspect." + entry.getKey().getNamespace() + "." + entry.getKey().getPath() + ".name");
+                valueWidth = textRenderer.getWidth(aspectName);
+            } else {
+                valueWidth = textRenderer.getWidth(String.valueOf(entry.getValue()));
+            }
+            width += 16 + 2 + valueWidth; // 16 (icon) + 2 (padding) + text width
         }
-        return width;
+        // Add padding between entries (4px per entry)
+        return width + (aspects.size() - 1) * 4;
     }
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
+        boolean showTranslation = Screen.hasShiftDown();
         int currentX = x;
+
         for (var entry : aspects.entrySet()) {
             Identifier aspectId = entry.getKey();
             int value = entry.getValue();
 
-            // Draw aspect icon
             Identifier texture = Identifier.of(aspectId.getNamespace(), "textures/aspects_icons/" + aspectId.getPath() + ".png");
+
+            // Use the correct RenderLayer method for GUI textures
             context.drawTexture(RenderLayer::getGuiTextured, texture, currentX, y, 0, 0, 16, 16, 16, 16);
 
-            // Draw value text
-            String valueStr = String.valueOf(value);
-            context.drawText(textRenderer, valueStr, currentX + 18, y + 4, 0xFFFFFF, true);
-            currentX += 16 + textRenderer.getWidth(valueStr) + 4;
+            if (showTranslation) {
+                Text aspectName = Text.translatable("aspect." + aspectId.getNamespace() + "." + aspectId.getPath() + ".name")
+                        .formatted(Formatting.GRAY);
+                context.drawText(textRenderer, aspectName, currentX + 16 + 2, y + 4, 0xFFFFFF, true);
+            } else {
+                String valueStr = String.valueOf(value);
+                context.drawText(textRenderer, valueStr, currentX + 16 + 2, y + 4, 0xFFFFFF, true);
+            }
 
-            Text aspectName = Text.translatable("aspect." + aspectId.getNamespace() + "." + aspectId.getPath() + ".name").formatted (Formatting.GRAY);
-            context.drawText(textRenderer, aspectName, currentX + 18, y + 4, 0xFFFFFF, true);
-            currentX += 16 + textRenderer.getWidth(aspectName.getString()) + 4;
+            int entryTextWidth = showTranslation ?
+                    textRenderer.getWidth(Text.translatable("aspect." + aspectId.getNamespace() + "." + aspectId.getPath() + ".name")) :
+                    textRenderer.getWidth(String.valueOf(value));
+            int entryWidth = 16 + 2 + entryTextWidth;
+            currentX += entryWidth + 4;
         }
     }
+
 }
