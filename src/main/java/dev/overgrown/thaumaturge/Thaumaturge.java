@@ -28,11 +28,28 @@ public class Thaumaturge implements ModInitializer {
 		return Identifier.of(MOD_ID, path);
 	}
 
-	public static final RecipeType<VesselRecipe> VESSEL_RECIPE_TYPE = RecipeType.register("thaumaturge:vessel");
-	public static final RecipeSerializer<VesselRecipe> VESSEL_RECIPE_SERIALIZER = RecipeSerializer.register("thaumaturge:vessel_recipe", VesselRecipeSerializer.INSTANCE);
+	// Updated RecipeType registration
+	public static final RecipeType<VesselRecipe> VESSEL_RECIPE_TYPE = Registry.register(
+			Registries.RECIPE_TYPE,
+			identifier("vessel"),
+			new RecipeType<VesselRecipe>() {
+				@Override
+				public String toString() {
+					return identifier("vessel").toString();
+				}
+			}
+	);
+
+	// Updated RecipeSerializer registration
+	public static final RecipeSerializer<VesselRecipe> VESSEL_RECIPE_SERIALIZER = Registry.register(
+			Registries.RECIPE_SERIALIZER,
+			identifier("vessel_recipe"),
+			VesselRecipeSerializer.INSTANCE
+	);
+
 	public static final BlockEntityType<VesselBlockEntity> VESSEL_BLOCK_ENTITY = Registry.register(
 			Registries.BLOCK_ENTITY_TYPE,
-			Identifier.of("thaumaturge", "vessel"),
+			identifier("vessel"),
 			FabricBlockEntityTypeBuilder.create(VesselBlock.VesselBlockEntity::new, ModBlocks.VESSEL).build()
 	);
 

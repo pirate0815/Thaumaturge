@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge.block.vessel;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
@@ -53,7 +54,7 @@ public record VesselRecipe(
 
     @Override
     public RecipeType<? extends Recipe<RecipeInput>> getType() {
-        return Type.INSTANCE;
+        return Thaumaturge.VESSEL_RECIPE_TYPE;
     }
 
     public static class Type implements RecipeType<VesselRecipe> {
