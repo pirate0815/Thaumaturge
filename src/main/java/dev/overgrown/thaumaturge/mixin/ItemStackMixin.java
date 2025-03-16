@@ -15,9 +15,9 @@ public abstract class ItemStackMixin {
 	@Inject(method = "getTooltipData", at = @At("HEAD"), cancellable = true)
 	private void addAspectTooltipData(CallbackInfoReturnable<Optional<TooltipData>> cir) {
 		ItemStack stack = (ItemStack) (Object) this;
-		AspectComponent component = AspectComponent.getOrDefault(stack);
-		if (component != null && !component.aspects.isEmpty()) {
-			cir.setReturnValue(Optional.of(new AspectTooltipData(component.aspects)));
+		AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+		if (component != null && !component.getAspects().isEmpty()) {
+			cir.setReturnValue(Optional.of(new AspectTooltipData(component.getMap())));
 		}
 	}
 }
