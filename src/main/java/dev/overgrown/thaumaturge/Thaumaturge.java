@@ -1,13 +1,24 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlocks;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.block.vessel.VesselRecipe;
+import dev.overgrown.thaumaturge.block.vessel.VesselRecipeSerializer;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock.VesselBlockEntity;
 
 public class Thaumaturge implements ModInitializer {
 	public static final String MOD_ID = "thaumaturge";
@@ -16,6 +27,14 @@ public class Thaumaturge implements ModInitializer {
 	public static Identifier identifier(String path) {
 		return Identifier.of(MOD_ID, path);
 	}
+
+	public static final RecipeType<VesselRecipe> VESSEL_RECIPE_TYPE = RecipeType.register("thaumaturge:vessel");
+	public static final RecipeSerializer<VesselRecipe> VESSEL_RECIPE_SERIALIZER = RecipeSerializer.register("thaumaturge:vessel_recipe", VesselRecipeSerializer.INSTANCE);
+	public static final BlockEntityType<VesselBlockEntity> VESSEL_BLOCK_ENTITY = Registry.register(
+			Registries.BLOCK_ENTITY_TYPE,
+			Identifier.of("thaumaturge", "vessel"),
+			FabricBlockEntityTypeBuilder.create(VesselBlock.VesselBlockEntity::new, ModBlocks.VESSEL).build()
+	);
 
 	@Override
 	public void onInitialize() {
