@@ -1,0 +1,14 @@
+{
+  "type": "thaumaturge:vessel",
+  "id": "thaumaturge:example_recipe",
+  "sequence": [
+    "minecraft:water_bucket",
+    "minecraft:blaze_powder"
+  ],
+  "fluidType": "water",
+  "level": 1,
+  "output": {
+    "item": "minecraft:fire_charge",
+    "count": 1
+  }
+}

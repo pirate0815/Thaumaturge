@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.block;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
@@ -19,6 +20,12 @@ public class ModBlocks {
             .withBlockSettings(settings -> settings.nonOpaque().strength(3f).sounds(BlockSoundGroup.AMETHYST_BLOCK).requiresTool())
             .withItemSettings(settings -> settings.maxCount(64))
             .buildAndRegister(settings -> new ExperienceDroppingBlock(UniformIntProvider.create(2, 5), settings));
+
+    public static final Block VESSEL = BlockBuilder.create("vessel")
+            .withBlockSettings(settings -> settings.strength(3f).sounds(BlockSoundGroup.DEEPSLATE).requiresTool().nonOpaque())
+            .withItemSettings(settings -> settings.maxCount(1))
+            .buildAndRegister(VesselBlock::new);
+
 
     public static void register() {
         Thaumaturge.LOGGER.info("Registering Blocks for " + Thaumaturge.MOD_ID);
