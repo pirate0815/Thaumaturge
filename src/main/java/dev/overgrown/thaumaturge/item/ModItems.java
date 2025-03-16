@@ -19,26 +19,32 @@ public class ModItems {
             .buildAndRegister();
 
     public static final Item AER_VIS_CRYSTAL = ItemBuilder.create("aer_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item TERRA_VIS_CRYSTAL = ItemBuilder.create("terra_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item IGNIS_VIS_CRYSTAL = ItemBuilder.create("ignis_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item AQUA_VIS_CRYSTAL = ItemBuilder.create("aqua_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item ORDO_VIS_CRYSTAL = ItemBuilder.create("ordo_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item PERDITIO_VIS_CRYSTAL = ItemBuilder.create("perditio_vis_crystal")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 

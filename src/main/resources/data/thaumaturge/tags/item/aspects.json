@@ -1,0 +1,230 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#thaumaturge:aspects/primal/aer",
+      "aspects": {
+        "thaumaturge:aer": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/primal/aqua",
+      "aspects": {
+        "thaumaturge:aqua": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/primal/ignis",
+      "aspects": {
+        "thaumaturge:ignis": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/primal/ordo",
+      "aspects": {
+        "thaumaturge:ordo": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/primal/perditio",
+      "aspects": {
+        "thaumaturge:perditio": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/primal/terra",
+      "aspects": {
+        "thaumaturge:terra": 1
+      }
+    },
+
+    {
+      "id": "#thaumaturge:aspects/secondary/gelum",
+      "aspects": {
+        "thaumaturge:gelum": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/lux",
+      "aspects": {
+        "thaumaturge:lux": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/metallum",
+      "aspects": {
+        "thaumaturge:metallum": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/mortuus",
+      "aspects": {
+        "thaumaturge:mortuus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/motus",
+      "aspects": {
+        "thaumaturge:mortuus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/permutatio",
+      "aspects": {
+        "thaumaturge:permutatio": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/potentia",
+      "aspects": {
+        "thaumaturge:potentia": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/vacuos",
+      "aspects": {
+        "thaumaturge:vacuos": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/victus",
+      "aspects": {
+        "thaumaturge:victus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/secondary/vitreus",
+      "aspects": {
+        "thaumaturge:vitreus": 1
+      }
+    },
+
+    {
+      "id": "#thaumaturge:aspects/tertiary/bestia",
+      "aspects": {
+        "thaumaturge:bestia": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/exanimis",
+      "aspects": {
+        "thaumaturge:exanimis": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/herba",
+      "aspects": {
+        "thaumaturge:herba": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/instrumentum",
+      "aspects": {
+        "thaumaturge:instrumentum": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/praecantatio",
+      "aspects": {
+        "thaumaturge:instrumentum": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/spiritus",
+      "aspects": {
+        "thaumaturge:spiritus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/tenebrae",
+      "aspects": {
+        "thaumaturge:tenebrae": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/vinculum",
+      "aspects": {
+        "thaumaturge:vinculum": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/tertiary/volatus",
+      "aspects": {
+        "thaumaturge:volatus": 1
+      }
+    },
+
+    {
+      "id": "#thaumaturge:aspects/quaternary/alienis",
+      "aspects": {
+        "thaumaturge:alienis": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/alkimia",
+      "aspects": {
+        "thaumaturge:alkimia": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/auram",
+      "aspects": {
+        "thaumaturge:auram": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/aversio",
+      "aspects": {
+        "thaumaturge:aversio": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/cognitio",
+      "aspects": {
+        "thaumaturge:cognitio": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/desiderium",
+      "aspects": {
+        "thaumaturge:desiderium": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/fabrico",
+      "aspects": {
+        "thaumaturge:fabrico": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/humanus",
+      "aspects": {
+        "thaumaturge:humanus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/machina",
+      "aspects": {
+        "thaumaturge:machina": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/praemunio",
+      "aspects": {
+        "thaumaturge:praemunio": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/sensus",
+      "aspects": {
+        "thaumaturge:sensus": 1
+      }
+    },
+    {
+      "id": "#thaumaturge:aspects/quaternary/vitium",
+      "aspects": {
+        "thaumaturge:vitium": 1
+      }
+    }
+  ]
+}

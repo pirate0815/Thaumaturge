@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.block;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
@@ -17,6 +18,7 @@ public class ModBlocks {
             .buildAndRegister(Block::new);
 
     public static final Block AER_CRYSTAL_CLUSTER = BlockBuilder.create("aer_crystal_cluster")
+            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
             .withBlockSettings(settings -> settings.nonOpaque().strength(3f).sounds(BlockSoundGroup.AMETHYST_BLOCK).requiresTool())
             .withItemSettings(settings -> settings.maxCount(64))
             .buildAndRegister(settings -> new ExperienceDroppingBlock(UniformIntProvider.create(2, 5), settings));
