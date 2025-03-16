@@ -50,7 +50,7 @@ public class Thaumaturge implements ModInitializer {
 	public static final BlockEntityType<VesselBlockEntity> VESSEL_BLOCK_ENTITY = Registry.register(
 			Registries.BLOCK_ENTITY_TYPE,
 			identifier("vessel"),
-			FabricBlockEntityTypeBuilder.create(VesselBlock.VesselBlockEntity::new, ModBlocks.VESSEL).build()
+			FabricBlockEntityTypeBuilder.create(VesselBlockEntity::new, ModBlocks.VESSEL).build()
 	);
 
 	@Override

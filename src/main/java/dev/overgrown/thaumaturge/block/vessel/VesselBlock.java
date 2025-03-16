@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.block.vessel;
 
 import com.mojang.serialization.Codec;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.ModBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.*;
@@ -165,14 +166,10 @@ public class VesselBlock extends Block implements BlockEntityProvider {
     }
 
     public static class VesselBlockEntity extends BlockEntity {
-        public static class ModBlockEntities {
-            public static final BlockEntityType<VesselBlockEntity> VESSEL_BLOCK_ENTITY =
-                    FabricBlockEntityTypeBuilder.create(VesselBlockEntity::new, ModBlocks.VESSEL).build();
-        }
         private final List<Item> sequence = new ArrayList<>();
 
         public VesselBlockEntity(BlockPos pos, BlockState state) {
-            super(ModBlockEntities.VESSEL_BLOCK_ENTITY, pos, state);
+            super(Thaumaturge.VESSEL_BLOCK_ENTITY, pos, state);
         }
 
         public void addItem(Item item) {

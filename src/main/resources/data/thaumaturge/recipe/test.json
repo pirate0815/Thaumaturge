@@ -1,5 +1,5 @@
 {
-  "type": "thaumaturge:vessel_recipe",
+  "type": "thaumaturge:vessel",
   "id": "thaumaturge:example_recipe",
   "sequence": [
     "minecraft:water_bucket",
