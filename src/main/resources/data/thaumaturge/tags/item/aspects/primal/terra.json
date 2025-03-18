@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:terra_vis_crystal",
+			"required":false
+		},
+		{
 			"id": "#minecraft:dirt",
 			"required": false
 		},

@@ -2,6 +2,14 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:aer_vis_crystal",
+			"required":false
+		},
+		{
+			"id":"thaumaturge:aer_crystal_cluster",
+			"required":false
+		},
+		{
 			"id": "minecraft:wind_charge",
 			"required": false
 		},

@@ -1,6 +1,10 @@
 {
     "replace": false,
     "values": [
+		{
+			"id":"thaumaturge:perditio_vis_crystal",
+			"required":false
+		},
         {
 			"id": "minecraft:bedrock",
 			"required": false

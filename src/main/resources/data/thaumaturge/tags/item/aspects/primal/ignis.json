@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:ignis_vis_crystal",
+			"required":false
+		},
+		{
 			"id": "#minecraft:coal_ores",
 			"required": false
 		},

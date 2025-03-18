@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:ordo_vis_crystal",
+			"required":false
+		},
+		{
 			"id": "minecraft:chiseled_sandstone",
 			"required": false
 		},
