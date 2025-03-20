@@ -3,7 +3,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "thaumaturge:block/vessel",
-		"1": "minecraft:block/water_still",
+		"1": "minecraft:block/lava_still",
 		"particle": "thaumaturge:block/vessel"
 	},
 	"elements": [
@@ -411,12 +411,12 @@
 			}
 		},
 		{
-			"name": "water",
+			"name": "lava",
 			"from": [3, 4, 3],
-			"to": [13, 11, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7.5, 8]},
+			"to": [13, 14, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [12, 15, 12]},
 			"faces": {
-				"up": {"uv": [0, 0, 16, 16], "texture": "#1", "tintindex": 0}
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"}
 			}
 		}
 	],

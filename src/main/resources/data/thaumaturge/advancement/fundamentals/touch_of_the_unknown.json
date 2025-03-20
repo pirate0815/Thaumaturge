@@ -1,0 +1,46 @@
+{
+  "display":{
+    "icon":{
+      "id":"thaumaturge:aer_vis_crystal"
+    },
+    "title":{
+      "translate":"advancements.thaumaturge.touch_of_the_unknown.name",
+      "color":"white",
+      "bold":false,
+      "italic":false,
+      "underlined":false,
+      "strikethrough":false,
+      "obfuscated":false
+    },
+    "description":{
+      "translate":"advancements.thaumaturge.touch_of_the_unknown.description",
+      "color":"dark_purple",
+      "bold":false,
+      "italic":false,
+      "underlined":false,
+      "strikethrough":false,
+      "obfuscated":false
+    },
+    "frame":"task",
+    "show_toast":false,
+    "announce_to_chat":false,
+    "hidden":true
+  },
+  "parent":"thaumaturge:fundamentals/root",
+  "criteria":{
+    "pick_up_crystal":{
+      "trigger":"minecraft:inventory_changed",
+      "conditions":{
+        "items": [
+          {
+            "items": "#thaumaturge:vis_crystals"
+          }
+        ]
+      }
+    }
+  },
+  "rewards":{
+    "function":"thaumaturge:fundamentals/send_crystal_pickup_message"
+  },
+  "sends_telemetry_event":true
+}

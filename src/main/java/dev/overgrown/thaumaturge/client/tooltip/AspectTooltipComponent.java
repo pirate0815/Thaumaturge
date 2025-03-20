@@ -29,13 +29,13 @@ public class AspectTooltipComponent implements TooltipComponent {
         int width = 0;
         // Decide which measurement to use based on shift state
         boolean showTranslation = Screen.hasShiftDown();
-        for (var entry : aspects.entrySet()) {
+        for (var entry : aspects.object2IntEntrySet()) { // Changed to object2IntEntrySet()
             int valueWidth;
             if (showTranslation) {
                 Text aspectName = entry.getKey().value().getTranslatedName();
                 valueWidth = textRenderer.getWidth(aspectName);
             } else {
-                valueWidth = textRenderer.getWidth(String.valueOf(entry.getValue()));
+                valueWidth = textRenderer.getWidth(String.valueOf(entry.getIntValue())); // Changed to getIntValue()
             }
             width += 16 + 2 + valueWidth; // 16 (icon) + 2 (padding) + text width
         }
@@ -48,9 +48,9 @@ public class AspectTooltipComponent implements TooltipComponent {
         boolean showTranslation = Screen.hasShiftDown();
         int currentX = x;
 
-        for (var entry : aspects.entrySet()) {
+        for (var entry : aspects.object2IntEntrySet()) { // Changed to object2IntEntrySet()
             if (MinecraftClient.getInstance().world != null) {
-                int value = entry.getValue();
+                int value = entry.getIntValue(); // Changed to getIntValue()
 
                 Identifier texture = entry.getKey().value().getTextureLocation();
 

@@ -95,7 +95,7 @@
     {
       "id": "#thaumaturge:aspects/secondary/vitreus",
       "aspects": {
-        "thaumaturge:vitreus": 1
+        "thaumaturge:vitreus": 20
       }
     },
 
@@ -126,7 +126,7 @@
     {
       "id": "#thaumaturge:aspects/tertiary/praecantatio",
       "aspects": {
-        "thaumaturge:instrumentum": 1
+        "thaumaturge:praecantatio": 10
       }
     },
     {
@@ -169,7 +169,7 @@
     {
       "id": "#thaumaturge:aspects/quaternary/auram",
       "aspects": {
-        "thaumaturge:auram": 1
+        "thaumaturge:auram": 5
       }
     },
     {

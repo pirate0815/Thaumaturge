@@ -1,9 +1,11 @@
 package dev.overgrown.thaumaturge.block.vessel;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
+import dev.overgrown.thaumaturge.component.AspectComponent;
+import dev.overgrown.thaumaturge.recipe.Recipe;
+import dev.overgrown.thaumaturge.recipe.RecipeManager;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,16 +16,15 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.registry.tag.BlockTags;
 
-public class VesselBlock extends Block {
+import java.util.Optional;
+
+public class VesselBlock extends Block implements BlockEntityProvider {
     public enum FluidType implements StringIdentifiable {
         EMPTY, WATER, LAVA, POWDERED_SNOW;
 
@@ -55,18 +56,23 @@ public class VesselBlock extends Block {
     }
 
     @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new VesselBlockEntity(pos, state);
+    }
+
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         // Check both hands for the item
         Hand[] hands = Hand.values();
-        for (Hand hand : hands) {
-            ItemStack stack = player.getStackInHand(hand);
+        for (Hand currentHand : hands) {
+            ItemStack stackInHand = player.getStackInHand(currentHand);
             FluidType fluidType = null;
 
-            if (stack.isOf(Items.WATER_BUCKET)) {
+            if (stackInHand.isOf(Items.WATER_BUCKET)) {
                 fluidType = FluidType.WATER;
-            } else if (stack.isOf(Items.LAVA_BUCKET)) {
+            } else if (stackInHand.isOf(Items.LAVA_BUCKET)) {
                 fluidType = FluidType.LAVA;
-            } else if (stack.isOf(Items.POWDER_SNOW_BUCKET)) {
+            } else if (stackInHand.isOf(Items.POWDER_SNOW_BUCKET)) {
                 fluidType = FluidType.POWDERED_SNOW;
             }
 
@@ -75,7 +81,7 @@ public class VesselBlock extends Block {
                 if (currentLevel < 3) {
                     world.setBlockState(pos, state.with(FLUID_TYPE, fluidType).with(LEVEL, currentLevel + 1), Block.NOTIFY_ALL);
                     if (!player.isCreative()) {
-                        stack.decrement(1);
+                        stackInHand.decrement(1);
                         player.giveItemStack(new ItemStack(Items.BUCKET));
                     }
                     world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -85,8 +91,54 @@ public class VesselBlock extends Block {
                     return ActionResult.CONSUME;
                 }
             }
+
+            // Handle catalyst and ingredient checks for each hand
+            VesselBlockEntity blockEntity = (VesselBlockEntity) world.getBlockEntity(pos);
+            if (blockEntity == null) continue;
+
+            if (RecipeManager.isCatalyst(stackInHand.getItem())) {
+                ActionResult catalystResult = handleCatalyst(world, pos, player, currentHand, stackInHand, blockEntity);
+                if (catalystResult.isAccepted()) {
+                    return catalystResult;
+                }
+            } else {
+                ActionResult ingredientResult = handleIngredient(player, currentHand, stackInHand, blockEntity);
+                if (ingredientResult.isAccepted()) {
+                    return ingredientResult;
+                }
+            }
         }
+
         return ActionResult.PASS;
+    }
+
+    private ActionResult handleCatalyst(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack catalystStack, VesselBlockEntity blockEntity) {
+        AspectComponent totalAspects = new AspectComponent(new Object2IntOpenHashMap<>());
+        for (ItemStack itemStack : blockEntity.getItems()) {
+            AspectComponent component = itemStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+            totalAspects.addAspect(component);
+        }
+
+        Optional<Recipe> recipe = RecipeManager.findMatchingRecipe(catalystStack, totalAspects);
+        if (recipe.isPresent()) {
+            ((Clearable) blockEntity).clear();
+            if (!player.isCreative()) catalystStack.decrement(1);
+            player.giveItemStack(recipe.get().getOutput());
+            world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            return ActionResult.SUCCESS;
+        } else {
+            player.sendMessage(Text.translatable("block.thaumaturge.vessel.recipe_failed"), true);
+            return ActionResult.CONSUME;
+        }
+    }
+    private ActionResult handleIngredient(PlayerEntity player, Hand hand, ItemStack stack, VesselBlockEntity blockEntity) {
+        if (blockEntity.addStack(stack)) {
+            if (!player.isCreative()) stack.decrement(1);
+            return ActionResult.SUCCESS;
+        } else {
+            player.sendMessage(Text.translatable("block.thaumaturge.vessel.inventory_full"), true);
+            return ActionResult.CONSUME;
+        }
     }
 
     @Override

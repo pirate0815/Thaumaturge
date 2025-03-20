@@ -1,0 +1,3 @@
+tellraw @s {"bold":false,"color":"dark_purple","italic":false,"obfuscated":false,"strikethrough":false,"translate":"text.thaumaturge.strange_dreams.grant_book","underlined":false}
+
+give @s written_book[written_book_content={title:"Strange Dreams",author:"You",generation:0,pages:['{"translate":"book.thaumaturge.strange_dreams.page_1","bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false}','{"translate":"book.thaumaturge.strange_dreams.page_2"}']}] 1
