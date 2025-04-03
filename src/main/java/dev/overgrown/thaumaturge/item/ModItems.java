@@ -48,6 +48,11 @@ public class ModItems {
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
+    public static final Item QUANTUM_STARFRAME = ItemBuilder.create("quantum_starframe")
+            .setItemGroup(ModItemGroups.THAUMATURGE_TOOLS)
+            .withSettings(new Item.Settings().maxCount(1))
+            .buildAndRegister();
+
     public static void register() {
         Thaumaturge.LOGGER.info("Registering Items for " + Thaumaturge.MOD_ID);
     }

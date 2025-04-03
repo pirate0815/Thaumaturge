@@ -17,10 +17,17 @@ public class ModItemGroups {
     }
 
     public static final RegistryKey<ItemGroup> THAUMATURGE_CRYSTALS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_crystals"));
+    public static final RegistryKey<ItemGroup> THAUMATURGE_TOOLS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_tools"));
 
     public static final ItemGroup THAUMATURGE_CRYSTAL_GROUP = Registry.register(Registries.ITEM_GROUP,
             Thaumaturge.identifier("thaumaturge_crystals"),
             FabricItemGroup.builder().icon(() -> new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER))
                     .displayName(Text.translatable("item_group.thaumaturge.crystals"))
+                    .build());
+
+    public static final ItemGroup THAUMATURGE_TOOLS_GROUP = Registry.register(Registries.ITEM_GROUP,
+            Thaumaturge.identifier("thaumaturge_tools"),
+            FabricItemGroup.builder().icon(() -> new ItemStack(ModItems.QUANTUM_STARFRAME))
+                    .displayName(Text.translatable("item_group.thaumaturge.tools"))
                     .build());
 }

@@ -33,8 +33,8 @@
 
   "aspect.thaumaturge.secondary_aspects_category.name": "Secondary",
   "aspect.thaumaturge.gelum.name": "Gelum",
-  "aspect.thaumaturge.lux.name": "Metallum",
-  "aspect.thaumaturge.metallum.name": "Lux",
+  "aspect.thaumaturge.lux.name": "Lux",
+  "aspect.thaumaturge.metallum.name": "Metallum",
   "aspect.thaumaturge.mortuus.name": "Mortuus",
   "aspect.thaumaturge.motus.name": "Motus",
   "aspect.thaumaturge.permutatio.name": "Permutatio",
@@ -67,8 +67,14 @@
   "aspect.thaumaturge.sensus.name": "Sensus",
   "aspect.thaumaturge.vitium.name": "Vitium",
 
+  "item_group.thaumaturge.tools": "Thaumaturge: Tools",
+  "item.thaumaturge.quantum_starframe": "Quantum Starframe",
+
   "item.thaumaturge.lesser_foci": "Lesser Foci",
-  "item.thaumaturge.arcane_powder": "Arcane Powder",
+  "item.thaumaturge.advanced_foci": "Advanced Foci",
+  "item.thaumaturge.greater _foci": "Greater Foci",
+
+  "item.thaumaturge.bonewits_dust": "Bonewits Dust",
 
   "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
   "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"
