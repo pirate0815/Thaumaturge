@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.recipe;
 
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.component.AspectComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,9 +23,9 @@ public class RecipeManager {
         return recipes.stream().anyMatch(recipe -> recipe.getCatalyst() == item);
     }
 
-    public static Optional<Recipe> findMatchingRecipe(ItemStack catalystStack, AspectComponent totalAspects) {
+    public static Optional<Recipe> findMatchingRecipe(ItemStack catalystStack, AspectComponent totalAspects, VesselBlock.FluidType fluidType, int fluidLevel) {
         return recipes.stream()
-                .filter(recipe -> recipe.matches(catalystStack, totalAspects))
+                .filter(recipe -> recipe.matches(catalystStack, totalAspects, fluidType, fluidLevel))
                 .findFirst();
     }
 }

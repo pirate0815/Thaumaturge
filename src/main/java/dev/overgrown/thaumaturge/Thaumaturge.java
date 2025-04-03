@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
 import dev.overgrown.thaumaturge.block.ModBlocks;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.data.AspectManager;
@@ -71,6 +72,7 @@ public class Thaumaturge implements ModInitializer {
 
 			new Recipe.Builder()
 					.catalyst(ModItems.ORDO_VIS_CRYSTAL)
+					.requiresFluid(VesselBlock.FluidType.WATER, 3)
 					.requires(praecantatio, 10)
 					.requires(vitreus, 20)
 					.requires(auram, 5)

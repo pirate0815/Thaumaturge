@@ -1,5 +1,8 @@
 {
   "variants":{
+    "fluid_type=empty,level=0": {
+      "model":"thaumaturge:block/vessel"
+    },
     "fluid_type=water,level=0":{
       "model":"thaumaturge:block/vessel"
     },
