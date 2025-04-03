@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -142,9 +143,10 @@ public class VesselBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        super.onStateReplaced(state, world, pos, newState, moved);
-        if (!world.isClient && !state.isOf(newState.getBlock())) {
+    public void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+        super.onStateReplaced(state, world, pos, moved);
+        BlockState newState = world.getBlockState(pos);
+        if (!state.isOf(newState.getBlock())) {
             int level = state.get(LEVEL);
             if (level > 0) {
                 Item fluidItem = Items.AIR;
@@ -152,6 +154,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
                     case WATER -> fluidItem = Items.WATER_BUCKET;
                     case LAVA -> fluidItem = Items.LAVA_BUCKET;
                     case POWDERED_SNOW -> fluidItem = Items.POWDER_SNOW_BUCKET;
+                    default -> { }
                 }
                 ItemScatterer.spawn(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(fluidItem));
             }

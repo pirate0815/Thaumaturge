@@ -20,8 +20,6 @@ public class ThaumaturgeModPacketsS2C {
     private static void handle(CustomPayload customPayload, ClientPlayNetworking.Context context) {
         SyncAspectIdentifierPacket packet = ((SyncAspectIdentifierPacket) customPayload);
         MinecraftClient client = context.client();
-        client.execute(() -> {
-            AspectManager.NAME_TO_ID = packet.map();
-        });
+        client.execute(() -> AspectManager.NAME_TO_ID = packet.map());
     }
 }

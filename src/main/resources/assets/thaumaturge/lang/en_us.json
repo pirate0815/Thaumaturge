@@ -7,6 +7,7 @@
 
   "block.thaumaturge.vessel.full": "Arcane saturation reached - vessel cannot bear further essence",
   "block.thaumaturge.vessel.recipe_failed": "Aspect imbalance - the synthesis collapses into inert materia",
+  "block.thaumaturge.vessel.inventory_full": "Vessel's Inventory Is Full",
 
   "item_group.thaumaturge.crystals": "Thaumaturge: Crystals",
   "item.thaumaturge.aer_crystal_cluster": "Aer Crystal Cluster",

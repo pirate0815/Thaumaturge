@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class CustomItemTagManager extends JsonDataLoader<JsonElement> implements IdentifiableResourceReloadListener {
     /**
-     * This field holds a reference to the item tags directory.
+     * This field holds a reference to the item tags' directory.
      */
     private static final ResourceFinder FINDER = ResourceFinder.json("tags/item");
     RegistryWrapper.WrapperLookup wrapperLookup;

@@ -43,9 +43,7 @@ public class AspectManager extends JsonDataLoader<Aspect> implements Identifiabl
         Optional<? extends RegistryWrapper.Impl<Aspect>> optionalRegistry = this.wrapperLookup.getOptional(ModRegistries.ASPECTS);
         optionalRegistry.ifPresent((aspectRegistry) -> {
             Thaumaturge.LOGGER.info("Finished loading aspects from data files. Registry contains {} aspects.", aspectRegistry.streamEntries().toArray().length);
-            aspectRegistry.streamEntries().forEach((aspectReference -> {
-                NAME_TO_ID.put(aspectReference.value().getName(), aspectReference.registryKey().getValue());
-            }));
+            aspectRegistry.streamEntries().forEach((aspectReference -> NAME_TO_ID.put(aspectReference.value().getName(), aspectReference.registryKey().getValue())));
         });
     }
 
