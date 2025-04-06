@@ -10,7 +10,17 @@ public class ModItems {
 
     public static final Item LESSER_FOCI = ItemBuilder.create("lesser_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(1))
+            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON))
+            .buildAndRegister();
+
+    public static final Item ADVANCED_FOCI = ItemBuilder.create("advanced_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.RARE))
+            .buildAndRegister();
+
+    public static final Item GREATER_FOCI = ItemBuilder.create("greater_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.EPIC))
             .buildAndRegister();
 
     public static final Item BONEWITS_DUST = ItemBuilder.create("bonewits_dust")
@@ -19,37 +29,37 @@ public class ModItems {
             .buildAndRegister();
 
     public static final Item AER_VIS_CRYSTAL = ItemBuilder.create("aer_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item TERRA_VIS_CRYSTAL = ItemBuilder.create("terra_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item IGNIS_VIS_CRYSTAL = ItemBuilder.create("ignis_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item AQUA_VIS_CRYSTAL = ItemBuilder.create("aqua_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item ORDO_VIS_CRYSTAL = ItemBuilder.create("ordo_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item PERDITIO_VIS_CRYSTAL = ItemBuilder.create("perditio_vis_crystal")
-            .setItemGroup(ModItemGroups.THAUMATURGE_CRYSTALS)
+            .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
     public static final Item QUANTUM_STARFRAME = ItemBuilder.create("quantum_starframe")
-            .setItemGroup(ModItemGroups.THAUMATURGE_TOOLS)
+            .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings().maxCount(1))
             .buildAndRegister();
 

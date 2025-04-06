@@ -3,7 +3,6 @@ package dev.overgrown.thaumaturge.block;
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.clusters.AerCrystalClusterBlock;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemGroups;
@@ -20,7 +19,7 @@ public class ModBlocks {
 
     public static final Block AER_CRYSTAL_CLUSTER = BlockBuilder.create("aer_crystal_cluster")
             .setItemGroup(
-                    ModItemGroups.THAUMATURGE_CRYSTALS
+                    ItemGroups.NATURAL
             )
             .withBlockSettings(settings -> settings
                     .nonOpaque()
@@ -30,7 +29,7 @@ public class ModBlocks {
             )
             .withItemSettings(settings -> settings
                     .maxCount(64)
-                    .rarity(Rarity.UNCOMMON)
+                    .rarity(Rarity.COMMON)
             )
             .buildAndRegister(settings -> new AerCrystalClusterBlock(UniformIntProvider.create(2, 5), settings));
 
@@ -43,6 +42,7 @@ public class ModBlocks {
             )
             .withItemSettings(settings -> settings
                     .maxCount(1)
+                    .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister(VesselBlock::new);
 
