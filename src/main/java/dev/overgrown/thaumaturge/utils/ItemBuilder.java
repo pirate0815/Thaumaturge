@@ -65,9 +65,7 @@ public class ItemBuilder<T extends Item> {
 
         // Register the item in all specified item groups
         for (RegistryKey<ItemGroup> itemGroup : this.itemGroups) {
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register((fabricItemGroupEntries -> {
-                fabricItemGroupEntries.add(item);
-            }));
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register((fabricItemGroupEntries -> fabricItemGroupEntries.add(item)));
         }
 
         // Return the Item
