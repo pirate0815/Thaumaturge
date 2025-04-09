@@ -5,13 +5,14 @@
 	"name": "Thaumaturge",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"Overgrown",
+		"thatrobin3001"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "",
+		"sources": "https://github.com/0vergrown/Thaumaturge"
 	},
-	"license": "CC0-1.0",
+	"license": "Overgrown-Custom-License-v1.0",
 	"icon": "assets/thaumaturge/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -29,8 +30,8 @@
 		"thaumaturge.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.4",
+		"fabricloader": ">=0.16.13",
+		"minecraft": "~1.21.5",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

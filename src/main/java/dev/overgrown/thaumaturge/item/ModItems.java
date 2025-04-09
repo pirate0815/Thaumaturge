@@ -58,7 +58,17 @@ public class ModItems {
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item QUANTUM_STARFRAME = ItemBuilder.create("quantum_starframe")
+    public static final Item ASPECT_LENS = ItemBuilder.create("aspect_lens")
+            .setItemGroup(ItemGroups.TOOLS)
+            .withSettings(new Item.Settings().maxCount(1))
+            .buildAndRegister();
+
+    public static final Item AETHERIC_GOGGLES = ItemBuilder.create("aetheric_goggles")
+            .setItemGroup(ItemGroups.TOOLS)
+            .withSettings(new Item.Settings().maxCount(1))
+            .buildAndRegister();
+
+    public static final Item RESONANCE_MONOCLE = ItemBuilder.create("resonance_monocle")
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings().maxCount(1))
             .buildAndRegister();

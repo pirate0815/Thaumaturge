@@ -37,10 +37,10 @@ public class ModItemGroups {
     public static final ItemGroup THAUMATURGE_TOOLS_GROUP = Registry.register(Registries.ITEM_GROUP,
             Thaumaturge.identifier("thaumaturge_tools"),
             FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(ModItems.QUANTUM_STARFRAME))
+                    .icon(() -> new ItemStack(ModItems.ASPECT_LENS))
                     .displayName(Text.translatable("item_group.thaumaturge.tools"))
                     .entries((displayContext, entries) -> {
-                        entries.add(new ItemStack(ModItems.QUANTUM_STARFRAME));
+                        entries.add(new ItemStack(ModItems.ASPECT_LENS));
                     })
                     .build());
 
