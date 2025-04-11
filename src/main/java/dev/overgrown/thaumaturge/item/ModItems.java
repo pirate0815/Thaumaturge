@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.item;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.util.Rarity;
@@ -65,12 +66,12 @@ public class ModItems {
 
     public static final Item AETHERIC_GOGGLES = ItemBuilder.create("aetheric_goggles")
             .setItemGroup(ItemGroups.TOOLS)
-            .withSettings(new Item.Settings().maxCount(1))
+            .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
             .buildAndRegister();
 
     public static final Item RESONANCE_MONOCLE = ItemBuilder.create("resonance_monocle")
             .setItemGroup(ItemGroups.TOOLS)
-            .withSettings(new Item.Settings().maxCount(1))
+            .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
             .buildAndRegister();
 
     public static void register() {

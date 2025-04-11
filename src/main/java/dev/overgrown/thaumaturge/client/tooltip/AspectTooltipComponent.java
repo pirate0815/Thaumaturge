@@ -1,65 +1,79 @@
 package dev.overgrown.thaumaturge.client.tooltip;
 
 import dev.overgrown.thaumaturge.data.Aspect;
+import dev.overgrown.thaumaturge.item.ModItems;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.gui.screen.Screen;
 
 public class AspectTooltipComponent implements TooltipComponent {
     private final Object2IntMap<RegistryEntry<Aspect>> aspects;
+
     public AspectTooltipComponent(AspectTooltipData data) {
         this.aspects = data.aspects();
     }
 
+    private boolean hasRequiredItems() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null) return false;
+        PlayerEntity player = client.player;
+
+        // Check Aspect Lens in inventory
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            ItemStack item = player.getInventory().getStack(i);
+            if (item.getItem() == ModItems.ASPECT_LENS) {
+                return true;
+            }
+        }
+
+        // Check head slot for Goggles or Monocle
+        ItemStack headStack = client.player.getEquippedStack(EquipmentSlot.HEAD);
+        return headStack.getItem() == ModItems.AETHERIC_GOGGLES || headStack.getItem() == ModItems.RESONANCE_MONOCLE;
+    }
+
     @Override
     public int getHeight(TextRenderer textRenderer) {
-        return 18; // Icon height + padding
+        return 18;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
+        boolean showTranslation = Screen.hasShiftDown() && hasRequiredItems();
         int width = 0;
-        // Decide which measurement to use based on shift state
-        boolean showTranslation = Screen.hasShiftDown();
-        for (var entry : aspects.object2IntEntrySet()) { // Changed to object2IntEntrySet()
-            int valueWidth;
-            if (showTranslation) {
-                Text aspectName = entry.getKey().value().getTranslatedName();
-                valueWidth = textRenderer.getWidth(aspectName);
-            } else {
-                valueWidth = textRenderer.getWidth(String.valueOf(entry.getIntValue())); // Changed to getIntValue()
-            }
-            width += 16 + 2 + valueWidth; // 16 (icon) + 2 (padding) + text width
+        for (var entry : aspects.object2IntEntrySet()) {
+            int valueWidth = showTranslation ?
+                    textRenderer.getWidth(entry.getKey().value().getTranslatedName()) :
+                    textRenderer.getWidth(String.valueOf(entry.getIntValue()));
+            width += 16 + 2 + valueWidth;
         }
-        // Add padding between entries (4px per entry)
         return width + (aspects.size() - 1) * 4;
     }
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
-        boolean showTranslation = Screen.hasShiftDown();
+        boolean showTranslation = Screen.hasShiftDown() && hasRequiredItems();
         int currentX = x;
 
-        for (var entry : aspects.object2IntEntrySet()) { // Changed to object2IntEntrySet()
+        for (var entry : aspects.object2IntEntrySet()) {
             if (MinecraftClient.getInstance().world != null) {
-                int value = entry.getIntValue(); // Changed to getIntValue()
-
+                int value = entry.getIntValue();
                 Identifier texture = entry.getKey().value().getTextureLocation();
 
-                // Use the correct RenderLayer method for GUI textures
                 context.drawTexture(RenderLayer::getGuiTextured, texture, currentX, y, 0, 0, 16, 16, 16, 16);
 
                 if (showTranslation) {
-                    Text aspectName = entry.getKey().value().getTranslatedName()
-                            .formatted(Formatting.GRAY);
+                    Text aspectName = entry.getKey().value().getTranslatedName().formatted(Formatting.WHITE);
                     context.drawText(textRenderer, aspectName, currentX + 16 + 2, y + 4, 0xFFFFFF, true);
                 } else {
                     String valueStr = String.valueOf(value);
@@ -69,10 +83,8 @@ public class AspectTooltipComponent implements TooltipComponent {
                 int entryTextWidth = showTranslation ?
                         textRenderer.getWidth(entry.getKey().value().getTranslatedName()) :
                         textRenderer.getWidth(String.valueOf(value));
-                int entryWidth = 16 + 2 + entryTextWidth;
-                currentX += entryWidth + 4;
+                currentX += 16 + 2 + entryTextWidth + 4;
             }
         }
     }
-
 }
