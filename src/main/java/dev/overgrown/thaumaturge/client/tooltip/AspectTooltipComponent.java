@@ -37,9 +37,9 @@ public class AspectTooltipComponent implements TooltipComponent {
             }
         }
 
-        // Check head slot for Goggles or Monocle
+        // Check head slot for Goggles
         ItemStack headStack = client.player.getEquippedStack(EquipmentSlot.HEAD);
-        return headStack.getItem() == ModItems.AETHERIC_GOGGLES || headStack.getItem() == ModItems.RESONANCE_MONOCLE;
+        return headStack.getItem() == ModItems.AETHERIC_GOGGLES;
     }
 
     @Override

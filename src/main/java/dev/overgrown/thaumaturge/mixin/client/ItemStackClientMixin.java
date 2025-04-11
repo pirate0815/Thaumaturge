@@ -55,6 +55,6 @@ public abstract class ItemStackClientMixin {
     @Unique
     private boolean thaumaturge$hasAethericGogglesOrMonocle(PlayerEntity player) {
         ItemStack headStack = player.getEquippedStack(EquipmentSlot.HEAD);
-        return headStack.getItem() == ModItems.AETHERIC_GOGGLES || headStack.getItem() == ModItems.RESONANCE_MONOCLE;
+        return headStack.getItem() == ModItems.AETHERIC_GOGGLES;
     }
 }

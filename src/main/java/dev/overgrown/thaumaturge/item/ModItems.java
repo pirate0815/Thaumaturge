@@ -72,9 +72,4 @@ public class ModItems {
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
             .buildAndRegister();
-
-    public static final Item RESONANCE_MONOCLE = ItemBuilder.create("resonance_monocle")
-            .setItemGroup(ItemGroups.TOOLS)
-            .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
-            .buildAndRegister();
 }

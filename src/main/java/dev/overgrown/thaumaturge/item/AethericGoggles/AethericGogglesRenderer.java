@@ -17,6 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
@@ -81,7 +82,23 @@ public class AethericGogglesRenderer {
                 if (entity instanceof ItemEntity itemEntity) {
                     ItemStack stack = itemEntity.getStack();
                     currentAspects = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
-                    tooltipPosition = calculateScreenPosition(); // Updated call
+                    tooltipPosition = calculateScreenPosition();
+                } else if (entity instanceof LivingEntity livingEntity) {
+                    Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
+                    for (EquipmentSlot slot : EquipmentSlot.values()) {
+                        ItemStack stack = livingEntity.getEquippedStack(slot);
+                        AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                        component.getMap().forEach((aspect, count) ->
+                                combinedAspects.mergeInt(aspect, count, Integer::sum)
+                        );
+                    }
+                    if (combinedAspects.isEmpty()) {
+                        currentAspects = null;
+                        tooltipPosition = null;
+                    } else {
+                        currentAspects = new AspectComponent(combinedAspects);
+                        tooltipPosition = calculateScreenPosition();
+                    }
                 } else {
                     currentAspects = null;
                     tooltipPosition = null;

@@ -3,7 +3,6 @@ package dev.overgrown.thaumaturge;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.item.AethericGoggles.AethericGogglesRenderer;
-import dev.overgrown.thaumaturge.item.ResonanceMonocle.ResonanceMonocleRenderer;
 import dev.overgrown.thaumaturge.networking.ThaumaturgeModPacketsS2C;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
@@ -21,6 +20,5 @@ public class ThaumaturgeClient implements ClientModInitializer {
         });
 
         AethericGogglesRenderer.init();
-        ResonanceMonocleRenderer.init();
     }
 }

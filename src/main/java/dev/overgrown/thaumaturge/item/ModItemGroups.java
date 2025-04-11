@@ -47,7 +47,6 @@ public class ModItemGroups {
                     .entries((displayContext, entries) -> {
                         entries.add(new ItemStack(ModItems.ASPECT_LENS));
                         entries.add(new ItemStack(ModItems.AETHERIC_GOGGLES));
-                        entries.add(new ItemStack(ModItems.RESONANCE_MONOCLE));
                     })
                     .build());
 }
