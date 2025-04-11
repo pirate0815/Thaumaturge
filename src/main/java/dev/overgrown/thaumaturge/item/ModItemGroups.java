@@ -12,6 +12,11 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 
 public class ModItemGroups {
+
+    public static void register() {
+        Thaumaturge.LOGGER.info("Registering Item Groups for " + Thaumaturge.MOD_ID);
+    }
+
     // Registry keys for the custom item groups
     public static final RegistryKey<ItemGroup> THAUMATURGE_CRYSTALS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_crystals"));
     public static final RegistryKey<ItemGroup> THAUMATURGE_TOOLS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_tools"));
@@ -41,10 +46,8 @@ public class ModItemGroups {
                     .displayName(Text.translatable("item_group.thaumaturge.tools"))
                     .entries((displayContext, entries) -> {
                         entries.add(new ItemStack(ModItems.ASPECT_LENS));
+                        entries.add(new ItemStack(ModItems.AETHERIC_GOGGLES));
+                        entries.add(new ItemStack(ModItems.RESONANCE_MONOCLE));
                     })
                     .build());
-
-    public static void register() {
-        Thaumaturge.LOGGER.info("Registering Item Groups for " + Thaumaturge.MOD_ID);
-    }
 }

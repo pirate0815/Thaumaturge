@@ -9,6 +9,10 @@ import net.minecraft.util.Rarity;
 
 public class ModItems {
 
+    public static void register() {
+        Thaumaturge.LOGGER.info("Registering Items for " + Thaumaturge.MOD_ID);
+    }
+
     public static final Item LESSER_FOCI = ItemBuilder.create("lesser_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON))
@@ -73,8 +77,4 @@ public class ModItems {
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
             .buildAndRegister();
-
-    public static void register() {
-        Thaumaturge.LOGGER.info("Registering Items for " + Thaumaturge.MOD_ID);
-    }
 }
