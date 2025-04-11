@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "thaumaturge:item/quantum_starframe"
+		"layer0": "thaumaturge:item/aspect_lens"
 	}
 }

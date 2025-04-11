@@ -1,0 +1,31 @@
+{
+  "parent": "block/cube",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        135,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.40,
+        0.40,
+        0.40
+      ]
+    }
+  },
+  "textures": {
+    "particle": "thaumaturge:item/resonance_monocle_front",
+    "down": "thaumaturge:item/resonance_monocle_bottom",
+    "up": "thaumaturge:item/null",
+    "north": "thaumaturge:item/resonance_monocle_front",
+    "east": "thaumaturge:item/null",
+    "south": "thaumaturge:item/null",
+    "west": "thaumaturge:item/null"
+  }
+}

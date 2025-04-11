@@ -92,15 +92,16 @@ public class AethericGogglesRenderer {
                 BlockPos pos = ((BlockHitResult) hit).getBlockPos();
                 BlockEntity blockEntity = client.world.getBlockEntity(pos);
 
-                if (blockEntity instanceof Inventory inventory) {
+                if (blockEntity instanceof LootableContainerBlockEntity container) {
                     Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
                     boolean hasItems = false;
 
-                    for (int i = 0; i < inventory.size(); i++) {
-                        ItemStack itemStack = inventory.getStack(i);
-                        if (!itemStack.isEmpty()) {
+                    // Use getInvStackList to handle potential client-side missing data
+                    for (int i = 0; i < container.size(); i++) {
+                        ItemStack stack = container.getStack(i);
+                        if (!stack.isEmpty()) {
                             hasItems = true;
-                            AspectComponent component = itemStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
                             component.getMap().forEach((aspect, count) ->
                                     combinedAspects.mergeInt(aspect, count, Integer::sum)
                             );
@@ -110,12 +111,31 @@ public class AethericGogglesRenderer {
                     if (hasItems) {
                         currentAspects = new AspectComponent(combinedAspects);
                     } else {
-                        // Use block's aspects
+                        // Fallback to block's aspects
                         ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
                         currentAspects = blockStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
                     }
+                } else if (blockEntity instanceof Inventory inventory) {
+                    // Original inventory handling for other containers
+                    Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
+                    boolean hasItems = false;
+
+                    for (int i = 0; i < inventory.size(); i++) {
+                        ItemStack stack = inventory.getStack(i);
+                        if (!stack.isEmpty()) {
+                            hasItems = true;
+                            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                            component.getMap().forEach((aspect, count) ->
+                                    combinedAspects.mergeInt(aspect, count, Integer::sum)
+                            );
+                        }
+                    }
+
+                    currentAspects = hasItems
+                            ? new AspectComponent(combinedAspects)
+                            : client.world.getBlockState(pos).getBlock().asItem().getDefaultStack().getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
                 } else {
-                    // Not an inventory, use block's aspects
+                    // Default block aspects
                     ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
                     currentAspects = blockStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
                 }
