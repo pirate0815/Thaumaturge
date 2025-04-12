@@ -82,7 +82,7 @@ public class Thaumaturge implements ModInitializer {
 			new Recipe.Builder()
 					.catalyst(Items.AMETHYST_SHARD)
 					.requires(aer, 1)
-					.output(new ItemStack(ModItems.AER_VIS_CRYSTAL))
+					.output(new ItemStack(ModItems.AER_ASPECT_SHARD))
 					.register();
 		});
 	}

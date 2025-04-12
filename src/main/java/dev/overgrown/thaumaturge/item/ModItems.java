@@ -33,7 +33,7 @@ public class ModItems {
             .withSettings(new Item.Settings().maxCount(64).rarity(Rarity.RARE))
             .buildAndRegister();
 
-    public static final Item AER_VIS_CRYSTAL = ItemBuilder.create("aer_vis_crystal")
+    public static final Item AER_ASPECT_SHARD = ItemBuilder.create("aer_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();

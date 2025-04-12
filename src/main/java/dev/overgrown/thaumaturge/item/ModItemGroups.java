@@ -28,8 +28,12 @@ public class ModItemGroups {
                     .icon(() -> new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER))
                     .displayName(Text.translatable("item_group.thaumaturge.crystals"))
                     .entries((displayContext, entries) -> {
+                        entries.add(new ItemStack(ModBlocks.BUDDING_AER_CRYSTAL));
+                        entries.add(new ItemStack(ModBlocks.SMALL_AER_CRYSTAL_BUD));
+                        entries.add(new ItemStack(ModBlocks.MEDIUM_AER_CRYSTAL_BUD));
+                        entries.add(new ItemStack(ModBlocks.LARGE_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER));
-                        entries.add(new ItemStack(ModItems.AER_VIS_CRYSTAL));
+                        entries.add(new ItemStack(ModItems.AER_ASPECT_SHARD));
                         entries.add(new ItemStack(ModItems.AQUA_VIS_CRYSTAL));
                         entries.add(new ItemStack(ModItems.IGNIS_VIS_CRYSTAL));
                         entries.add(new ItemStack(ModItems.TERRA_VIS_CRYSTAL));

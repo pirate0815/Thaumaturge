@@ -1,7 +1,7 @@
 package dev.overgrown.thaumaturge.block;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
-import dev.overgrown.thaumaturge.block.clusters.AerCrystalClusterBlock;
+import dev.overgrown.thaumaturge.block.clusters.aer.*;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
@@ -17,13 +17,77 @@ public class ModBlocks {
             .withItemSettings(settings -> settings.maxCount(64))
             .buildAndRegister(Block::new);
 
+    public static final Block BUDDING_AER_CRYSTAL = BlockBuilder.create("budding_aer_crystal")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(2f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(BuddingAerCrystalBlock::new);
+
+    public static final Block SMALL_AER_CRYSTAL_BUD = BlockBuilder.create("small_aer_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.5f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(SmallAerCrystalBudBlock::new);
+
+    public static final Block MEDIUM_AER_CRYSTAL_BUD = BlockBuilder.create("medium_aer_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.6f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(MediumAerCrystalBudBlock::new);
+
+    public static final Block LARGE_AER_CRYSTAL_BUD = BlockBuilder.create("large_aer_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.7f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(LargeAerCrystalBudBlock::new);
+
     public static final Block AER_CRYSTAL_CLUSTER = BlockBuilder.create("aer_crystal_cluster")
             .setItemGroup(
                     ItemGroups.NATURAL
             )
             .withBlockSettings(settings -> settings
                     .nonOpaque()
-                    .strength(3f)
+                    .strength(1.8f)
                     .sounds(BlockSoundGroup.AMETHYST_BLOCK)
                     .requiresTool()
             )
