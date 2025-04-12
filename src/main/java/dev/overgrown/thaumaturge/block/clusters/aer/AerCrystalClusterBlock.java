@@ -8,7 +8,11 @@ public class AerCrystalClusterBlock extends AbstractAerCrystalBlock {
     }
 
     @Override
-    protected int getParticleCount() { return 4; }
+    protected int getParticleCount() {
+        return 4;
+    }
     @Override
-    protected float getPushStrength() { return 2.0f; }
+    protected float getPushStrength() {
+        return 1.0f;
+    }
 }

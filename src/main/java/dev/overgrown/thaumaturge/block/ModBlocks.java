@@ -39,7 +39,7 @@ public class ModBlocks {
             )
             .withBlockSettings(settings -> settings
                     .nonOpaque()
-                    .strength(1.5f)
+                    .strength(1.8f)
                     .sounds(BlockSoundGroup.AMETHYST_BLOCK)
                     .requiresTool()
             )
@@ -55,7 +55,7 @@ public class ModBlocks {
             )
             .withBlockSettings(settings -> settings
                     .nonOpaque()
-                    .strength(1.6f)
+                    .strength(1.8f)
                     .sounds(BlockSoundGroup.AMETHYST_BLOCK)
                     .requiresTool()
             )
@@ -71,7 +71,7 @@ public class ModBlocks {
             )
             .withBlockSettings(settings -> settings
                     .nonOpaque()
-                    .strength(1.7f)
+                    .strength(1.8f)
                     .sounds(BlockSoundGroup.AMETHYST_BLOCK)
                     .requiresTool()
             )

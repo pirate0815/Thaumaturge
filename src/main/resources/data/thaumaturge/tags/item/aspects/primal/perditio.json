@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:perditio_vis_crystal",
+			"id":"thaumaturge:perditio_aspect_shard",
 			"required":false
 		},
         {

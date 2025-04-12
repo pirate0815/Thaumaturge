@@ -1,7 +1,7 @@
 {
   "display":{
     "icon":{
-      "id":"thaumaturge:aer_vis_crystal"
+      "id":"thaumaturge:aer_aspect_shard"
     },
     "title":{
       "translate":"advancements.thaumaturge.touch_of_the_unknown.name",
@@ -33,14 +33,14 @@
       "conditions":{
         "items": [
           {
-            "items": "#thaumaturge:vis_crystals"
+            "items": "#thaumaturge:aspect_shards"
           }
         ]
       }
     }
   },
   "rewards":{
-    "function":"thaumaturge:fundamentals/send_crystal_pickup_message"
+    "function":"thaumaturge:fundamentals/send_aspect_shard_pickup_message"
   },
   "sends_telemetry_event":true
 }

@@ -34,11 +34,11 @@ public class ModItemGroups {
                         entries.add(new ItemStack(ModBlocks.LARGE_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER));
                         entries.add(new ItemStack(ModItems.AER_ASPECT_SHARD));
-                        entries.add(new ItemStack(ModItems.AQUA_VIS_CRYSTAL));
-                        entries.add(new ItemStack(ModItems.IGNIS_VIS_CRYSTAL));
-                        entries.add(new ItemStack(ModItems.TERRA_VIS_CRYSTAL));
-                        entries.add(new ItemStack(ModItems.ORDO_VIS_CRYSTAL));
-                        entries.add(new ItemStack(ModItems.PERDITIO_VIS_CRYSTAL));
+                        entries.add(new ItemStack(ModItems.AQUA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.IGNIS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.TERRA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.ORDO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.PERDITIO_ASPECT_SHARD));
                     })
                     .build());
 

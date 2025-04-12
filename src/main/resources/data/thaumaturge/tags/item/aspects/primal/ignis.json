@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:ignis_vis_crystal",
+			"id":"thaumaturge:ignis_aspect_shard",
 			"required":false
 		},
 		{

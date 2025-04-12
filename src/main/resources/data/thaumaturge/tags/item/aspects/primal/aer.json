@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:aer_vis_crystal",
+			"id":"thaumaturge:aer_aspect_shard",
 			"required":false
 		},
 		{

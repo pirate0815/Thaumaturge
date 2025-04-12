@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:ordo_vis_crystal",
+			"id":"thaumaturge:ordo_aspect_shard",
 			"required":false
 		},
 		{

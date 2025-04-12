@@ -28,7 +28,7 @@
   },
   "parent":"thaumaturge:fundamentals/touch_of_the_unknown",
   "criteria": {
-    "sleep_after_touching_vis_crystal": {
+    "sleep_after_touching_aspect_shard": {
       "trigger": "minecraft:slept_in_bed"
     }
   },

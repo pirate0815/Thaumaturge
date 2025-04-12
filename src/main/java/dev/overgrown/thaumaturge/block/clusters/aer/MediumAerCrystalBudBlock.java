@@ -5,6 +5,13 @@ public class MediumAerCrystalBudBlock extends AbstractAerCrystalBlock {
         super(4.0f, 4.0f, settings);
     }
 
-    @Override protected int getParticleCount() { return 2; }
-    @Override protected float getPushStrength() { return 1.0f; }
+    @Override
+    protected int getParticleCount() {
+        return 2;
+    }
+
+    @Override
+    protected float getPushStrength() {
+        return 0.7f;
+    }
 }

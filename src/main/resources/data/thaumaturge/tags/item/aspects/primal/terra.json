@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:terra_vis_crystal",
+			"id":"thaumaturge:terra_aspect_shard",
 			"required":false
 		},
 		{

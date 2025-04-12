@@ -71,7 +71,7 @@ public class Thaumaturge implements ModInitializer {
 					.orElseThrow(() -> new IllegalStateException("Aer aspect not found"));
 
 			new Recipe.Builder()
-					.catalyst(ModItems.ORDO_VIS_CRYSTAL)
+					.catalyst(ModItems.ORDO_ASPECT_SHARD)
 					.requiresFluid(VesselBlock.FluidType.WATER, 3)
 					.requires(praecantatio, 10)
 					.requires(vitreus, 20)

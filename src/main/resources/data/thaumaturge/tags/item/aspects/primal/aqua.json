@@ -2,7 +2,7 @@
     "replace": false,
     "values": [
 		{
-			"id":"thaumaturge:aqua_vis_crystal",
+			"id":"thaumaturge:aqua_aspect_shard",
 			"required":false
 		},
         {

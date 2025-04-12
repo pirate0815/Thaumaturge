@@ -38,27 +38,27 @@ public class ModItems {
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item TERRA_VIS_CRYSTAL = ItemBuilder.create("terra_vis_crystal")
+    public static final Item TERRA_ASPECT_SHARD = ItemBuilder.create("terra_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item IGNIS_VIS_CRYSTAL = ItemBuilder.create("ignis_vis_crystal")
+    public static final Item IGNIS_ASPECT_SHARD = ItemBuilder.create("ignis_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item AQUA_VIS_CRYSTAL = ItemBuilder.create("aqua_vis_crystal")
+    public static final Item AQUA_ASPECT_SHARD = ItemBuilder.create("aqua_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item ORDO_VIS_CRYSTAL = ItemBuilder.create("ordo_vis_crystal")
+    public static final Item ORDO_ASPECT_SHARD = ItemBuilder.create("ordo_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
 
-    public static final Item PERDITIO_VIS_CRYSTAL = ItemBuilder.create("perditio_vis_crystal")
+    public static final Item PERDITIO_ASPECT_SHARD = ItemBuilder.create("perditio_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings().maxCount(64))
             .buildAndRegister();
