@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.item.AethericGoggles;
+package dev.overgrown.thaumaturge.item.aetheric_goggles;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
