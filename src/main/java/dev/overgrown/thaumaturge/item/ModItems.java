@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge.item;
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.component.BookStateComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDust;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
 import dev.overgrown.thaumaturge.item.apophenia.Apophenia;
 import net.minecraft.entity.EquipmentSlot;
@@ -64,7 +65,7 @@ public class ModItems {
                     .maxCount(64)
                     .rarity(Rarity.RARE)
             )
-            .buildAndRegister();
+            .buildAndRegister(BonewitsDust::new);
 
     public static final Item APOPHENIA = ItemBuilder.create("apophenia")
             .setItemGroup(ItemGroups.TOOLS)

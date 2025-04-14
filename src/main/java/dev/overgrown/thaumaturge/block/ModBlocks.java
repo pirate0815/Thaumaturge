@@ -11,6 +11,10 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public class ModBlocks {
+    public static void register() {
+        Thaumaturge.LOGGER.info("Registering Blocks for " + Thaumaturge.MOD_ID);
+    }
+
     public static final Block AMBER_BEARING_STONE = BlockBuilder.create("amber_bearing_stone")
             .setItemGroup(ItemGroups.BUILDING_BLOCKS)
             .withBlockSettings(settings -> settings.strength(4.0f))
@@ -109,9 +113,4 @@ public class ModBlocks {
                     .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister(VesselBlock::new);
-
-
-    public static void register() {
-        Thaumaturge.LOGGER.info("Registering Blocks for " + Thaumaturge.MOD_ID);
-    }
 }

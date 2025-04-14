@@ -67,6 +67,10 @@
   "aspect.thaumaturge.sensus.name": "Sensus",
   "aspect.thaumaturge.vitium.name": "Vitium",
 
+  "item.thaumaturge.bonewits_dust": "Bonewits Dust",
+
+  "item.thaumaturge.apophenia": "Apophenia",
+
   "item_group.thaumaturge.tools": "Thaumaturge: Tools",
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",
@@ -74,8 +78,6 @@
   "item.thaumaturge.lesser_foci": "Lesser Foci",
   "item.thaumaturge.advanced_foci": "Advanced Foci",
   "item.thaumaturge.greater_foci": "Greater Foci",
-
-  "item.thaumaturge.bonewits_dust": "Bonewits Dust",
 
   "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
   "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"
