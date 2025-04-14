@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.item.apophenia;
 
+import dev.overgrown.thaumaturge.component.BookStateComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,29 +20,26 @@ public class Apophenia extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
+
         ItemStack stack = user.getStackInHand(hand);
-        if (!world.isClient()) {
-            NbtCompound nbt = getOrCreateNbtComponent(stack);
-            byte currentState = nbt.getByte("is_open", (byte) 0);
-            byte newState = (byte) (currentState == 0 ? 1 : 0);
+        boolean client = world.isClient();
 
-            nbt.putByte("is_open", newState);
-            stack.set(ModComponents.BOOK_STATE, NbtComponent.of(nbt));
+        if (!client) {
 
-            playSoundEffect(world, user, newState);
+            BookStateComponent bookStateComponent = stack.getOrDefault(ModComponents.BOOK_STATE, BookStateComponent.DEFAULT).toggle();
+
+            stack.set(ModComponents.BOOK_STATE, bookStateComponent);
+            playSoundEffect(world, user, bookStateComponent.open());
+
         }
-        boolean isClient = world.isClient();
-        ActionResult.SwingSource swingSource = isClient ? ActionResult.SwingSource.CLIENT : ActionResult.SwingSource.SERVER;
+
+        ActionResult.SwingSource swingSource = client ? ActionResult.SwingSource.CLIENT : ActionResult.SwingSource.SERVER;
         return new ActionResult.Success(swingSource, new ActionResult.ItemContext(true, stack));
+
     }
 
-    private NbtCompound getOrCreateNbtComponent(ItemStack stack) {
-        NbtComponent component = stack.get(ModComponents.BOOK_STATE);
-        return component != null ? component.copyNbt() : new NbtCompound();
-    }
-
-    private void playSoundEffect(World world, PlayerEntity user, byte state) {
-        var sound = state == 1
+    private void playSoundEffect(World world, PlayerEntity user, boolean open) {
+        var sound = open
                 ? SoundEvents.ITEM_BOOK_PAGE_TURN
                 : SoundEvents.BLOCK_CHISELED_BOOKSHELF_INSERT;
 
