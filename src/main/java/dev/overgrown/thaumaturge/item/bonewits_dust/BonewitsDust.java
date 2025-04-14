@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BonewitsDust extends Item {
-
     public BonewitsDust(Settings settings) {
         super(settings);
     }
@@ -59,7 +58,8 @@ public class BonewitsDust extends Item {
                     }
                 }
             }
-            return new ActionResult.Success(ActionResult.SwingSource.CLIENT, new ActionResult.ItemContext(true, getDefaultStack()));
+            // Return appropriate ActionResult based on client/server side
+            return world.isClient() ? ActionResult.SUCCESS : ActionResult.SUCCESS_SERVER;
         }
         return ActionResult.PASS;
     }
