@@ -1,10 +1,14 @@
 package dev.overgrown.thaumaturge.item;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
+import dev.overgrown.thaumaturge.item.apophenia.Apophenia;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Rarity;
 
 public class ModItems {
@@ -13,63 +17,101 @@ public class ModItems {
         Thaumaturge.LOGGER.info("Registering Items for " + Thaumaturge.MOD_ID);
     }
 
-    public static final Item LESSER_FOCI = ItemBuilder.create("lesser_foci")
-            .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON))
-            .buildAndRegister();
-
-    public static final Item ADVANCED_FOCI = ItemBuilder.create("advanced_foci")
-            .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.RARE))
-            .buildAndRegister();
-
-    public static final Item GREATER_FOCI = ItemBuilder.create("greater_foci")
-            .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(1).rarity(Rarity.EPIC))
-            .buildAndRegister();
-
-    public static final Item BONEWITS_DUST = ItemBuilder.create("bonewits_dust")
-            .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64).rarity(Rarity.RARE))
-            .buildAndRegister();
-
     public static final Item AER_ASPECT_SHARD = ItemBuilder.create("aer_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
             .buildAndRegister();
 
     public static final Item TERRA_ASPECT_SHARD = ItemBuilder.create("terra_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
             .buildAndRegister();
 
     public static final Item IGNIS_ASPECT_SHARD = ItemBuilder.create("ignis_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
             .buildAndRegister();
 
     public static final Item AQUA_ASPECT_SHARD = ItemBuilder.create("aqua_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
             .buildAndRegister();
 
     public static final Item ORDO_ASPECT_SHARD = ItemBuilder.create("ordo_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
             .buildAndRegister();
 
     public static final Item PERDITIO_ASPECT_SHARD = ItemBuilder.create("perditio_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
-            .withSettings(new Item.Settings().maxCount(64))
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item BONEWITS_DUST = ItemBuilder.create("bonewits_dust")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.RARE)
+            )
+            .buildAndRegister();
+
+    public static final Item APOPHENIA = ItemBuilder.create("apophenia")
+            .setItemGroup(ItemGroups.TOOLS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.EPIC)
+                    .component(ModComponents.BOOK_STATE, NbtComponent.of(new NbtCompound()))
+            )
+            .buildAndRegister(Apophenia::new);
+
+    public static final Item LESSER_FOCI = ItemBuilder.create("lesser_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item ADVANCED_FOCI = ItemBuilder.create("advanced_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.RARE)
+            )
+            .buildAndRegister();
+
+    public static final Item GREATER_FOCI = ItemBuilder.create("greater_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.EPIC)
+            )
             .buildAndRegister();
 
     public static final Item ASPECT_LENS = ItemBuilder.create("aspect_lens")
             .setItemGroup(ItemGroups.TOOLS)
-            .withSettings(new Item.Settings().maxCount(1))
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+            )
             .buildAndRegister();
 
     public static final Item AETHERIC_GOGGLES = ItemBuilder.create("aetheric_goggles")
             .setItemGroup(ItemGroups.TOOLS)
-            .withSettings(new Item.Settings().maxCount(1).equippable(EquipmentSlot.HEAD))
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .equippable(EquipmentSlot.HEAD)
+            )
             .buildAndRegister();
 }

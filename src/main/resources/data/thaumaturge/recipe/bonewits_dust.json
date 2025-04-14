@@ -5,9 +5,9 @@
     "minecraft:flint",
     "minecraft:bowl",
     "minecraft:redstone",
-    "#thaumaturge:vis_crystals",
-    "#thaumaturge:vis_crystals",
-    "#thaumaturge:vis_crystals"
+    "#thaumaturge:aspect_shards",
+    "#thaumaturge:aspect_shards",
+    "#thaumaturge:aspect_shards"
   ],
   "result": {
     "id": "thaumaturge:bonewits_dust",
