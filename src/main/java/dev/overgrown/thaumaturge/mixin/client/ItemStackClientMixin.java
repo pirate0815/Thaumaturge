@@ -2,7 +2,10 @@ package dev.overgrown.thaumaturge.mixin.client;
 
 import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.item.ModItems;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,13 +18,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ItemStack.class)
 public abstract class ItemStackClientMixin {
 
     @Inject(method = "getTooltipData", at = @At("HEAD"), cancellable = true)
     private void addAspectTooltipData(CallbackInfoReturnable<Optional<TooltipData>> cir) {
         ItemStack stack = (ItemStack) (Object) this;
-        AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+        AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
         if (component == null || component.getAspects().isEmpty()) {
             return;
         }

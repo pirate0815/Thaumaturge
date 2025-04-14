@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.block.vessel;
 
 import dev.overgrown.thaumaturge.component.AspectComponent;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.recipe.RecipeManager;
@@ -9,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -152,7 +152,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
 
         AspectComponent totalAspects = new AspectComponent(new Object2IntOpenHashMap<>());
         for (ItemStack itemStack : blockEntity.getItems()) {
-            AspectComponent component = itemStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+            AspectComponent component = itemStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
             totalAspects.addAspect(component);
         }
 
@@ -181,7 +181,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
             ItemStack stack = blockEntity.getStack(i);
             if (stack.isEmpty()) continue;
 
-            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
             Object2IntOpenHashMap<RegistryEntry<Aspect>> aspects = new Object2IntOpenHashMap<>(component.getMap());
 
             boolean modified = false;
@@ -203,7 +203,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
 
             if (modified) {
                 ItemStack newStack = stack.copy();
-                newStack.set(AspectComponent.TYPE, new AspectComponent(aspects));
+                newStack.set(ModComponents.ASPECT, new AspectComponent(aspects));
                 blockEntity.setStack(i, newStack);
             }
 
@@ -215,7 +215,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
         // Remove empty aspect items by iterating backwards to avoid index issues
         for (int i = blockEntity.size() - 1; i >= 0; i--) {
             ItemStack stack = blockEntity.getStack(i);
-            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
             if (component.getMap().isEmpty()) {
                 blockEntity.removeStack(i);
             }

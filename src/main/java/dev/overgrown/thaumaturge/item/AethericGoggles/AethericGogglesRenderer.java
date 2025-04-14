@@ -4,6 +4,7 @@ import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.component.AspectComponent;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.item.ModItems;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -30,9 +31,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class AethericGogglesRenderer {
@@ -81,13 +79,13 @@ public class AethericGogglesRenderer {
                 Entity entity = ((EntityHitResult) hit).getEntity();
                 if (entity instanceof ItemEntity itemEntity) {
                     ItemStack stack = itemEntity.getStack();
-                    currentAspects = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                    currentAspects = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                     tooltipPosition = calculateScreenPosition();
                 } else if (entity instanceof LivingEntity livingEntity) {
                     Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
                     for (EquipmentSlot slot : EquipmentSlot.values()) {
                         ItemStack stack = livingEntity.getEquippedStack(slot);
-                        AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                        AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                         component.getMap().forEach((aspect, count) ->
                                 combinedAspects.mergeInt(aspect, count, Integer::sum)
                         );
@@ -118,7 +116,7 @@ public class AethericGogglesRenderer {
                         ItemStack stack = container.getStack(i);
                         if (!stack.isEmpty()) {
                             hasItems = true;
-                            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                             component.getMap().forEach((aspect, count) ->
                                     combinedAspects.mergeInt(aspect, count, Integer::sum)
                             );
@@ -130,7 +128,7 @@ public class AethericGogglesRenderer {
                     } else {
                         // Fallback to block's aspects
                         ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
-                        currentAspects = blockStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                        currentAspects = blockStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                     }
                 } else if (blockEntity instanceof Inventory inventory) {
                     // Original inventory handling for other containers
@@ -141,7 +139,7 @@ public class AethericGogglesRenderer {
                         ItemStack stack = inventory.getStack(i);
                         if (!stack.isEmpty()) {
                             hasItems = true;
-                            AspectComponent component = stack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                             component.getMap().forEach((aspect, count) ->
                                     combinedAspects.mergeInt(aspect, count, Integer::sum)
                             );
@@ -150,11 +148,11 @@ public class AethericGogglesRenderer {
 
                     currentAspects = hasItems
                             ? new AspectComponent(combinedAspects)
-                            : client.world.getBlockState(pos).getBlock().asItem().getDefaultStack().getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                            : client.world.getBlockState(pos).getBlock().asItem().getDefaultStack().getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                 } else {
                     // Default block aspects
                     ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
-                    currentAspects = blockStack.getOrDefault(AspectComponent.TYPE, AspectComponent.DEFAULT);
+                    currentAspects = blockStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                 }
 
                 tooltipPosition = calculateScreenPosition();

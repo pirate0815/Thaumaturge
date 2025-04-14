@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.overgrown.thaumaturge.data.Aspect;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.component.ComponentType;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -45,11 +44,6 @@ public class AspectComponent {
             component -> component.aspects,
             AspectComponent::new
     );
-
-    public static final ComponentType<AspectComponent> TYPE = ComponentType.<AspectComponent>builder()
-            .codec(CODEC)
-            .packetCodec(PACKET_CODEC)
-            .build();
 
     // Internal storage for aspects and their levels
     private final Object2IntOpenHashMap<RegistryEntry<Aspect>> aspects;

@@ -1,17 +1,19 @@
 {
-  "model": {
-    "type": "minecraft:condition",
-    "property": "minecraft:component",
-    "predicate": "minecraft:custom_data",
-    "value": "{is_open:1b}",
-    "on_true": {
-      "type": "minecraft:model",
-      "model": "thaumaturge:item/apophenia_open"
-    },
-    "on_false": {
-      "type": "minecraft:model",
-      "model": "thaumaturge:item/apophenia_closed"
-    }
-  },
-  "hand_animation_on_swap": true
+	"model": {
+		"type": "minecraft:condition",
+		"property": "minecraft:component",
+		"predicate": "thaumaturge:book_state",
+		"value": {
+			"open": true
+		},
+		"on_true": {
+			"type": "minecraft:model",
+			"model": "thaumaturge:item/apophenia_open"
+		},
+		"on_false": {
+			"type": "minecraft:model",
+			"model": "thaumaturge:item/apophenia_closed"
+		}
+	},
+	"hand_animation_on_swap": true
 }

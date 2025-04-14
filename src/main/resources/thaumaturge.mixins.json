@@ -3,7 +3,9 @@
   "package": "dev.overgrown.thaumaturge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemMixin",
+    "ItemMixin"
+  ],
+  "client": [
     "client.ItemStackClientMixin"
   ],
   "injectors": {

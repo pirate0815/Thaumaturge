@@ -11,6 +11,7 @@ import dev.overgrown.thaumaturge.data.ModRegistries;
 import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket;
+import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -41,6 +42,7 @@ public class Thaumaturge implements ModInitializer {
 		ModBlocks.register();
 		ModItemGroups.register();
 		ModComponents.register();
+		ModComponentPredicateTypes.register();
 		registerRecipes();
 		ModBlockEntities.register();
 

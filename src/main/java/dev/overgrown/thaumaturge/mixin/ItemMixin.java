@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.mixin;
 
 import dev.overgrown.thaumaturge.component.AspectComponent;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.ItemAspectRegistry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.component.ComponentMap;
@@ -33,7 +34,7 @@ public abstract class ItemMixin {
      */
     @Inject(method = "getComponents", at = @At("RETURN"), cancellable = true)
     private void getWithAspects(CallbackInfoReturnable<ComponentMap> cir) {
-        if(cir.getReturnValue().contains(AspectComponent.TYPE)) return;
+        if(cir.getReturnValue().contains(ModComponents.ASPECT)) return;
 
         ComponentMap.Builder builder = ComponentMap.builder();
         builder.addAll(cir.getReturnValue());
@@ -57,7 +58,7 @@ public abstract class ItemMixin {
 
         }
 
-        builder.add(AspectComponent.TYPE, aspectComponent);
+        builder.add(ModComponents.ASPECT, aspectComponent);
 
         cir.setReturnValue(builder.build());
     }
