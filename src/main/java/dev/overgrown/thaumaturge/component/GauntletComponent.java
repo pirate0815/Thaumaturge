@@ -13,7 +13,7 @@ public record GauntletComponent(boolean hasFoci) {
     ).apply(instance, GauntletComponent::new));
 
     public static final PacketCodec<ByteBuf, GauntletComponent> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOL, GauntletComponent::hasFoci,
+            PacketCodecs.BOOLEAN, GauntletComponent::hasFoci,
             GauntletComponent::new
     );
 
