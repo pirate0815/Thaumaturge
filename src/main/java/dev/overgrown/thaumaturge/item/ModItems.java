@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.item;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.component.BookStateComponent;
+import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDust;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
@@ -137,6 +138,7 @@ public class ModItems {
             .withSettings(new Item.Settings()
                     .maxCount(1)
                     .rarity(Rarity.UNCOMMON)
+                    .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
             )
             .buildAndRegister();
 
@@ -145,6 +147,7 @@ public class ModItems {
             .withSettings(new Item.Settings()
                     .maxCount(1)
                     .rarity(Rarity.RARE)
+                    .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
             )
             .buildAndRegister();
 
@@ -153,6 +156,7 @@ public class ModItems {
             .withSettings(new Item.Settings()
                     .maxCount(1)
                     .rarity(Rarity.EPIC)
+                    .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
             )
             .buildAndRegister();
 }

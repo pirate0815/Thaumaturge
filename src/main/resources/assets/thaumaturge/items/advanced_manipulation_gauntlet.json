@@ -1,32 +1,62 @@
 {
   "model": {
-    "type": "minecraft:select",
-    "property": "minecraft:display_context",
-    "cases": [
-      {
-        "when": [
-          "firstperson_righthand",
-          "thirdperson_righthand"
-        ],
-        "model": {
-          "type": "minecraft:model",
-          "model": "thaumaturge:item/advanced_manipulation_gauntlet_mainhand"
+    "type": "minecraft:condition",
+    "property": "minecraft:component",
+    "predicate": "thaumaturge:foci_state",
+    "value": {
+      "has_foci": true
+    },
+    "on_true": {
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
+        {
+          "when": [
+            "firstperson_righthand",
+            "thirdperson_righthand"
+          ],
+          "model": {
+            "type": "minecraft:model",
+            "model": "thaumaturge:item/advanced_manipulation_gauntlet_mainhand"
+          }
+        },
+        {
+          "when": [
+            "firstperson_lefthand",
+            "thirdperson_lefthand"
+          ],
+          "model": {
+            "type": "minecraft:model",
+            "model": "thaumaturge:item/advanced_manipulation_gauntlet_offhand"
+          }
         }
-      },
-      {
-        "when": [
-          "firstperson_lefthand",
-          "thirdperson_lefthand"
-        ],
-        "model": {
-          "type": "minecraft:model",
-          "model": "thaumaturge:item/advanced_manipulation_gauntlet_offhand"
+      ]
+    },
+    "on_false": {
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
+        {
+          "when": [
+            "firstperson_righthand",
+            "thirdperson_righthand"
+          ],
+          "model": {
+            "type": "minecraft:model",
+            "model": "thaumaturge:item/empty_advanced_manipulation_gauntlet_mainhand"
+          }
+        },
+        {
+          "when": [
+            "firstperson_lefthand",
+            "thirdperson_lefthand"
+          ],
+          "model": {
+            "type": "minecraft:model",
+            "model": "thaumaturge:item/empty_advanced_manipulation_gauntlet_offhand"
+          }
         }
-      }
-    ],
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "thaumaturge:item/advanced_manipulation_gauntlet_mainhand"
+      ]
     }
   },
   "hand_animation_on_swap": true

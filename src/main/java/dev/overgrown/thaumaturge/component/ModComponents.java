@@ -9,6 +9,10 @@ import java.util.function.UnaryOperator;
 
 public class ModComponents {
 
+    public static final ComponentType<GauntletComponent> GAUNTLET_STATE = register("gauntlet_state", builder -> builder
+            .codec(GauntletComponent.CODEC)
+            .packetCodec(GauntletComponent.PACKET_CODEC));
+
     public static final ComponentType<BookStateComponent> BOOK_STATE = register("book_state", builder -> builder
         .codec(BookStateComponent.CODEC)
         .packetCodec(BookStateComponent.PACKET_CODEC));
