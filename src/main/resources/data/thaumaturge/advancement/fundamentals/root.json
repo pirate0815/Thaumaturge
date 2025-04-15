@@ -36,7 +36,7 @@
       "strikethrough": false,
       "obfuscated": false
     },
-    "background": "minecraft:textures/block/calibrated_sculk_sensor_top.png",
+    "background": "minecraft:textures/block/calibrated_sculk_sensor_top",
     "frame": "task",
     "show_toast": false,
     "announce_to_chat": false,

@@ -19,7 +19,9 @@ public class ModItemGroups {
 
     // Registry keys for the custom item groups
     public static final RegistryKey<ItemGroup> THAUMATURGE_CRYSTALS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_crystals"));
+    public static final RegistryKey<ItemGroup> THAUMATURGE_INGREDIENTS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_ingredients"));
     public static final RegistryKey<ItemGroup> THAUMATURGE_TOOLS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_tools"));
+    public static final RegistryKey<ItemGroup> THAUMATURGE_FOCI = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_foci"));
 
     // Custom Item Group for crystals
     public static final ItemGroup THAUMATURGE_CRYSTAL_GROUP = Registry.register(Registries.ITEM_GROUP,
@@ -42,6 +44,17 @@ public class ModItemGroups {
                     })
                     .build());
 
+    // Custom Item Group for ingredients
+    public static final ItemGroup THAUMATURGE_INGREDIENTS_GROUP = Registry.register(Registries.ITEM_GROUP,
+            Thaumaturge.identifier("thaumaturge_ingredients"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(ModItems.BONEWITS_DUST))
+                    .displayName(Text.translatable("item_group.thaumaturge.ingredients"))
+                    .entries((displayContext, entries) -> {
+                        entries.add(new ItemStack(ModItems.BONEWITS_DUST));
+                    })
+                    .build());
+
     // Custom Item Group for tools
     public static final ItemGroup THAUMATURGE_TOOLS_GROUP = Registry.register(Registries.ITEM_GROUP,
             Thaumaturge.identifier("thaumaturge_tools"),
@@ -51,6 +64,22 @@ public class ModItemGroups {
                     .entries((displayContext, entries) -> {
                         entries.add(new ItemStack(ModItems.ASPECT_LENS));
                         entries.add(new ItemStack(ModItems.AETHERIC_GOGGLES));
+                        entries.add(new ItemStack(ModItems.BASIC_CASTING_GAUNTLET));
+                        entries.add(new ItemStack(ModItems.ADVANCED_MANIPULATION_GAUNTLET));
+                        entries.add(new ItemStack(ModItems.ARCANE_ENGINEERING_GAUNTLET));
+                    })
+                    .build());
+
+    // Custom Item Group for Foci
+    public static final ItemGroup THAUMATURGE_FOCI_GROUP = Registry.register(Registries.ITEM_GROUP,
+            Thaumaturge.identifier("thaumaturge_foci"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(ModItems.LESSER_FOCI))
+                    .displayName(Text.translatable("item_group.thaumaturge.foci"))
+                    .entries((displayContext, entries) -> {
+                        entries.add(new ItemStack(ModItems.LESSER_FOCI));
+                        entries.add(new ItemStack(ModItems.ADVANCED_FOCI));
+                        entries.add(new ItemStack(ModItems.GREATER_FOCI));
                     })
                     .build());
 }
