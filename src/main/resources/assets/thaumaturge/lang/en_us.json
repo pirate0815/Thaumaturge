@@ -1,4 +1,17 @@
 {
+
+  "key.category.thaumaturge.spells": "Thaumaturge: Spells",
+  "key.thaumaturge.primary": "Primary Spell",
+  "key.thaumaturge.secondary": "Secondary Spell",
+  "key.thaumaturge.ternary": "Ternary Spell",
+  "key.thaumaturge.quaternary": "Quaternary Spell",
+  "key.thaumaturge.quinary": "Quinary Spell",
+  "key.thaumaturge.senary": "Senary Spell",
+  "key.thaumaturge.septenary": "Septenary Spell",
+  "key.thaumaturge.octonary": "Octonary Spell",
+  "key.thaumaturge.nonary": "Nonary Spell",
+  "key.thaumaturge.denary": "Denary Spell",
+
   "advancements.thaumaturge.root.name": "Thaumaturge",
   "advancements.thaumaturge.root.description": "Begin your quest as a Thaumaturge...",
   "advancements.thaumaturge.touch_of_the_unknown.name": "Touch Of The Unknown",
@@ -85,9 +98,9 @@
   "item.thaumaturge.lesser_foci": "Lesser Foci",
   "item.thaumaturge.advanced_foci": "Advanced Foci",
   "item.thaumaturge.greater_foci": "Greater Foci",
-  "item.thaumaturge.aer_lesser_foci": "Aer Lesser Foci",
-  "item.thaumaturge.aer_advanced_foci": "Aer Advanced Foci",
-  "item.thaumaturge.aer_greater_foci": "Aer Greater Foci",
+  "item.thaumaturge.lesser_aer_foci": "Lesser Aer Foci",
+  "item.thaumaturge.advanced_aer_foci": "Advanced Aer Foci",
+  "item.thaumaturge.greater_aer_foci": "Greater Aer Foci",
 
   "item_group.thaumaturge.tools": "Thaumaturge: Tools",
   "item.thaumaturge.aspect_lens": "Aspect Lens",

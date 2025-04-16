@@ -125,7 +125,7 @@ public class ModItems {
             )
             .buildAndRegister();
 
-    public static final Item AER_LESSER_FOCI = ItemBuilder.create("aer_lesser_foci")
+    public static final Item LESSER_AER_FOCI = ItemBuilder.create("lesser_aer_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
@@ -133,7 +133,7 @@ public class ModItems {
             )
             .buildAndRegister();
 
-    public static final Item AER_ADVANCED_FOCI = ItemBuilder.create("aer_advanced_foci")
+    public static final Item ADVANCED_AER_FOCI = ItemBuilder.create("advanced_aer_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
@@ -141,7 +141,7 @@ public class ModItems {
             )
             .buildAndRegister();
 
-    public static final Item AER_GREATER_FOCI = ItemBuilder.create("aer_greater_foci")
+    public static final Item GREATER_AER_FOCI = ItemBuilder.create("greater_aer_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)

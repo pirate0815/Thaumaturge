@@ -14,15 +14,15 @@
       "required":false
     },
     {
-      "id":"thaumaturge:aer_lesser_foci",
+      "id":"thaumaturge:lesser_aer_foci",
       "required":false
     },
     {
-      "id":"thaumaturge:aer_advanced_foci",
+      "id":"thaumaturge:advanced_aer_foci",
       "required":false
     },
     {
-      "id":"thaumaturge:aer_greater_foci",
+      "id":"thaumaturge:greater_aer_foci",
       "required":false
     }
   ]
