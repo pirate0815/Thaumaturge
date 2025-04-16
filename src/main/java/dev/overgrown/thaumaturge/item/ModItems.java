@@ -125,6 +125,30 @@ public class ModItems {
             )
             .buildAndRegister();
 
+    public static final Item AER_LESSER_FOCI = ItemBuilder.create("aer_lesser_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item AER_ADVANCED_FOCI = ItemBuilder.create("aer_advanced_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.RARE)
+            )
+            .buildAndRegister();
+
+    public static final Item AER_GREATER_FOCI = ItemBuilder.create("aer_greater_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.EPIC)
+            )
+            .buildAndRegister();
+
     public static final Item AETHERIC_GOGGLES = ItemBuilder.create("aetheric_goggles")
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings()
@@ -139,6 +163,7 @@ public class ModItems {
                     .maxCount(1)
                     .rarity(Rarity.UNCOMMON)
                     .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
+                    .component(ModComponents.MAX_FOCI, 1)
             )
             .buildAndRegister();
 
@@ -148,6 +173,7 @@ public class ModItems {
                     .maxCount(1)
                     .rarity(Rarity.RARE)
                     .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
+                    .component(ModComponents.MAX_FOCI, 2)
             )
             .buildAndRegister();
 
@@ -157,6 +183,7 @@ public class ModItems {
                     .maxCount(1)
                     .rarity(Rarity.EPIC)
                     .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
+                    .component(ModComponents.MAX_FOCI, 3)
             )
             .buildAndRegister();
 }

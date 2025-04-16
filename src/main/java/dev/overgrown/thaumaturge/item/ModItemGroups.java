@@ -80,6 +80,9 @@ public class ModItemGroups {
                         entries.add(new ItemStack(ModItems.LESSER_FOCI));
                         entries.add(new ItemStack(ModItems.ADVANCED_FOCI));
                         entries.add(new ItemStack(ModItems.GREATER_FOCI));
+                        entries.add(new ItemStack(ModItems.AER_LESSER_FOCI));
+                        entries.add(new ItemStack(ModItems.AER_ADVANCED_FOCI));
+                        entries.add(new ItemStack(ModItems.AER_GREATER_FOCI));
                     })
                     .build());
 }

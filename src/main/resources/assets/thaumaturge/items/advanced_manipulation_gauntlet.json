@@ -8,23 +8,17 @@
     },
     "on_true": {
       "type": "minecraft:select",
-      "property": "minecraft:display_context",
+      "property": "minecraft:main_hand",
       "cases": [
         {
-          "when": [
-            "firstperson_righthand",
-            "thirdperson_righthand"
-          ],
+          "when": "right",
           "model": {
             "type": "minecraft:model",
             "model": "thaumaturge:item/advanced_manipulation_gauntlet_mainhand"
           }
         },
         {
-          "when": [
-            "firstperson_lefthand",
-            "thirdperson_lefthand"
-          ],
+          "when": "left",
           "model": {
             "type": "minecraft:model",
             "model": "thaumaturge:item/advanced_manipulation_gauntlet_offhand"
@@ -34,23 +28,17 @@
     },
     "on_false": {
       "type": "minecraft:select",
-      "property": "minecraft:display_context",
+      "property": "minecraft:main_hand",
       "cases": [
         {
-          "when": [
-            "firstperson_righthand",
-            "thirdperson_righthand"
-          ],
+          "when": "right",
           "model": {
             "type": "minecraft:model",
             "model": "thaumaturge:item/empty_advanced_manipulation_gauntlet_mainhand"
           }
         },
         {
-          "when": [
-            "firstperson_lefthand",
-            "thirdperson_lefthand"
-          ],
+          "when": "left",
           "model": {
             "type": "minecraft:model",
             "model": "thaumaturge:item/empty_advanced_manipulation_gauntlet_offhand"

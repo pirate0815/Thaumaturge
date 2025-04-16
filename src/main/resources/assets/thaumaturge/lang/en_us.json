@@ -85,6 +85,9 @@
   "item.thaumaturge.lesser_foci": "Lesser Foci",
   "item.thaumaturge.advanced_foci": "Advanced Foci",
   "item.thaumaturge.greater_foci": "Greater Foci",
+  "item.thaumaturge.aer_lesser_foci": "Aer Lesser Foci",
+  "item.thaumaturge.aer_advanced_foci": "Aer Advanced Foci",
+  "item.thaumaturge.aer_greater_foci": "Aer Greater Foci",
 
   "item_group.thaumaturge.tools": "Thaumaturge: Tools",
   "item.thaumaturge.aspect_lens": "Aspect Lens",

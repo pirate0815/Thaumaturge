@@ -1,0 +1,29 @@
+{
+  "replace":false,
+  "values":[
+    {
+      "id":"thaumaturge:lesser_foci",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:advanced_foci",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:greater_foci",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:aer_lesser_foci",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:aer_advanced_foci",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:aer_greater_foci",
+      "required":false
+    }
+  ]
+}

@@ -5,17 +5,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.util.Identifier;
 
-public record GauntletComponent(boolean hasFoci) {
+import java.util.ArrayList;
+import java.util.List;
 
+public record GauntletComponent(List<Identifier> fociIds) {
     public static final Codec<GauntletComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("has_foci").forGetter(GauntletComponent::hasFoci)
+            Codec.list(Identifier.CODEC).fieldOf("foci_ids").forGetter(GauntletComponent::fociIds)
     ).apply(instance, GauntletComponent::new));
 
     public static final PacketCodec<ByteBuf, GauntletComponent> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOLEAN, GauntletComponent::hasFoci,
+            PacketCodecs.collection(ArrayList::new, Identifier.PACKET_CODEC), GauntletComponent::fociIds,
             GauntletComponent::new
     );
 
-    public static final GauntletComponent DEFAULT = new GauntletComponent(false);
+    public static final GauntletComponent DEFAULT = new GauntletComponent(List.of());
+
+    public int fociCount() {
+        return fociIds.size();
+    }
 }

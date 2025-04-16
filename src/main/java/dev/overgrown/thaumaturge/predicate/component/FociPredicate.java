@@ -16,6 +16,6 @@ public record FociPredicate(boolean hasFoci) implements ComponentPredicate {
     @Override
     public boolean test(ComponentsAccess components) {
         GauntletComponent component = components.get(ModComponents.GAUNTLET_STATE);
-        return component != null && component.hasFoci() == this.hasFoci();
+        return component != null && (component.fociCount() > 0) == this.hasFoci();
     }
 }
