@@ -4,7 +4,9 @@ import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -27,8 +29,15 @@ public class AdvancedAerLaunch implements SpellEntry.SpellExecutor {
         if (hit != null && hit.getEntity() instanceof LivingEntity target) {
             target.addVelocity(0, 0.9, 0);
             target.velocityModified = true;
+
+            // Play sound
             player.getWorld().playSound(null, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.ENTITY_BREEZE_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+
+            // Spawn wind charge particles at target's feet
+            ServerWorld world = (ServerWorld) player.getWorld();
+            world.spawnParticles(ParticleTypes.GUST_EMITTER_SMALL,
+                    target.getX(), target.getY(), target.getZ(), 1, 0.5, 0.2, 0.5, 0.1);
         }
     }
 }
