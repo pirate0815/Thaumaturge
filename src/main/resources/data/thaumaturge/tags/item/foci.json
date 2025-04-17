@@ -24,6 +24,10 @@
     {
       "id":"thaumaturge:greater_aer_foci",
       "required":false
+    },
+    {
+      "id":"thaumaturge:lesser_motus_foci",
+      "required":false
     }
   ]
 }

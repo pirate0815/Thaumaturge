@@ -11,23 +11,35 @@ import dev.overgrown.thaumaturge.data.ModRegistries;
 import dev.overgrown.thaumaturge.event.ModEvents;
 import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
+import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket;
 import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
-import dev.overgrown.thaumaturge.utils.ModTags;
+import dev.overgrown.thaumaturge.spell.SpellHandler;
+import dev.overgrown.thaumaturge.spell.SpellRegistry;
+import dev.overgrown.thaumaturge.spell.combination.AerMotusCombination;
+import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
+import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
+import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
+import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 public class Thaumaturge implements ModInitializer {
 	public static final String MOD_ID = "thaumaturge";
@@ -48,12 +60,35 @@ public class Thaumaturge implements ModInitializer {
 		ModComponentPredicateTypes.register();
 		registerRecipes();
 		ModBlockEntities.register();
+		registerSpells();
 
 		PayloadTypeRegistry.playS2C().register(SyncAspectIdentifierPacket.ID, SyncAspectIdentifierPacket.PACKET_CODEC);
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(SyncAspectIdentifierPacket.ID.id(), (player, joined) -> SyncAspectIdentifierPacket.sendMap(player, AspectManager.NAME_TO_ID));
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(Thaumaturge.identifier("aspects"), AspectManager::new);
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(Thaumaturge.identifier("item_aspects"), CustomItemTagManager::new);
+
+		PayloadTypeRegistry.playC2S().register(SpellCastPacket.ID, SpellCastPacket.PACKET_CODEC);
+		PayloadTypeRegistry.playS2C().register(SpellCastPacket.ID, SpellCastPacket.PACKET_CODEC);
+
+		ServerPlayNetworking.registerGlobalReceiver(SpellCastPacket.ID, (packet, context) -> handleSpellCast(packet, context.player()));
+	}
+
+	private void registerSpells() {
+		SpellRegistry.registerSpell(LesserAerBoost.ID, new LesserAerBoost());
+		SpellRegistry.registerSpell(AdvancedAerLaunch.ID, new AdvancedAerLaunch());
+		SpellRegistry.registerSpell(GreaterAerBurst.ID, new GreaterAerBurst());
+		SpellRegistry.registerSpell(LesserMotusBoost.ID, new LesserMotusBoost());
+
+		Set<Identifier> aerMotusCombo = Set.of(
+				Registries.ITEM.getId(ModItems.LESSER_AER_FOCI),
+				Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI)
+		);
+		SpellRegistry.registerCombination(aerMotusCombo, new AerMotusCombination());
+	}
+
+	private void handleSpellCast(SpellCastPacket packet, ServerPlayerEntity player) {
+		SpellHandler.tryCastSpell(player, packet.type().getSpellId());
 	}
 
 	private void registerRecipes() {

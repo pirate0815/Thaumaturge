@@ -149,6 +149,14 @@ public class ModItems {
             )
             .buildAndRegister();
 
+    public static final Item LESSER_MOTUS_FOCI = ItemBuilder.create("lesser_motus_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
     public static final Item AETHERIC_GOGGLES = ItemBuilder.create("aetheric_goggles")
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings()
