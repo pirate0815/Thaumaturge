@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.spell.impl.aer;
 
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
