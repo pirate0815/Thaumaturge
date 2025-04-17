@@ -9,7 +9,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 
 public class LesserAerBoost implements SpellEntry.SpellExecutor {
-    public static final Identifier ID = Identifier.of("thaumaturge", "lesser_aer_boost");
+    public static final Identifier ID = Thaumaturge.identifier("lesser_aer_boost");
 
     @Override
     public void execute(ServerPlayerEntity player) {
