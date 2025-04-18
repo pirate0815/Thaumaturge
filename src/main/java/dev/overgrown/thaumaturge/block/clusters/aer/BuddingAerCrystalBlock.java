@@ -14,17 +14,14 @@ import static net.minecraft.block.AmethystClusterBlock.FACING;
 import static net.minecraft.block.AmethystClusterBlock.WATERLOGGED;
 
 public class BuddingAerCrystalBlock extends Block {
-    public static final int GROW_CHANCE = 5;
-    private static final Direction[] DIRECTIONS = Direction.values();
-
     public BuddingAerCrystalBlock(Settings settings) {
         super(settings);
     }
 
+    private static final Direction[] DIRECTIONS = Direction.values();
+
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (random.nextInt(GROW_CHANCE) != 0) return;
-
         Direction dir = DIRECTIONS[random.nextInt(DIRECTIONS.length)];
         BlockPos targetPos = pos.offset(dir);
         BlockState targetState = world.getBlockState(targetPos);
@@ -40,7 +37,7 @@ public class BuddingAerCrystalBlock extends Block {
             nextBlock = ModBlocks.AER_CRYSTAL_CLUSTER;
         }
 
-        if (nextBlock != null) {
+        if (nextBlock != null && random.nextInt(5) == 0) { // 20% chance after valid direction check
             BlockState newState = nextBlock.getDefaultState()
                     .with(FACING, dir)
                     .with(WATERLOGGED, targetState.getFluidState().getFluid() == Fluids.WATER);

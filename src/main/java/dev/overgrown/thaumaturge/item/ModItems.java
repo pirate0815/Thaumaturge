@@ -74,9 +74,8 @@ public class ModItems {
             .buildAndRegister();
 
     //======================================================================
-    // Special and Tool Items (crafted or used for unique functionalities)
+    // Ingredients
     //======================================================================
-
     public static final Item BONEWITS_DUST = ItemBuilder.create("bonewits_dust")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
@@ -85,6 +84,23 @@ public class ModItems {
             )
             .buildAndRegister(BonewitsDust::new);
 
+    public static final Item QUICKSILVER = ItemBuilder.create("quicksilver")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item THAUMIC_LEATHER = ItemBuilder.create("thaumic_leather")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    //======================================================================
+    // Special and Tool Items (crafted or used for unique functionalities)
+    //======================================================================
     public static final Item APOPHENIA = ItemBuilder.create("apophenia")
             .setItemGroup(ItemGroups.TOOLS)
             .withSettings(new Item.Settings()
@@ -101,6 +117,16 @@ public class ModItems {
             )
             .buildAndRegister();
 
+    public static final Item SPINDLE = ItemBuilder.create("spindle")
+            .setItemGroup(ItemGroups.TOOLS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+            )
+            .buildAndRegister();
+
+    //======================================================================
+    // Empty Foci (Used For Casting Spells When Using A Resonance Gauntlet)
+    //======================================================================
     public static final Item LESSER_FOCI = ItemBuilder.create("lesser_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
@@ -125,6 +151,9 @@ public class ModItems {
             )
             .buildAndRegister();
 
+    //======================================================================
+    // Aer (Air) Foci
+    //======================================================================
     public static final Item LESSER_AER_FOCI = ItemBuilder.create("lesser_aer_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
@@ -149,11 +178,30 @@ public class ModItems {
             )
             .buildAndRegister();
 
+    //======================================================================
+    // Motus (Motion) Foci
+    //======================================================================
     public static final Item LESSER_MOTUS_FOCI = ItemBuilder.create("lesser_motus_foci")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
                     .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item ADVANCED_MOTUS_FOCI = ItemBuilder.create("advanced_motus_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.RARE)
+            )
+            .buildAndRegister();
+
+    public static final Item GREATER_MOTUS_FOCI = ItemBuilder.create("greater_motus_foci")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(1)
+                    .rarity(Rarity.EPIC)
             )
             .buildAndRegister();
 

@@ -52,6 +52,8 @@ public class ModItemGroups {
                     .displayName(Text.translatable("item_group.thaumaturge.ingredients"))
                     .entries((displayContext, entries) -> {
                         entries.add(new ItemStack(ModItems.BONEWITS_DUST));
+                        entries.add(new ItemStack(ModItems.QUICKSILVER));
+                        entries.add(new ItemStack(ModItems.THAUMIC_LEATHER));
                     })
                     .build());
 
@@ -67,6 +69,7 @@ public class ModItemGroups {
                         entries.add(new ItemStack(ModItems.BASIC_CASTING_GAUNTLET));
                         entries.add(new ItemStack(ModItems.ADVANCED_MANIPULATION_GAUNTLET));
                         entries.add(new ItemStack(ModItems.ARCANE_ENGINEERING_GAUNTLET));
+                        entries.add(new ItemStack(ModItems.SPINDLE));
                     })
                     .build());
 
@@ -83,6 +86,9 @@ public class ModItemGroups {
                         entries.add(new ItemStack(ModItems.LESSER_AER_FOCI));
                         entries.add(new ItemStack(ModItems.ADVANCED_AER_FOCI));
                         entries.add(new ItemStack(ModItems.GREATER_AER_FOCI));
+                        entries.add(new ItemStack(ModItems.LESSER_MOTUS_FOCI));
+                        entries.add(new ItemStack(ModItems.ADVANCED_MOTUS_FOCI));
+                        entries.add(new ItemStack(ModItems.GREATER_MOTUS_FOCI));
                     })
                     .build());
 }

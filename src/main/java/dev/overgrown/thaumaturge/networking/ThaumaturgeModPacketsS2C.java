@@ -1,3 +1,13 @@
+/**
+ * ThaumaturgeModPacketsS2C.java
+ * <p>
+ * This class handles server-to-client (S2C) packet registration and processing.
+ * Currently, it only manages the synchronization of aspect identifiers between
+ * server and client to ensure consistent aspect data.
+ *
+ * @see dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket
+ * @see dev.overgrown.thaumaturge.data.AspectManager
+ */
 package dev.overgrown.thaumaturge.networking;
 
 import dev.overgrown.thaumaturge.data.AspectManager;
@@ -8,18 +18,27 @@ import net.minecraft.network.packet.CustomPayload;
 public class ThaumaturgeModPacketsS2C {
 
     /**
-     * This registers the packet to sync aspect identifiers.
+     * Registers all server-to-client packets used by the mod
+     * Currently only registers the SyncAspectIdentifierPacket
      */
     public static void register() {
+        // Register the global receiver for aspect identifiers sync
         ClientPlayNetworking.registerGlobalReceiver(SyncAspectIdentifierPacket.ID, ThaumaturgeModPacketsS2C::handle);
     }
 
     /**
-     * This will set the AspectManager.NAME_TO_ID to match that of the server side.
+     * Handles received SyncAspectIdentifierPacket
+     * Updates the client's aspect name-to-ID map to match the server's map
+     *
+     * @param customPayload The received packet payload
+     * @param context The networking context
      */
     private static void handle(CustomPayload customPayload, ClientPlayNetworking.Context context) {
+        // Cast the payload to the expected packet type
         SyncAspectIdentifierPacket packet = ((SyncAspectIdentifierPacket) customPayload);
         MinecraftClient client = context.client();
+
+        // Execute on the client thread to update the aspect manager
         client.execute(() -> AspectManager.NAME_TO_ID = packet.map());
     }
 }

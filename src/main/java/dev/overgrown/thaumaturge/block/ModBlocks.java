@@ -22,14 +22,13 @@ public class ModBlocks {
             .buildAndRegister(Block::new);
 
     public static final Block BUDDING_AER_CRYSTAL = BlockBuilder.create("budding_aer_crystal")
-            .setItemGroup(
-                    ItemGroups.NATURAL
-            )
+            .setItemGroup(ItemGroups.NATURAL)
             .withBlockSettings(settings -> settings
                     .nonOpaque()
                     .strength(2f)
                     .sounds(BlockSoundGroup.AMETHYST_BLOCK)
                     .requiresTool()
+                    .ticksRandomly()
             )
             .withItemSettings(settings -> settings
                     .maxCount(64)

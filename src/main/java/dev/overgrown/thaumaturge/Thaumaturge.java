@@ -1,3 +1,10 @@
+/**
+ * Thaumaturge.java
+ * <p>
+ * Main mod class for Thaumaturge - handles server-side initialization,
+ * registry setup, recipe registration, spell system initialization,
+ * and packet handling.
+ */
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
@@ -45,12 +52,19 @@ public class Thaumaturge implements ModInitializer {
 	public static final String MOD_ID = "thaumaturge";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	/**
+	 * Helper method to create Identifiers with the mod's namespace
+	 *
+	 * @param path The path for the identifier
+	 * @return A new Identifier with the mod's namespace and the provided path
+	 */
 	public static Identifier identifier(String path) {
 		return Identifier.of(MOD_ID, path);
 	}
 
 	@Override
 	public void onInitialize() {
+		// Register all mod components, items, blocks, etc.
 		ModRegistries.register();
 		ModItems.register();
 		ModBlocks.register();
@@ -62,24 +76,35 @@ public class Thaumaturge implements ModInitializer {
 		ModBlockEntities.register();
 		registerSpells();
 
+		// Register networking packets
+		// For syncing aspect identifiers from server to client
 		PayloadTypeRegistry.playS2C().register(SyncAspectIdentifierPacket.ID, SyncAspectIdentifierPacket.PACKET_CODEC);
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(SyncAspectIdentifierPacket.ID.id(), (player, joined) -> SyncAspectIdentifierPacket.sendMap(player, AspectManager.NAME_TO_ID));
 
+		// Register resource reload listeners for loading aspect data from datapacks
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(Thaumaturge.identifier("aspects"), AspectManager::new);
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(Thaumaturge.identifier("item_aspects"), CustomItemTagManager::new);
 
+		// Register spell cast packet handling
 		PayloadTypeRegistry.playC2S().register(SpellCastPacket.ID, SpellCastPacket.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(SpellCastPacket.ID, SpellCastPacket.PACKET_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SpellCastPacket.ID, (packet, context) -> handleSpellCast(packet, context.player()));
 	}
 
+	/**
+	 * Registers all available spells and spell combinations in the mod
+	 * Each spell has a unique identifier and implementation
+	 */
 	private void registerSpells() {
+		// Register individual spells
 		SpellRegistry.registerSpell(LesserAerBoost.ID, new LesserAerBoost());
 		SpellRegistry.registerSpell(AdvancedAerLaunch.ID, new AdvancedAerLaunch());
 		SpellRegistry.registerSpell(GreaterAerBurst.ID, new GreaterAerBurst());
 		SpellRegistry.registerSpell(LesserMotusBoost.ID, new LesserMotusBoost());
 
+		// Register spell combinations
+		// When both Aer and Motus foci are equipped, they can create a special combined spell
 		Set<Identifier> aerMotusCombo = Set.of(
 				Registries.ITEM.getId(ModItems.LESSER_AER_FOCI),
 				Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI)
@@ -87,6 +112,12 @@ public class Thaumaturge implements ModInitializer {
 		SpellRegistry.registerCombination(aerMotusCombo, new AerMotusCombination());
 	}
 
+	/**
+	 * Handles spell cast packets received from clients
+	 *
+	 * @param packet The spell cast packet containing the type of spell to cast
+	 * @param player The player casting the spell
+	 */
 	private void handleSpellCast(SpellCastPacket packet, ServerPlayerEntity player) {
 		SpellHandler.tryCastSpell(player, packet.type().getSpellId());
 	}

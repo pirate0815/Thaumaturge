@@ -26,6 +26,10 @@
   "book.thaumaturge.strange_dreams.page_2":"In the dream I took the dust and sprinkled it on a bookcase, but the dream ended before I saw what happened. I wonder, should I do what the dream showed? I have the impression the dust was going to reveal something wondrous, but dangerous.",
 
   "item_group.thaumaturge.crystals": "Thaumaturge: Crystals",
+  "item.thaumaturge.budding_aer_crystal": "Budding Aer Crystal",
+  "item.thaumaturge.small_aer_crystal_bud": "Small Aer Crystal Bud",
+  "item.thaumaturge.medium_aer_crystal_bud": "Medium Aer Crystal Bud",
+  "item.thaumaturge.large_aer_crystal_bud": "Large Aer Crystal Bud",
   "item.thaumaturge.aer_crystal_cluster": "Aer Crystal Cluster",
   "item.thaumaturge.aer_aspect_shard": "Aer Aspect Shard",
   "item.thaumaturge.terra_crystal_cluster": "Terra Crystal Cluster",
@@ -85,6 +89,8 @@
 
   "item_group.thaumaturge.ingredients": "Thaumaturge: Ingredients",
   "item.thaumaturge.bonewits_dust": "Bonewits Dust",
+  "item.thaumaturge.quicksilver": "Quicksilver",
+  "item.thaumaturge.thaumic_leather": "Thaumic Leather",
 
   "item.thaumaturge.apophenia": "Apophenia",
 
@@ -102,6 +108,8 @@
   "item.thaumaturge.advanced_aer_foci": "Advanced Aer Foci",
   "item.thaumaturge.greater_aer_foci": "Greater Aer Foci",
   "item.thaumaturge.lesser_motus_foci": "Lesser Motus Foci",
+  "item.thaumaturge.advanced_motus_foci": "Advanced Motus Foci",
+  "item.thaumaturge.greater_motus_foci": "Greater Motus Foci",
 
   "item_group.thaumaturge.tools": "Thaumaturge: Tools",
   "item.thaumaturge.aspect_lens": "Aspect Lens",
@@ -109,6 +117,7 @@
   "item.thaumaturge.basic_casting_gauntlet": "Basic Casting Gauntlet",
   "item.thaumaturge.advanced_manipulation_gauntlet": "Advanced Manipulation Gauntlet",
   "item.thaumaturge.arcane_engineering_gauntlet": "Arcane Engineering Gauntlet",
+  "item.thaumaturge.spindle": "Spindle",
 
   "item.thaumaturge.amber_bearing_stone": "Amber Bearing Stone",
   "block.thaumaturge.amber_bearing_stone": "Amber Bearing Stone"

@@ -1,3 +1,16 @@
+/**
+ * ThaumaturgeClient.java
+ * <p>
+ * Client-side initialization and management for the Thaumaturge mod.
+ * This file handles client-specific features including:
+ * - Keybindings for spell casting
+ * - Tooltip components for aspects
+ * - Network packet registration for client-server communication
+ * - Client tick event handling for spell activation
+ *
+ * @see dev.overgrown.thaumaturge.Thaumaturge - Server-side counterpart
+ * @see dev.overgrown.thaumaturge.client.keybind.KeybindManager - Keybinding registration
+ */
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
@@ -25,7 +38,10 @@ import net.minecraft.util.Identifier;
 public class ThaumaturgeClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        // Register all keybinds used for spell casting
         KeybindManager.registerKeybinds();
+
+        // Register client-side packet handlers to receive data from server
         ThaumaturgeModPacketsS2C.register();
 
         TooltipComponentCallback.EVENT.register(data -> {
@@ -37,11 +53,13 @@ public class ThaumaturgeClient implements ClientModInitializer {
 
         AethericGogglesRenderer.init();
 
+        // Register end-of-tick event to check for spell keybind presses
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player == null) return;
 
             // Handle primary key for Aer/Motus combination or individual spells
+            // When both foci are equipped, it will use a combination spell
             if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
                 boolean hasAer = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AER_FOCI));
                 boolean hasMotus = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI));
@@ -52,11 +70,20 @@ public class ThaumaturgeClient implements ClientModInitializer {
                 }
             }
 
+            // Check other keybinds for advanced and greater tier spells
             checkAndSendSpell(KeybindManager.SECONDARY_SPELL, ModItems.ADVANCED_AER_FOCI, SpellCastPacket.Type.ADVANCED_AER, player);
             checkAndSendSpell(KeybindManager.TERNARY_SPELL, ModItems.GREATER_AER_FOCI, SpellCastPacket.Type.GREATER_AER, player);
         });
     }
 
+    /**
+     * Helper method to check if a keybind was pressed and send the corresponding spell packet
+     *
+     * @param keyBinding The keybind to check
+     * @param fociItem The foci item required for this spell
+     * @param type The type of spell to cast
+     * @param player The player casting the spell
+     */
     private void checkAndSendSpell(KeyBinding keyBinding, Item fociItem, SpellCastPacket.Type type, PlayerEntity player) {
         if (keyBinding.wasPressed()) {
             if (hasFoci(player, Registries.ITEM.getId(fociItem))) {
@@ -65,6 +92,13 @@ public class ThaumaturgeClient implements ClientModInitializer {
         }
     }
 
+    /**
+     * Checks if a player has a specific foci item equipped in either hand's gauntlet
+     *
+     * @param player The player to check for equipped foci
+     * @param fociId The identifier of the foci to check for
+     * @return true if the foci is equipped in either hand's gauntlet
+     */
     private boolean hasFoci(PlayerEntity player, Identifier fociId) {
         for (Hand hand : Hand.values()) {
             ItemStack stack = player.getStackInHand(hand);
