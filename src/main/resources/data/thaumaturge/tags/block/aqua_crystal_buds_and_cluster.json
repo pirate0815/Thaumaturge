@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "thaumaturge:budding_aqua_crystal",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:small_aqua_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:medium_aqua_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:large_aqua_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:aqua_crystal_cluster",
+      "required": false
+    }
+  ]
+}

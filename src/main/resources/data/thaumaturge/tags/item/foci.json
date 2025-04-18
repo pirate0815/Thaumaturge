@@ -1,33 +1,461 @@
 {
-  "replace":false,
-  "values":[
+  "replace": false,
+  "values": [
     {
-      "id":"thaumaturge:lesser_foci",
-      "required":false
+      "id": "thaumaturge:lesser_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:advanced_foci",
-      "required":false
+      "id": "thaumaturge:advanced_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:greater_foci",
-      "required":false
+      "id": "thaumaturge:greater_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:lesser_aer_foci",
-      "required":false
+      "id": "thaumaturge:lesser_aer_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:advanced_aer_foci",
-      "required":false
+      "id": "thaumaturge:advanced_aer_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:greater_aer_foci",
-      "required":false
+      "id": "thaumaturge:greater_aer_foci",
+      "required": false
     },
     {
-      "id":"thaumaturge:lesser_motus_foci",
-      "required":false
+      "id": "thaumaturge:lesser_aqua_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_aqua_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_aqua_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_ignis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_ignis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_ignis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_ordo_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_ordo_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_ordo_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_perditio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_perditio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_perditio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_terra_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_terra_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_terra_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_gelum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_gelum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_gelum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_lux_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_lux_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_lux_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_metallum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_metallum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_metallum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_mortuus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_mortuus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_mortuus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_motus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_motus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_motus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_permutatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_permutatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_permutatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_potentia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_potentia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_potentia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_vacuos_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_vacuos_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_vacuos_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_victus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_victus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_victus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_vitreus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_vitreus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_vitreus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_bestia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_bestia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_bestia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_exanimis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_exanimis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_exanimis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_herba_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_herba_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_herba_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_instrumentum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_instrumentum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_instrumentum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_praecantatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_praecantatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_praecantatio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_spiritus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_spiritus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_spiritus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_tenebrae_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_tenebrae_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_tenebrae_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_vinculum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_vinculum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_vinculum_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_volatus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_volatus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_volatus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_alienis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_alienis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_alienis_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_alkimia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_alkimia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_alkimia_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_auram_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_auram_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_auram_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_aversion_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_aversion_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_aversion_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_cognitio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_cognitio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_cognitio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_desiderium_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_desiderium_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_desiderium_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_fabrico_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_fabrico_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_fabrico_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_humanus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_humanus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_humanus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_machina_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_machina_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_machina_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_praemunio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_praemunio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_praemunio_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_sensus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_sensus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_sensus_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:lesser_vitium_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:advanced_vitium_foci",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:greater_vitium_foci",
+      "required": false
     }
   ]
 }

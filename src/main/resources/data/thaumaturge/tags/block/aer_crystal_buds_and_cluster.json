@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "thaumaturge:budding_aer_crystal",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:small_aer_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:medium_aer_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:large_aer_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:aer_crystal_cluster",
+      "required": false
+    }
+  ]
+}

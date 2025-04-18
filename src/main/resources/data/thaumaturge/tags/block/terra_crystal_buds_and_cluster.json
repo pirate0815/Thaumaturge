@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "thaumaturge:budding_terra_crystal",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:small_terra_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:medium_terra_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:large_terra_crystal_bud",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:terra_crystal_cluster",
+      "required": false
+    }
+  ]
+}
