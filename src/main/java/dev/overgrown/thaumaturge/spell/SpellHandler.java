@@ -87,11 +87,14 @@ public class SpellHandler {
         // Define mappings between spell IDs and their required foci item IDs
         if (spellId.equals(LesserAerBoost.ID)) {
             return Registries.ITEM.getId(ModItems.LESSER_AER_FOCI);
-        } else if (spellId.equals(LesserMotusBoost.ID)) {
+        }
+        else if (spellId.equals(LesserMotusBoost.ID)) {
             return Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI);
-        } else if (spellId.equals(AdvancedAerLaunch.ID)) {
+        }
+        else if (spellId.equals(AdvancedAerLaunch.ID)) {
             return Registries.ITEM.getId(ModItems.ADVANCED_AER_FOCI);
-        } else if (spellId.equals(GreaterAerBurst.ID)) {
+        }
+        else if (spellId.equals(GreaterAerBurst.ID)) {
             return Registries.ITEM.getId(ModItems.GREATER_AER_FOCI);
         }
         return null;
