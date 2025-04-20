@@ -30,14 +30,27 @@ public class ModItemGroups {
                     .icon(() -> new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER))
                     .displayName(Text.translatable("item_group.thaumaturge.crystals"))
                     .entries((displayContext, entries) -> {
+
+                        // Aer Crystals
                         entries.add(new ItemStack(ModBlocks.BUDDING_AER_CRYSTAL));
                         entries.add(new ItemStack(ModBlocks.SMALL_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.MEDIUM_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.LARGE_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER));
                         entries.add(new ItemStack(ModItems.AER_ASPECT_SHARD));
+
+                        // Aqua Crystals
                         entries.add(new ItemStack(ModItems.AQUA_ASPECT_SHARD));
+
+                        //Ignis Crystals
+                        entries.add(new ItemStack(ModBlocks.BUDDING_IGNIS_CRYSTAL));
+                        entries.add(new ItemStack(ModBlocks.SMALL_IGNIS_CRYSTAL_BUD));
+                        entries.add(new ItemStack(ModBlocks.MEDIUM_IGNIS_CRYSTAL_BUD));
+                        entries.add(new ItemStack(ModBlocks.LARGE_IGNIS_CRYSTAL_BUD));
+                        entries.add(new ItemStack(ModBlocks.IGNIS_CRYSTAL_CLUSTER));
                         entries.add(new ItemStack(ModItems.IGNIS_ASPECT_SHARD));
+
+                        // Terra Crystals
                         entries.add(new ItemStack(ModItems.TERRA_ASPECT_SHARD));
                         entries.add(new ItemStack(ModItems.ORDO_ASPECT_SHARD));
                         entries.add(new ItemStack(ModItems.PERDITIO_ASPECT_SHARD));

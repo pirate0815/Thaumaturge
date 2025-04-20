@@ -49,6 +49,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(64)
+                    .fireproof()
             )
             .buildAndRegister();
 

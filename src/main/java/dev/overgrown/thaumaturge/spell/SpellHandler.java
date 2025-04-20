@@ -12,6 +12,7 @@ import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
+import dev.overgrown.thaumaturge.spell.impl.aqua.AquaVeil;
 import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;
 import net.minecraft.item.ItemStack;
@@ -96,6 +97,9 @@ public class SpellHandler {
         }
         else if (spellId.equals(GreaterAerBurst.ID)) {
             return Registries.ITEM.getId(ModItems.GREATER_AER_FOCI);
+        }
+        else if (spellId.equals(AquaVeil.ID)) {
+            return Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI);
         }
         return null;
     }

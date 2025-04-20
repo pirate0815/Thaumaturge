@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.block;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.clusters.aer.*;
+import dev.overgrown.thaumaturge.block.clusters.ignis.*;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
@@ -99,6 +100,85 @@ public class ModBlocks {
                     .rarity(Rarity.COMMON)
             )
             .buildAndRegister(settings -> new AerCrystalClusterBlock(UniformIntProvider.create(2, 5), settings));
+
+    public static final Block BUDDING_IGNIS_CRYSTAL = BlockBuilder.create("budding_ignis_crystal")
+            .setItemGroup(ItemGroups.NATURAL)
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(2f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+                    .ticksRandomly()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(BuddingIgnisCrystalBlock::new);
+
+    public static final Block SMALL_IGNIS_CRYSTAL_BUD = BlockBuilder.create("small_ignis_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.8f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(SmallIgnisCrystalBudBlock::new);
+
+    public static final Block MEDIUM_IGNIS_CRYSTAL_BUD = BlockBuilder.create("medium_ignis_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.8f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(MediumIgnisCrystalBudBlock::new);
+
+    public static final Block LARGE_IGNIS_CRYSTAL_BUD = BlockBuilder.create("large_ignis_crystal_bud")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.8f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(LargeIgnisCrystalBudBlock::new);
+
+    public static final Block IGNIS_CRYSTAL_CLUSTER = BlockBuilder.create("ignis_crystal_cluster")
+            .setItemGroup(
+                    ItemGroups.NATURAL
+            )
+            .withBlockSettings(settings -> settings
+                    .nonOpaque()
+                    .strength(1.8f)
+                    .sounds(BlockSoundGroup.AMETHYST_BLOCK)
+                    .requiresTool()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(64)
+                    .rarity(Rarity.COMMON)
+            )
+            .buildAndRegister(settings -> new IgnisCrystalClusterBlock(UniformIntProvider.create(2, 5), settings));
 
     public static final Block VESSEL = BlockBuilder.create("vessel")
             .withBlockSettings(settings -> settings

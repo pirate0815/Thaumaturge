@@ -15,6 +15,7 @@ import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.data.AspectManager;
 import dev.overgrown.thaumaturge.data.CustomItemTagManager;
 import dev.overgrown.thaumaturge.data.ModRegistries;
+import dev.overgrown.thaumaturge.effect.ModStatusEffects;
 import dev.overgrown.thaumaturge.event.ModEvents;
 import dev.overgrown.thaumaturge.item.ModItemGroups;
 import dev.overgrown.thaumaturge.item.ModItems;
@@ -28,6 +29,7 @@ import dev.overgrown.thaumaturge.spell.combination.AerMotusCombination;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
+import dev.overgrown.thaumaturge.spell.impl.aqua.AquaVeil;
 import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -70,6 +72,7 @@ public class Thaumaturge implements ModInitializer {
 		ModBlocks.register();
 		ModItemGroups.register();
 		ModComponents.register();
+		ModStatusEffects.register();
 		ModEvents.register();
 		ModComponentPredicateTypes.register();
 		registerRecipes();
@@ -102,6 +105,7 @@ public class Thaumaturge implements ModInitializer {
 		SpellRegistry.registerSpell(AdvancedAerLaunch.ID, new AdvancedAerLaunch());
 		SpellRegistry.registerSpell(GreaterAerBurst.ID, new GreaterAerBurst());
 		SpellRegistry.registerSpell(LesserMotusBoost.ID, new LesserMotusBoost());
+		SpellRegistry.registerSpell(AquaVeil.ID, new AquaVeil());
 
 		// Register spell combinations
 		// When both Aer and Motus foci are equipped, they can create a special combined spell

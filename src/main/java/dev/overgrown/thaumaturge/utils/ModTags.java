@@ -22,8 +22,12 @@ public class ModTags {
             return TagKey.of(RegistryKeys.BLOCK, Identifier.of(Thaumaturge.MOD_ID, name));
         }
 
-        // Example block tag - can be used to group blocks with similar properties
-        public static final TagKey<Block> EXAMPLE_BLOCK_TAG = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("example_block"));
+        public static final TagKey<Block> AER_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("aer_crystal_buds_and_cluster"));
+        public static final TagKey<Block> AQUA_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("aqua_crystal_buds_and_cluster"));
+        public static final TagKey<Block> IGNIS_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("ignis_crystal_buds_and_cluster"));
+        public static final TagKey<Block> ORDO_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("ordo_crystal_buds_and_cluster"));
+        public static final TagKey<Block> PERDITIO_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("perditio_crystal_buds_and_cluster"));
+        public static final TagKey<Block> TERRA_CRYSTAL_BUDS_AND_CLUSTER = TagKey.of(RegistryKeys.BLOCK, Thaumaturge.identifier("terra_crystal_buds_and_cluster"));
     }
 
     public static class Items {

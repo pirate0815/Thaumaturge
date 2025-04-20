@@ -22,6 +22,26 @@
       "required":false
     },
     {
+      "id":"thaumaturge:budding_ignis_crystal",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:small_ignis_crystal_bud",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:medium_ignis_crystal_bud",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:large_ignis_crystal_bud",
+      "required":false
+    },
+    {
+      "id":"thaumaturge:ignis_crystal_cluster",
+      "required":false
+    },
+    {
       "id":"thaumaturge:amber_bearing_stone",
       "required":false
     }
