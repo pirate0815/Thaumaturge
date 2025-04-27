@@ -61,20 +61,21 @@ public class ThaumaturgeClient implements ClientModInitializer {
             // Handle primary key for Aer/Motus combination or individual spells
             // When both foci are equipped, it will use a combination spell
             if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                // First check for Aqua foci
                 boolean hasAqua = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI));
-                if (hasAqua) {
+                boolean hasGelum = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI));
+
+                if (hasAqua && hasGelum) {
+                    // The server will handle the combination automatically
                     ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AQUA));
-                }
-                else {
+                } else if (hasAqua) {
+                    ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AQUA));
+                } else {
                     // Existing Aer/Motus check
                     boolean hasAer = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AER_FOCI));
                     boolean hasMotus = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI));
 
                     if (hasAer || hasMotus) {
-                        SpellCastPacket.Type type = hasAer ?
-                                SpellCastPacket.Type.LESSER_AER :
-                                SpellCastPacket.Type.LESSER_MOTUS;
+                        SpellCastPacket.Type type = hasAer ? SpellCastPacket.Type.LESSER_AER : SpellCastPacket.Type.LESSER_MOTUS;
                         ClientPlayNetworking.send(new SpellCastPacket(type));
                     }
                 }

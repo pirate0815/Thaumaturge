@@ -26,6 +26,7 @@ import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.SpellRegistry;
 import dev.overgrown.thaumaturge.spell.combination.AerMotusCombination;
+import dev.overgrown.thaumaturge.spell.combination.AquaGelumCombination;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
@@ -114,6 +115,13 @@ public class Thaumaturge implements ModInitializer {
 				Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI)
 		);
 		SpellRegistry.registerCombination(aerMotusCombo, new AerMotusCombination());
+
+		// Register Aqua and Gelum combination
+		Set<Identifier> aquaGelumCombo = Set.of(
+				Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI),
+				Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI)
+		);
+		SpellRegistry.registerCombination(aquaGelumCombo, new AquaGelumCombination());
 	}
 
 	/**
