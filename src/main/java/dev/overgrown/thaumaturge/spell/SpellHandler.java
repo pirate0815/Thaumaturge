@@ -12,7 +12,8 @@ import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
-import dev.overgrown.thaumaturge.spell.impl.aqua.AquaVeil;
+import dev.overgrown.thaumaturge.spell.impl.aqua.AquaBoost;
+import dev.overgrown.thaumaturge.spell.impl.gelum.FrozenStep;
 import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;
 import net.minecraft.item.ItemStack;
@@ -89,6 +90,12 @@ public class SpellHandler {
         if (spellId.equals(LesserAerBoost.ID)) {
             return Registries.ITEM.getId(ModItems.LESSER_AER_FOCI);
         }
+        else if (spellId.equals(AquaBoost.ID)) {
+            return Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI);
+        }
+        else if (spellId.equals(FrozenStep.ID)) {
+            return Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI);
+        }
         else if (spellId.equals(LesserMotusBoost.ID)) {
             return Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI);
         }
@@ -97,9 +104,6 @@ public class SpellHandler {
         }
         else if (spellId.equals(GreaterAerBurst.ID)) {
             return Registries.ITEM.getId(ModItems.GREATER_AER_FOCI);
-        }
-        else if (spellId.equals(AquaVeil.ID)) {
-            return Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI);
         }
         return null;
     }

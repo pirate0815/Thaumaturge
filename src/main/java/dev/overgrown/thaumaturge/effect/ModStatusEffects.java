@@ -10,9 +10,20 @@ public class ModStatusEffects {
     public static void register() {
     }
 
-    public static final RegistryEntry.Reference<StatusEffect> ICY_FRICTION = registerEffect("icy_friction", new IcyFrictionEffect());
-    public static final RegistryEntry.Reference<StatusEffect> AQUA_VEIL = registerEffect("aqua_veil", new AquaVeilEffect());
-    public static final RegistryEntry.Reference<StatusEffect> DEHYDRATED = registerEffect("dehydrated", new DehydratedEffect());
+    public static final RegistryEntry.Reference<StatusEffect> ICY_FRICTION = registerEffect(
+            "icy_friction",
+            new IcyFrictionEffect()
+    );
+
+    public static final RegistryEntry.Reference<StatusEffect> AQUA_BOOST = registerEffect(
+            "aqua_boost",
+            new AquaBoostEffect()
+    );
+
+    public static final RegistryEntry.Reference<StatusEffect> DEHYDRATED = registerEffect(
+            "dehydrated",
+            new DehydratedEffect()
+    );
 
     private static RegistryEntry.Reference<StatusEffect> registerEffect(String id, StatusEffect effect) {
         return Registry.registerReference(

@@ -18,7 +18,8 @@ import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
-import dev.overgrown.thaumaturge.spell.impl.aqua.AquaVeil;
+import dev.overgrown.thaumaturge.spell.impl.aqua.AquaBoost;
+import dev.overgrown.thaumaturge.spell.impl.gelum.FrozenStep;
 import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -57,10 +58,11 @@ public record SpellCastPacket(Type type) implements CustomPayload {
      */
     public enum Type {
         LESSER_AER(LesserAerBoost.ID),
-        ADVANCED_AER(AdvancedAerLaunch.ID),
-        GREATER_AER(GreaterAerBurst.ID),
+        LESSER_AQUA(AquaBoost.ID),
+        LESSER_GELUM(FrozenStep.ID),
         LESSER_MOTUS(LesserMotusBoost.ID),
-        LESSER_AQUA(AquaVeil.ID);
+        ADVANCED_AER(AdvancedAerLaunch.ID),
+        GREATER_AER(GreaterAerBurst.ID);
 
         private final Identifier spellId;
 

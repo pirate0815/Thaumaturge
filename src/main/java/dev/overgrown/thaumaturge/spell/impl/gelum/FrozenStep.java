@@ -1,15 +1,19 @@
-package dev.overgrown.thaumaturge.spell.combination;
+package dev.overgrown.thaumaturge.spell.impl.gelum;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.effect.ModStatusEffects;
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class AquaGelumCombination implements SpellEntry.SpellExecutor {
+public class FrozenStep implements SpellEntry.SpellExecutor {
+    public static final Identifier ID = Thaumaturge.identifier("frozen_step");
+
     @Override
     public void execute(ServerPlayerEntity player) {
         World world = player.getWorld();

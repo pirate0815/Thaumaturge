@@ -26,11 +26,11 @@ import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.SpellRegistry;
 import dev.overgrown.thaumaturge.spell.combination.AerMotusCombination;
-import dev.overgrown.thaumaturge.spell.combination.AquaGelumCombination;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
-import dev.overgrown.thaumaturge.spell.impl.aqua.AquaVeil;
+import dev.overgrown.thaumaturge.spell.impl.aqua.AquaBoost;
+import dev.overgrown.thaumaturge.spell.impl.gelum.FrozenStep;
 import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -106,7 +106,8 @@ public class Thaumaturge implements ModInitializer {
 		SpellRegistry.registerSpell(AdvancedAerLaunch.ID, new AdvancedAerLaunch());
 		SpellRegistry.registerSpell(GreaterAerBurst.ID, new GreaterAerBurst());
 		SpellRegistry.registerSpell(LesserMotusBoost.ID, new LesserMotusBoost());
-		SpellRegistry.registerSpell(AquaVeil.ID, new AquaVeil());
+		SpellRegistry.registerSpell(AquaBoost.ID, new AquaBoost());
+		SpellRegistry.registerSpell(FrozenStep.ID, new FrozenStep());
 
 		// Register spell combinations
 		// When both Aer and Motus foci are equipped, they can create a special combined spell
@@ -115,13 +116,6 @@ public class Thaumaturge implements ModInitializer {
 				Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI)
 		);
 		SpellRegistry.registerCombination(aerMotusCombo, new AerMotusCombination());
-
-		// Register Aqua and Gelum combination
-		Set<Identifier> aquaGelumCombo = Set.of(
-				Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI),
-				Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI)
-		);
-		SpellRegistry.registerCombination(aquaGelumCombo, new AquaGelumCombination());
 	}
 
 	/**

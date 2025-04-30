@@ -58,25 +58,26 @@ public class ThaumaturgeClient implements ClientModInitializer {
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player == null) return;
 
-            // Handle primary key for Aer/Motus combination or individual spells
-            // When both foci are equipped, it will use a combination spell
+            // Handle primary key for individual spells
             if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
                 boolean hasAqua = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI));
                 boolean hasGelum = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI));
 
-                if (hasAqua && hasGelum) {
-                    // The server will handle the combination automatically
+                if (hasAqua) {
                     ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AQUA));
-                } else if (hasAqua) {
-                    ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AQUA));
+                } else if (hasGelum) {
+                    ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_GELUM));
                 } else {
-                    // Existing Aer/Motus check
+                    // Existing Aer/Motus combination or individual spells
                     boolean hasAer = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AER_FOCI));
                     boolean hasMotus = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI));
 
-                    if (hasAer || hasMotus) {
-                        SpellCastPacket.Type type = hasAer ? SpellCastPacket.Type.LESSER_AER : SpellCastPacket.Type.LESSER_MOTUS;
-                        ClientPlayNetworking.send(new SpellCastPacket(type));
+                    if (hasAer && hasMotus) {
+                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AER));
+                    } else if (hasAer) {
+                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AER));
+                    } else if (hasMotus) {
+                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_MOTUS));
                     }
                 }
             }
