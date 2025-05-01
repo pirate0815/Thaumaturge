@@ -9,6 +9,9 @@ import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDust;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
 import dev.overgrown.thaumaturge.item.apophenia.Apophenia;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -135,6 +138,10 @@ public class ModItems {
                     .rarity(Rarity.UNCOMMON)
                     .component(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT)
                     .component(ModComponents.MAX_FOCI, 1)
+                    .component(DataComponentTypes.DYED_COLOR, new DyedColorComponent(DyedColorComponent.DEFAULT_COLOR))
+                    .component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(EquipmentSlot.MAINHAND)
+                            .swappable(true)
+                            .build())
             )
             .buildAndRegister();
 
