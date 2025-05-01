@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -101,21 +100,18 @@ public class Thaumaturge implements ModInitializer {
 	 * Each spell has a unique identifier and implementation
 	 */
 	private void registerSpells() {
-		// Register individual spells
-		SpellRegistry.registerSpell(LesserAerBoost.ID, new LesserAerBoost());
-		SpellRegistry.registerSpell(AdvancedAerLaunch.ID, new AdvancedAerLaunch());
-		SpellRegistry.registerSpell(GreaterAerBurst.ID, new GreaterAerBurst());
-		SpellRegistry.registerSpell(LesserMotusBoost.ID, new LesserMotusBoost());
-		SpellRegistry.registerSpell(AquaBoost.ID, new AquaBoost());
-		SpellRegistry.registerSpell(FrozenStep.ID, new FrozenStep());
+		// Lesser Tier Spells
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aer")), new LesserAerBoost());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aqua")), new AquaBoost());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("motus")), new LesserMotusBoost());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("gelum")), new FrozenStep());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aer"), Thaumaturge.identifier("motus")), new AerMotusCombination());
 
-		// Register spell combinations
-		// When both Aer and Motus foci are equipped, they can create a special combined spell
-		Set<Identifier> aerMotusCombo = Set.of(
-				Registries.ITEM.getId(ModItems.LESSER_AER_FOCI),
-				Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI)
-		);
-		SpellRegistry.registerCombination(aerMotusCombo, new AerMotusCombination());
+		// Advanced Tier
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("aer")), new AdvancedAerLaunch());
+
+		// Greater Tier
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.GREATER, Set.of(Thaumaturge.identifier("aer")), new GreaterAerBurst());
 	}
 
 	/**
@@ -125,7 +121,7 @@ public class Thaumaturge implements ModInitializer {
 	 * @param player The player casting the spell
 	 */
 	private void handleSpellCast(SpellCastPacket packet, ServerPlayerEntity player) {
-		SpellHandler.tryCastSpell(player, packet.type().getSpellId());
+		SpellHandler.tryCastSpell(player, packet.tier());
 	}
 
 	private void registerRecipes() {

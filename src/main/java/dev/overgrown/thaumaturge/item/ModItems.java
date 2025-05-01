@@ -2,9 +2,11 @@ package dev.overgrown.thaumaturge.item;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.component.BookStateComponent;
+import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDust;
+import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.utils.ItemBuilder;
 import dev.overgrown.thaumaturge.item.apophenia.Apophenia;
 import net.minecraft.entity.EquipmentSlot;
@@ -197,6 +199,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.LESSER, Thaumaturge.identifier("aer")))
                     .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister();
@@ -205,6 +208,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.ADVANCED, Thaumaturge.identifier("aer")))
                     .rarity(Rarity.RARE)
             )
             .buildAndRegister();
@@ -213,6 +217,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.GREATER, Thaumaturge.identifier("aer")))
                     .rarity(Rarity.EPIC)
             )
             .buildAndRegister();
@@ -224,6 +229,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.LESSER, Thaumaturge.identifier("motus")))
                     .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister();
@@ -232,6 +238,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.ADVANCED, Thaumaturge.identifier("motus")))
                     .rarity(Rarity.RARE)
             )
             .buildAndRegister();
@@ -240,6 +247,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.GREATER, Thaumaturge.identifier("motus")))
                     .rarity(Rarity.EPIC)
             )
             .buildAndRegister();
@@ -251,6 +259,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.LESSER, Thaumaturge.identifier("aqua")))
                     .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister();
@@ -259,6 +268,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.ADVANCED, Thaumaturge.identifier("aqua")))
                     .rarity(Rarity.RARE)
             )
             .buildAndRegister();
@@ -267,6 +277,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.GREATER, Thaumaturge.identifier("aqua")))
                     .rarity(Rarity.EPIC)
             )
             .buildAndRegister();
@@ -386,6 +397,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.LESSER, Thaumaturge.identifier("gelum")))
                     .rarity(Rarity.UNCOMMON)
             )
             .buildAndRegister();
@@ -394,6 +406,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.ADVANCED, Thaumaturge.identifier("gelum")))
                     .rarity(Rarity.RARE)
             )
             .buildAndRegister();
@@ -402,6 +415,7 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(1)
+                    .component(ModComponents.FOCI_COMPONENT, new FociComponent(SpellCastPacket.SpellTier.GREATER, Thaumaturge.identifier("gelum")))
                     .rarity(Rarity.EPIC)
             )
             .buildAndRegister();

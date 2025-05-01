@@ -74,4 +74,8 @@ public class ModComponents {
         .codec(AspectComponent.CODEC)
         .packetCodec(AspectComponent.PACKET_CODEC));
 
+    public static final ComponentType<FociComponent> FOCI_COMPONENT = register("foci_component", builder -> builder
+            .codec(FociComponent.CODEC)
+            .packetCodec(FociComponent.PACKET_CODEC));
+
 }

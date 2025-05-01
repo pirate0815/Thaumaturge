@@ -18,7 +18,6 @@ import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
-import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesRenderer;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.networking.ThaumaturgeModPacketsS2C;
@@ -27,11 +26,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
@@ -58,50 +54,16 @@ public class ThaumaturgeClient implements ClientModInitializer {
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player == null) return;
 
-            // Handle primary key for individual spells
             if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                boolean hasAqua = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AQUA_FOCI));
-                boolean hasGelum = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_GELUM_FOCI));
-
-                if (hasAqua) {
-                    ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AQUA));
-                } else if (hasGelum) {
-                    ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_GELUM));
-                } else {
-                    // Existing Aer/Motus combination or individual spells
-                    boolean hasAer = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_AER_FOCI));
-                    boolean hasMotus = hasFoci(player, Registries.ITEM.getId(ModItems.LESSER_MOTUS_FOCI));
-
-                    if (hasAer && hasMotus) {
-                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AER));
-                    } else if (hasAer) {
-                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_AER));
-                    } else if (hasMotus) {
-                        ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.Type.LESSER_MOTUS));
-                    }
-                }
+                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.LESSER));
             }
-
-            // Check other keybinds for advanced and greater tier spells
-            checkAndSendSpell(KeybindManager.SECONDARY_SPELL, ModItems.ADVANCED_AER_FOCI, SpellCastPacket.Type.ADVANCED_AER, player);
-            checkAndSendSpell(KeybindManager.TERNARY_SPELL, ModItems.GREATER_AER_FOCI, SpellCastPacket.Type.GREATER_AER, player);
+            if (KeybindManager.SECONDARY_SPELL.wasPressed()) {
+                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.ADVANCED));
+            }
+            if (KeybindManager.TERNARY_SPELL.wasPressed()) {
+                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.GREATER));
+            }
         });
-    }
-
-    /**
-     * Helper method to check if a keybind was pressed and send the corresponding spell packet
-     *
-     * @param keyBinding The keybind to check
-     * @param fociItem The foci item required for this spell
-     * @param type The type of spell to cast
-     * @param player The player casting the spell
-     */
-    private void checkAndSendSpell(KeyBinding keyBinding, Item fociItem, SpellCastPacket.Type type, PlayerEntity player) {
-        if (keyBinding.wasPressed()) {
-            if (hasFoci(player, Registries.ITEM.getId(fociItem))) {
-                ClientPlayNetworking.send(new SpellCastPacket(type));
-            }
-        }
     }
 
     /**
