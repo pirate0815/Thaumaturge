@@ -1,9 +1,3 @@
-/**
- * LesserAerBoost.java
- * <p>
- * Implementation of the Lesser Aer Boost spell.
- * This spell provides vertical movement upward with visual particles.
- */
 package dev.overgrown.thaumaturge.spell.impl.aer;
 
 import dev.overgrown.thaumaturge.spell.registry.SpellEntry;

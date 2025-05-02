@@ -1,9 +1,3 @@
-/**
- * LesserMotusBoost.java
- * <p>
- * Implementation of the Lesser Motus Boost spell.
- * This spell provides horizontal movement in the direction the player is facing.
- */
 package dev.overgrown.thaumaturge.spell.impl.motus;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
@@ -14,12 +8,12 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-public class LesserMotusBoost implements SpellEntry.SpellExecutor {
+public class Impulse implements SpellEntry.SpellExecutor {
     /**
      * Unique identifier for this spell, used in the SpellRegistry
      * @see dev.overgrown.thaumaturge.spell.SpellRegistry#registerSpell
      */
-    public static final Identifier ID = Thaumaturge.identifier("lesser_motus_boost");
+    public static final Identifier ID = Thaumaturge.identifier("impulse");
 
     @Override
     public void execute(ServerPlayerEntity player) {

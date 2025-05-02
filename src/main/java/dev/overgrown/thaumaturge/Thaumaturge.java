@@ -1,10 +1,3 @@
-/**
- * Thaumaturge.java
- * <p>
- * Main mod class for Thaumaturge - handles server-side initialization,
- * registry setup, recipe registration, spell system initialization,
- * and packet handling.
- */
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
@@ -25,13 +18,14 @@ import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.SpellRegistry;
-import dev.overgrown.thaumaturge.spell.combination.AerMotusCombination;
+import dev.overgrown.thaumaturge.spell.combination.GustboundDash;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
 import dev.overgrown.thaumaturge.spell.impl.aer.GreaterAerBurst;
 import dev.overgrown.thaumaturge.spell.impl.aer.LesserAerBoost;
+import dev.overgrown.thaumaturge.spell.impl.alienis.Recall;
 import dev.overgrown.thaumaturge.spell.impl.aqua.AquaBoost;
 import dev.overgrown.thaumaturge.spell.impl.gelum.FrozenStep;
-import dev.overgrown.thaumaturge.spell.impl.motus.LesserMotusBoost;
+import dev.overgrown.thaumaturge.spell.impl.motus.Impulse;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -54,12 +48,6 @@ public class Thaumaturge implements ModInitializer {
 	public static final String MOD_ID = "thaumaturge";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	/**
-	 * Helper method to create Identifiers with the mod's namespace
-	 *
-	 * @param path The path for the identifier
-	 * @return A new Identifier with the mod's namespace and the provided path
-	 */
 	public static Identifier identifier(String path) {
 		return Identifier.of(MOD_ID, path);
 	}
@@ -103,9 +91,10 @@ public class Thaumaturge implements ModInitializer {
 		// Lesser Tier Spells
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aer")), new LesserAerBoost());
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aqua")), new AquaBoost());
-		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("motus")), new LesserMotusBoost());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("motus")), new Impulse());
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("gelum")), new FrozenStep());
-		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aer"), Thaumaturge.identifier("motus")), new AerMotusCombination());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("alienis")), new Recall());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.LESSER, Set.of(Thaumaturge.identifier("aer"), Thaumaturge.identifier("motus")), new GustboundDash());
 
 		// Advanced Tier
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("aer")), new AdvancedAerLaunch());
@@ -114,12 +103,6 @@ public class Thaumaturge implements ModInitializer {
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.GREATER, Set.of(Thaumaturge.identifier("aer")), new GreaterAerBurst());
 	}
 
-	/**
-	 * Handles spell cast packets received from clients
-	 *
-	 * @param packet The spell cast packet containing the type of spell to cast
-	 * @param player The player casting the spell
-	 */
 	private void handleSpellCast(SpellCastPacket packet, ServerPlayerEntity player) {
 		SpellHandler.tryCastSpell(player, packet.tier());
 	}
