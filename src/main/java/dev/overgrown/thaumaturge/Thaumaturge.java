@@ -26,6 +26,7 @@ import dev.overgrown.thaumaturge.spell.impl.alienis.Recall;
 import dev.overgrown.thaumaturge.spell.impl.aqua.AquaBoost;
 import dev.overgrown.thaumaturge.spell.impl.gelum.FrozenStep;
 import dev.overgrown.thaumaturge.spell.impl.motus.Impulse;
+import dev.overgrown.thaumaturge.spell.impl.permutatio.Exchange;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -98,6 +99,7 @@ public class Thaumaturge implements ModInitializer {
 
 		// Advanced Tier
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("aer")), new AdvancedAerLaunch());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("permutatio")), new Exchange());
 
 		// Greater Tier
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.GREATER, Set.of(Thaumaturge.identifier("aer")), new GreaterAerBurst());
