@@ -18,6 +18,7 @@ import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.SpellRegistry;
+import dev.overgrown.thaumaturge.spell.combination.Exmortuatio;
 import dev.overgrown.thaumaturge.spell.combination.GustboundDash;
 import dev.overgrown.thaumaturge.spell.combination.Vivamutatio;
 import dev.overgrown.thaumaturge.spell.impl.aer.AdvancedAerLaunch;
@@ -102,6 +103,7 @@ public class Thaumaturge implements ModInitializer {
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("aer")), new AdvancedAerLaunch());
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("permutatio")), new Exchange());
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("permutatio"), Thaumaturge.identifier("victus")), new Vivamutatio());
+		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.ADVANCED, Set.of(Thaumaturge.identifier("permutatio"), Thaumaturge.identifier("mortuus")), new Exmortuatio());
 
 		// Greater Tier
 		SpellRegistry.registerSpell(SpellCastPacket.SpellTier.GREATER, Set.of(Thaumaturge.identifier("aer")), new GreaterAerBurst());
