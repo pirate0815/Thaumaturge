@@ -1,22 +1,3 @@
-/**
- * ModComponents.java
- * <p>
- * This class registers and manages all data components used by the Thaumaturge mod.
- * Components are a system to attach additional data to vanilla objects (items, entities, etc.).
- * <p>
- * The mod uses components to:
- * - Track gauntlet foci capacity (MAX_FOCI)
- * - Store which foci are equipped in a gauntlet (GAUNTLET_STATE)
- * - Track Apophenia book progress (BOOK_STATE)
- * - Store aspect information on items/blocks (ASPECT)
- * <p>
- * Each component is registered to the game's component registry with appropriate
- * codecs for serialization and packet handling.
- *
- * @see dev.overgrown.thaumaturge.component.GauntletComponent
- * @see dev.overgrown.thaumaturge.component.BookStateComponent
- * @see dev.overgrown.thaumaturge.component.AspectComponent
- */
 package dev.overgrown.thaumaturge.component;
 
 import com.mojang.serialization.Codec;

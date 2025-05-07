@@ -33,6 +33,9 @@ public class ModItems {
     // Aspect Shard Items (Fundamental for "starting" the game, required in everything)
     //======================================================================
 
+    //----------------------------------
+    // Primal Aspects
+    //----------------------------------
     public static final Item AER_ASPECT_SHARD = ItemBuilder.create("aer_aspect_shard")
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
@@ -73,6 +76,245 @@ public class ModItems {
             .setItemGroup(ItemGroups.INGREDIENTS)
             .withSettings(new Item.Settings()
                     .maxCount(64)
+            )
+            .buildAndRegister();
+
+    //----------------------------------
+    // Secondary Aspects
+    //----------------------------------
+    public static final Item GELUM_ASPECT_SHARD = ItemBuilder.create("gelum_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item LUX_ASPECT_SHARD = ItemBuilder.create("lux_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item METALLUM_ASPECT_SHARD = ItemBuilder.create("metallum_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item MORTUUS_ASPECT_SHARD = ItemBuilder.create("mortuus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item MOTUS_ASPECT_SHARD = ItemBuilder.create("motus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item PERMUTATIO_ASPECT_SHARD = ItemBuilder.create("permutatio_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item POTENTIA_ASPECT_SHARD = ItemBuilder.create("potentia_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item VACUOS_ASPECT_SHARD = ItemBuilder.create("vacuos_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item VICTUS_ASPECT_SHARD = ItemBuilder.create("victus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item VITREUS_ASPECT_SHARD = ItemBuilder.create("vitreus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    //----------------------------------
+    // Tertiary Aspects
+    //----------------------------------
+    public static final Item BESTIA_ASPECT_SHARD = ItemBuilder.create("bestia_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item EXANIMIS_ASPECT_SHARD = ItemBuilder.create("exanimis_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item HERBA_ASPECT_SHARD = ItemBuilder.create("herba_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item INSTRUMENTUM_ASPECT_SHARD = ItemBuilder.create("instrumentum_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item PRAECANTATIO_ASPECT_SHARD = ItemBuilder.create("praecantatio_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item SPIRITUS_ASPECT_SHARD = ItemBuilder.create("spiritus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item TENEBRAE_ASPECT_SHARD = ItemBuilder.create("tenebrae_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item VINCULUM_ASPECT_SHARD = ItemBuilder.create("vinculum_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    public static final Item VOLATUS_ASPECT_SHARD = ItemBuilder.create("volatus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+            )
+            .buildAndRegister();
+
+    //----------------------------------
+    // Quaternary Aspects
+    //----------------------------------
+    public static final Item ALIENIS_ASPECT_SHARD = ItemBuilder.create("alienis_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item ALKIMIA_ASPECT_SHARD = ItemBuilder.create("alkimia_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item AURAM_ASPECT_SHARD = ItemBuilder.create("auram_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item AVERSIO_ASPECT_SHARD = ItemBuilder.create("aversio_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item COGNITIO_ASPECT_SHARD = ItemBuilder.create("cognitio_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item DESIDERIUM_ASPECT_SHARD = ItemBuilder.create("desiderium_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item FABRICO_ASPECT_SHARD = ItemBuilder.create("fabrico_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item HUMANUS_ASPECT_SHARD = ItemBuilder.create("humanus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item MACHINA_ASPECT_SHARD = ItemBuilder.create("machina_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item PRAEMUNIO_ASPECT_SHARD = ItemBuilder.create("praemunio_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item SENSUS_ASPECT_SHARD = ItemBuilder.create("sensus_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.UNCOMMON)
+            )
+            .buildAndRegister();
+
+    public static final Item VITIUM_ASPECT_SHARD = ItemBuilder.create("vitium_aspect_shard")
+            .setItemGroup(ItemGroups.INGREDIENTS)
+            .withSettings(new Item.Settings()
+                    .maxCount(64)
+                    .rarity(Rarity.RARE)
+                    .fireproof()
             )
             .buildAndRegister();
 

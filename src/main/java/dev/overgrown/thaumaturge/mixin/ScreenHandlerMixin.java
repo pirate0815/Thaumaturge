@@ -62,19 +62,24 @@ public abstract class ScreenHandlerMixin {
             if (isFoci(cursorStack)) {
                 handleFociInsertion(slotStack, cursorStack, player, ci);
             }
-            // Case 2: Ejecting foci from gauntlet (Shift + Right-click)
-            else if (actionType == SlotActionType.PICKUP && button == 1 && player.isSneaking()) {
-                GauntletComponent component = slotStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
-                component.entries().forEach(entry -> {
-                    ItemStack stack = ItemStack.fromNbt(registries, entry.nbt()).orElse(ItemStack.EMPTY);
-                    if (!stack.isEmpty()) {
-                        player.getInventory().offerOrDrop(stack);
+            // Case 2: Ejecting foci via shift-click (QUICK_MOVE action)
+            else if (actionType == SlotActionType.QUICK_MOVE && player.isSneaking()) {
+                ItemStack gauntletStack = slot.getStack();
+                if (isGauntlet(gauntletStack)) {
+                    GauntletComponent component = gauntletStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
+                    RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
+
+                    if (!component.entries().isEmpty()) {
+                        component.entries().forEach(entry -> {
+                            ItemStack stack = ItemStack.fromNbt(registries, entry.nbt()).orElse(ItemStack.EMPTY);
+                            if (!stack.isEmpty()) {
+                                player.getInventory().offerOrDrop(stack);
+                            }
+                        });
+                        gauntletStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
+                        ci.cancel();
                     }
-                });
-                // Reset gauntlet state
-                slotStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                ci.cancel(); // Prevent default handling
+                }
             }
         }
     }

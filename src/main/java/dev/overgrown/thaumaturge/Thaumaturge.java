@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge;
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
 import dev.overgrown.thaumaturge.block.ModBlocks;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
@@ -17,6 +18,7 @@ import dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket;
 import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
+import dev.overgrown.thaumaturge.spell.impl.alienis.AlienisEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifier;
@@ -84,6 +86,7 @@ public class Thaumaturge implements ModInitializer {
 	private void registerAspectEffects() {
 		AspectRegistry.register(Thaumaturge.identifier("ignis"), new IgnisEffect());
 		AspectRegistry.register(Thaumaturge.identifier("potentia"), new PotentiaEffect());
+		AspectRegistry.register(Thaumaturge.identifier("alienis"), new AlienisEffect());
 		// ... other aspects
 	}
 
@@ -102,35 +105,23 @@ public class Thaumaturge implements ModInitializer {
 			RegistryWrapper.WrapperLookup registries = server.getRegistryManager();
 			RegistryWrapper.Impl<Aspect> aspectsRegistry = registries.getOrThrow(ModRegistries.ASPECTS);
 
-			// Dynamic Foci Attunement Recipes
 			for (RegistryEntry.Reference<Aspect> aspectEntry : aspectsRegistry.streamEntries().toList()) {
 				Identifier aspectId = aspectEntry.registryKey().getValue();
 				Item shardItem = Registries.ITEM.get(Thaumaturge.identifier(aspectId.getPath() + "_aspect_shard"));
 
-				// Skip if shard item doesn't exist
-				if (shardItem == Items.AIR) continue;
+				if (shardItem == Items.AIR) {
+					Thaumaturge.LOGGER.warn("Missing aspect shard for {}", aspectId);
+					continue;
+				}
 
-				// Lesser Foci
-				new Recipe.Builder()
-						.catalyst(ModItems.LESSER_FOCI)
-						.requires(aspectEntry, 1)
-						.output(createFociStack(ModItems.LESSER_FOCI, aspectId))
-						.register();
-
-				// Advanced Foci
-				new Recipe.Builder()
-						.catalyst(ModItems.ADVANCED_FOCI)
-						.requires(aspectEntry, 1)
-						.output(createFociStack(ModItems.ADVANCED_FOCI, aspectId))
-						.register();
-
-				// Greater Foci
-				new Recipe.Builder()
-						.catalyst(ModItems.GREATER_FOCI)
-						.requires(aspectEntry, 1)
-						.output(createFociStack(ModItems.GREATER_FOCI, aspectId))
-						.register();
+				// Register Foci recipes
+				registerFociRecipe(ModItems.LESSER_FOCI, aspectEntry, aspectId);
+				registerFociRecipe(ModItems.ADVANCED_FOCI, aspectEntry, aspectId);
+				registerFociRecipe(ModItems.GREATER_FOCI, aspectEntry, aspectId);
 			}
+
+			RegistryKey<Aspect> aerKey = RegistryKey.of(ModRegistries.ASPECTS, Thaumaturge.identifier("aer"));
+			RegistryEntry.Reference<Aspect> aerEntry = aspectsRegistry.getOrThrow(aerKey);
 
 			RegistryKey<Aspect> praecantatioKey = RegistryKey.of(ModRegistries.ASPECTS, Thaumaturge.identifier("praecantatio"));
 			RegistryEntry.Reference<Aspect> praecantatio = aspectsRegistry.getOrThrow(praecantatioKey);
@@ -149,6 +140,14 @@ public class Thaumaturge implements ModInitializer {
 					.output(new ItemStack(ModItems.LESSER_FOCI))
 					.register();
 		});
+	}
+
+	private void registerFociRecipe(Item fociItem, RegistryEntry.Reference<Aspect> aspectEntry, Identifier aspectId) {
+		new Recipe.Builder()
+				.catalyst(fociItem)
+				.requires(aspectEntry, 1)
+				.output(createFociStack(fociItem, aspectId))
+				.register();
 	}
 
 	private ItemStack createFociStack(Item fociItem, Identifier aspectId) {

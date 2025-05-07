@@ -30,30 +30,65 @@ public class ModItemGroups {
                     .icon(() -> new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER))
                     .displayName(Text.translatable("item_group.thaumaturge.crystals"))
                     .entries((displayContext, entries) -> {
+                        // Primal Aspects - First Level
+                        entries.add(new ItemStack(ModItems.AER_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.AQUA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.IGNIS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.TERRA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.ORDO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.PERDITIO_ASPECT_SHARD));
 
+                        // Secondary Aspects - Second Level
+                        entries.add(new ItemStack(ModItems.GELUM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.LUX_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.METALLUM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.MORTUUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.MOTUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.PERMUTATIO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.POTENTIA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VACUOS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VICTUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VITREUS_ASPECT_SHARD));
+
+                        // Tertiary Aspects - Third Level
+                        entries.add(new ItemStack(ModItems.BESTIA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.EXANIMIS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.HERBA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.INSTRUMENTUM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.PRAECANTATIO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.SPIRITUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.TENEBRAE_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VINCULUM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VOLATUS_ASPECT_SHARD));
+
+                        // Quaternary Aspects - Fourth Level
+                        entries.add(new ItemStack(ModItems.ALIENIS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.ALKIMIA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.AURAM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.AVERSIO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.COGNITIO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.DESIDERIUM_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.FABRICO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.HUMANUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.MACHINA_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.PRAEMUNIO_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.SENSUS_ASPECT_SHARD));
+                        entries.add(new ItemStack(ModItems.VITIUM_ASPECT_SHARD));
+
+                        // Crystal Blocks
                         // Aer Crystals
                         entries.add(new ItemStack(ModBlocks.BUDDING_AER_CRYSTAL));
                         entries.add(new ItemStack(ModBlocks.SMALL_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.MEDIUM_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.LARGE_AER_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.AER_CRYSTAL_CLUSTER));
-                        entries.add(new ItemStack(ModItems.AER_ASPECT_SHARD));
 
-                        // Aqua Crystals
-                        entries.add(new ItemStack(ModItems.AQUA_ASPECT_SHARD));
-
-                        //Ignis Crystals
+                        // Ignis Crystals
                         entries.add(new ItemStack(ModBlocks.BUDDING_IGNIS_CRYSTAL));
                         entries.add(new ItemStack(ModBlocks.SMALL_IGNIS_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.MEDIUM_IGNIS_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.LARGE_IGNIS_CRYSTAL_BUD));
                         entries.add(new ItemStack(ModBlocks.IGNIS_CRYSTAL_CLUSTER));
-                        entries.add(new ItemStack(ModItems.IGNIS_ASPECT_SHARD));
-
-                        // Terra Crystals
-                        entries.add(new ItemStack(ModItems.TERRA_ASPECT_SHARD));
-                        entries.add(new ItemStack(ModItems.ORDO_ASPECT_SHARD));
-                        entries.add(new ItemStack(ModItems.PERDITIO_ASPECT_SHARD));
                     })
                     .build());
 

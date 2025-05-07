@@ -46,7 +46,6 @@ public record GauntletComponent(List<FociEntry> entries) {
             FociComponent component = stack.get(ModComponents.FOCI_COMPONENT);
             Identifier aspectId = component != null ? component.aspectId() : null;
             SpellCastPacket.SpellTier tier = SpellHandler.getFociTier(stack.getItem());
-            // Add default simple modifier
             return new FociEntry(tier, aspectId, Thaumaturge.identifier("simple"), nbt);
         }
     }
