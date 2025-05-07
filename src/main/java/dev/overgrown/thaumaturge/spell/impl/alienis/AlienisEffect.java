@@ -13,9 +13,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
+import net.minecraft.world.Heightmap;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -70,21 +70,26 @@ public class AlienisEffect implements AspectEffect {
 
     private void teleportEntityRandomly(Entity entity, float diameter) {
         ServerWorld world = (ServerWorld) entity.getWorld();
-        for (int i = 0; i < 16; ++i) {
+        for (int i = 0; i < 32; ++i) {
             double x = entity.getX() + (world.random.nextDouble() - 0.5) * diameter;
-            double y = MathHelper.clamp(
-                    entity.getY() + (world.random.nextDouble() - 0.5) * diameter,
-                    world.getBottomY(),
-                    world.getBottomY() + world.getLogicalHeight() - 1
-            );
             double z = entity.getZ() + (world.random.nextDouble() - 0.5) * diameter;
 
-            Set<PositionFlag> flags = EnumSet.noneOf(PositionFlag.class);
-            if (entity.teleport(world, x, y, z, flags, entity.getYaw(), entity.getPitch(), true)) {
-                world.playSound(null, x, y, z,
-                        SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                world.spawnParticles(ParticleTypes.PORTAL, x, y + 1, z, 10, 0.5, 0.5, 0.5, 0.05);
-                break;
+            // Get the top Y coordinate for the generated X and Z
+            int topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int) x, (int) z);
+            BlockPos topPos = BlockPos.ofFloored(x, topY, z);
+
+            // Check if the block has collision and the block above is replaceable
+            if (!world.getBlockState(topPos).getCollisionShape(world, topPos).isEmpty()
+                    && world.getBlockState(topPos.up()).isReplaceable()) {
+
+                Vec3d teleportVec = Vec3d.ofBottomCenter(topPos.up());
+                Set<PositionFlag> flags = EnumSet.noneOf(PositionFlag.class);
+                if (entity.teleport(world, teleportVec.x, teleportVec.y, teleportVec.z, flags, entity.getYaw(), entity.getPitch(), true)) {
+                    world.playSound(null, teleportVec.x, teleportVec.y, teleportVec.z,
+                            SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    world.spawnParticles(ParticleTypes.PORTAL, teleportVec.x, teleportVec.y + 1, teleportVec.z, 10, 0.5, 0.5, 0.5, 0.05);
+                    break;
+                }
             }
         }
         entity.fallDistance = 0;

@@ -20,6 +20,8 @@ import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.impl.alienis.AlienisEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
+import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
+import dev.overgrown.thaumaturge.spell.impl.permutatio.PermutatioEffect;
 import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifier;
 import dev.overgrown.thaumaturge.spell.modifier.SimpleModifier;
@@ -87,6 +89,8 @@ public class Thaumaturge implements ModInitializer {
 		AspectRegistry.register(Thaumaturge.identifier("ignis"), new IgnisEffect());
 		AspectRegistry.register(Thaumaturge.identifier("potentia"), new PotentiaEffect());
 		AspectRegistry.register(Thaumaturge.identifier("alienis"), new AlienisEffect());
+		AspectRegistry.register(Thaumaturge.identifier("motus"), new MotusEffect());
+		AspectRegistry.register(Thaumaturge.identifier("permutatio"), new PermutatioEffect());
 		// ... other aspects
 	}
 
