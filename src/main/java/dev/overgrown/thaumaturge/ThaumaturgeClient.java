@@ -1,16 +1,3 @@
-/**
- * ThaumaturgeClient.java
- * <p>
- * Client-side initialization and management for the Thaumaturge mod.
- * This file handles client-specific features including:
- * - Keybindings for spell casting
- * - Tooltip components for aspects
- * - Network packet registration for client-server communication
- * - Client tick event handling for spell activation
- *
- * @see dev.overgrown.thaumaturge.Thaumaturge - Server-side counterpart
- * @see dev.overgrown.thaumaturge.client.keybind.KeybindManager - Keybinding registration
- */
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
@@ -66,20 +53,15 @@ public class ThaumaturgeClient implements ClientModInitializer {
         });
     }
 
-    /**
-     * Checks if a player has a specific foci item equipped in either hand's gauntlet
-     *
-     * @param player The player to check for equipped foci
-     * @param fociId The identifier of the foci to check for
-     * @return true if the foci is equipped in either hand's gauntlet
-     */
     private boolean hasFoci(PlayerEntity player, Identifier fociId) {
         for (Hand hand : Hand.values()) {
             ItemStack stack = player.getStackInHand(hand);
             if (stack.contains(ModComponents.MAX_FOCI)) {
                 GauntletComponent component = stack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                if (component.fociIds().contains(fociId)) {
-                    return true;
+                for (GauntletComponent.FociEntry entry : component.entries()) {
+                    if (entry.aspectId().equals(fociId)) {
+                        return true;
+                    }
                 }
             }
         }

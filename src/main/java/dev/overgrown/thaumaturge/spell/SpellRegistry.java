@@ -1,9 +1,3 @@
-/**
- * SpellRegistry.java
- * <p>
- * Central registry for all spells in the Thaumaturge mod.
- * Manages both individual spells and spell combinations.
- */
 package dev.overgrown.thaumaturge.spell;
 
 import dev.overgrown.thaumaturge.Thaumaturge;

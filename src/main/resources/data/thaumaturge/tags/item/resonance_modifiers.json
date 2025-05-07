@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "thaumaturge:power_resonance_modifier",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:simple_resonance_modifier",
+      "required": false
+    },
+    {
+      "id": "thaumaturge:scatter_resonance_modifier",
+      "required": false
+    }
+  ]
+}

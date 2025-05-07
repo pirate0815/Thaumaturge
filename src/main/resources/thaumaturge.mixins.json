@@ -3,9 +3,7 @@
   "package": "dev.overgrown.thaumaturge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractBlockAccessor",
     "ItemMixin",
-    "MixinLivingEntity",
     "ScreenHandlerMixin"
   ],
   "client": [

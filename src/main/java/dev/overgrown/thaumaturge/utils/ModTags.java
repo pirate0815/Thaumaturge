@@ -1,9 +1,3 @@
-/**
- * ModTags.java
- * <p>
- * Defines tags for blocks and items that can be used in recipes and for categorization.
- * Tags are used throughout the mod for various purposes like identifying foci items.
- */
 package dev.overgrown.thaumaturge.utils;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
@@ -40,5 +34,6 @@ public class ModTags {
 
         // Tag for all foci items - used to identify items that can be inserted into gauntlets
         public static final TagKey<Item> FOCI = TagKey.of(RegistryKeys.ITEM, Thaumaturge.identifier("foci"));
+        public static final TagKey<Item> RESONANCE_MODIFIERS = TagKey.of(RegistryKeys.ITEM, Thaumaturge.identifier("resonance_modifiers"));
     }
 }

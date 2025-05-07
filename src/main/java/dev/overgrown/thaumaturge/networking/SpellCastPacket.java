@@ -14,6 +14,7 @@
  */
 package dev.overgrown.thaumaturge.networking;
 
+import com.mojang.serialization.Codec;
 import dev.overgrown.thaumaturge.Thaumaturge;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -37,6 +38,11 @@ public record SpellCastPacket(SpellTier tier) implements CustomPayload {
         public static final PacketCodec<ByteBuf, SpellTier> PACKET_CODEC = PacketCodecs.indexed(
                 index -> VALUES[index],
                 SpellTier::ordinal
+        );
+
+        public static final Codec<SpellTier> CODEC = Codec.STRING.xmap(
+                SpellTier::valueOf,
+                SpellTier::name
         );
     }
 

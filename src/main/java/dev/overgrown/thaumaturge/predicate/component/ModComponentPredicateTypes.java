@@ -1,17 +1,3 @@
-/**
- * ModComponentPredicateTypes.java
- * <p>
- * This class registers component predicate types for the mod.
- * Component predicates are used in datapacks to check if components meet
- * certain conditions. This enables data-driven behavior based on component states.
- * <p>
- * Currently defined predicates:
- * - FOCI_STATE: Used to check if a gauntlet has foci installed
- * - BOOK_STATE: Used to check various states of thaumaturgy books
- *
- * @see dev.overgrown.thaumaturge.predicate.component.FociPredicate
- * @see dev.overgrown.thaumaturge.predicate.component.BookStatePredicate
- */
 package dev.overgrown.thaumaturge.predicate.component;
 
 import com.mojang.serialization.Codec;

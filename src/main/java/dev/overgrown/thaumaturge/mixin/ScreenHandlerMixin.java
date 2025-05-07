@@ -1,29 +1,15 @@
-/**
- * ScreenHandlerMixin.java
- * <p>
- * This mixin adds functionality to the Minecraft screen handler for interacting
- * with gauntlets and foci in the inventory.
- * <p>
- * It allows:
- * 1. Adding foci to gauntlets by clicking with foci on a gauntlet
- * 2. Ejecting all foci from a gauntlet by shift-right-clicking on it
- * <p>
- * This is essential to the spell system as it enables players to equip their
- * gauntlets with different foci to access different spells.
- *
- * @see dev.overgrown.thaumaturge.component.GauntletComponent
- * @see dev.overgrown.thaumaturge.component.ModComponents#GAUNTLET_STATE
- * @see dev.overgrown.thaumaturge.component.ModComponents#MAX_FOCI
- */
 package dev.overgrown.thaumaturge.mixin;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.utils.ModTags;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -39,6 +25,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static dev.overgrown.thaumaturge.spell.SpellHandler.getFociTier;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
@@ -61,15 +50,8 @@ public abstract class ScreenHandlerMixin {
      */
     @Inject(method = "onSlotClick", at = @At("HEAD"), cancellable = true)
     private void handleGauntletInteraction(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        // Skip on client side - only handle on server
-        if (player.getWorld().isClient()) {
-            return;
-        }
-
-        // Validate slot index
-        if (slotIndex < 0 || slotIndex >= slots.size()) {
-            return;
-        }
+        if (player.getWorld().isClient()) return;
+        if (slotIndex < 0 || slotIndex >= slots.size()) return;
 
         Slot slot = slots.get(slotIndex);
         ItemStack slotStack = slot.getStack();
@@ -78,41 +60,104 @@ public abstract class ScreenHandlerMixin {
         // Case 1: Adding foci to gauntlet
         if (isGauntlet(slotStack)) {
             if (isFoci(cursorStack)) {
-                // Get gauntlet component and check if there's room for more foci
-                GauntletComponent component = slotStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                int maxFoci = slotStack.getOrDefault(ModComponents.MAX_FOCI, 0);
-                if (component.fociCount() < maxFoci) {
-                    // Add foci to gauntlet
-                    Item item = cursorStack.getItem();
-                    Identifier itemId = Registries.ITEM.getId(item);
-                    List<Identifier> newFociIds = new ArrayList<>(component.fociIds());
-                    newFociIds.add(itemId);
-                    GauntletComponent newComponent = new GauntletComponent(newFociIds);
-                    slotStack.set(ModComponents.GAUNTLET_STATE, newComponent);
-                    cursorStack.decrement(1);
-                    slot.markDirty();
-                    ci.cancel(); // Cancel vanilla behavior
-                }
+                handleFociInsertion(slotStack, cursorStack, player, ci);
             }
             // Case 2: Ejecting foci from gauntlet (Shift + Right-click)
             else if (actionType == SlotActionType.PICKUP && button == 1 && player.isSneaking()) {
                 GauntletComponent component = slotStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                if (!component.fociIds().isEmpty()) {
-                    // Return all foci to player's inventory or drop them
-                    for (Identifier itemId : component.fociIds()) {
-                        Item item = Registries.ITEM.get(itemId);
-                        ItemStack fociStack = new ItemStack(item, 1);
-                        if (!player.getInventory().insertStack(fociStack)) {
-                            player.dropItem(fociStack, false);
-                        }
+                RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
+                component.entries().forEach(entry -> {
+                    ItemStack stack = ItemStack.fromNbt(registries, entry.nbt()).orElse(ItemStack.EMPTY);
+                    if (!stack.isEmpty()) {
+                        player.getInventory().offerOrDrop(stack);
                     }
-                    // Reset gauntlet component
-                    slotStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                    slot.markDirty();
-                    ci.cancel(); // Cancel vanilla behavior
-                }
+                });
+                // Reset gauntlet state
+                slotStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
+                ci.cancel(); // Prevent default handling
             }
         }
+    }
+
+    @Unique
+    private void handleFociInsertion(ItemStack gauntletStack, ItemStack fociStack, PlayerEntity player, CallbackInfo ci) {
+        FociComponent fociComp = fociStack.get(ModComponents.FOCI_COMPONENT);
+        SpellCastPacket.SpellTier tier = getFociTier(fociStack.getItem());
+
+        if (fociComp != null && tier != null) {
+            GauntletComponent component = gauntletStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
+            Integer maxFoci = gauntletStack.getOrDefault(ModComponents.MAX_FOCI, 0);
+
+            if (component.fociCount() < maxFoci) {
+                RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
+                GauntletComponent.FociEntry entry = GauntletComponent.FociEntry.fromItemStack(fociStack, registries);
+
+                // Get modifier from offhand
+                ItemStack offhandStack = player.getOffHandStack();
+                Identifier modifierId = getModifierId(offhandStack);
+
+                // Create entry with modifier
+                GauntletComponent.FociEntry modifiedEntry = new GauntletComponent.FociEntry(
+                        entry.tier(),
+                        entry.aspectId(),
+                        modifierId != null ? modifierId : Thaumaturge.identifier("simple"),
+                        entry.nbt()
+                );
+
+                // Consume modifier if used
+                if (modifierId != null) {
+                    offhandStack.decrement(1);
+                }
+
+                // Update gauntlet component
+                List<GauntletComponent.FociEntry> entries = new ArrayList<>(component.entries());
+                entries.add(modifiedEntry);
+                gauntletStack.set(ModComponents.GAUNTLET_STATE, new GauntletComponent(entries));
+                fociStack.decrement(1);
+                ci.cancel();
+            }
+        }
+    }
+
+    @Unique
+    private void handleModifierApplication(ItemStack gauntletStack, ItemStack modifierStack, PlayerEntity player, CallbackInfo ci) {
+        GauntletComponent component = gauntletStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
+        Identifier modifierId = getModifierId(modifierStack);
+
+        if (modifierId != null && !component.entries().isEmpty()) {
+            // Get last inserted foci entry
+            GauntletComponent.FociEntry lastEntry = component.entries().get(component.entries().size() - 1);
+
+            // Create new entry with updated modifier
+            GauntletComponent.FociEntry modifiedEntry = new GauntletComponent.FociEntry(
+                    lastEntry.tier(),
+                    lastEntry.aspectId(),
+                    modifierId,
+                    lastEntry.nbt()
+            );
+
+            // Update component
+            List<GauntletComponent.FociEntry> entries = new ArrayList<>(component.entries());
+            entries.set(entries.size() - 1, modifiedEntry);
+            gauntletStack.set(ModComponents.GAUNTLET_STATE, new GauntletComponent(entries));
+
+            // Consume modifier
+            modifierStack.decrement(1);
+            ci.cancel();
+        }
+    }
+
+    @Unique
+    private boolean isModifier(ItemStack stack) {
+        return stack.isIn(ModTags.Items.RESONANCE_MODIFIERS);
+    }
+
+    @Unique
+    private Identifier getModifierId(ItemStack stack) {
+        if (isModifier(stack)) {
+            return Registries.ITEM.getId(stack.getItem());
+        }
+        return null;
     }
 
     /**
@@ -134,6 +179,6 @@ public abstract class ScreenHandlerMixin {
      */
     @Unique
     private boolean isFoci(ItemStack stack) {
-        return stack.isIn(ModTags.Items.FOCI);
+        return stack.contains(ModComponents.FOCI_COMPONENT);
     }
 }
