@@ -37,12 +37,11 @@ public class SpellHandler {
     }
 
     private static Object createDelivery(SpellCastPacket.SpellTier tier) {
-        switch (tier) {
-            case LESSER: return new SelfSpellDelivery();
-            case ADVANCED: return new TargetedSpellDelivery();
-            case GREATER: return new AoeSpellDelivery();
-            default: throw new IllegalArgumentException("Invalid tier");
-        }
+        return switch (tier) {
+            case LESSER -> new SelfSpellDelivery();
+            case ADVANCED -> new TargetedSpellDelivery();
+            case GREATER -> new AoeSpellDelivery();
+        };
     }
 
     private static void applyEffect(Object delivery, Object effect) {

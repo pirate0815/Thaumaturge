@@ -13,6 +13,7 @@ public class AoeSpellDelivery {
     private float radius = 5.0f;
     private final List<Consumer<BlockPos>> effects = new ArrayList<>();
     private ServerWorld casterWorld;
+    private ServerPlayerEntity caster; // Add caster field
 
     public void setCasterWorld(ServerWorld world) {
         this.casterWorld = world;
@@ -26,11 +27,20 @@ public class AoeSpellDelivery {
         this.radius = radius;
     }
 
+    public float getRadius() {
+        return radius;
+    }
+
+    public ServerPlayerEntity getCaster() {
+        return caster;
+    }
+
     public void addEffect(Consumer<BlockPos> effect) {
         effects.add(effect);
     }
 
     public void execute(ServerPlayerEntity caster) {
+        this.caster = caster; // Store the caster when executing
         this.casterWorld = (ServerWorld) caster.getWorld();
         BlockPos center = caster.getBlockPos();
         int radiusInt = MathHelper.floor(this.radius);

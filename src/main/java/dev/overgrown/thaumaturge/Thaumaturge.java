@@ -3,7 +3,6 @@ package dev.overgrown.thaumaturge;
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
 import dev.overgrown.thaumaturge.block.ModBlocks;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
@@ -18,6 +17,7 @@ import dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket;
 import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
 import dev.overgrown.thaumaturge.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
+import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
 import dev.overgrown.thaumaturge.spell.impl.alienis.AlienisEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
@@ -91,6 +91,7 @@ public class Thaumaturge implements ModInitializer {
 		AspectRegistry.register(Thaumaturge.identifier("alienis"), new AlienisEffect());
 		AspectRegistry.register(Thaumaturge.identifier("motus"), new MotusEffect());
 		AspectRegistry.register(Thaumaturge.identifier("permutatio"), new PermutatioEffect());
+		AspectRegistry.register(Thaumaturge.identifier("aer"), new AerEffect());
 		// ... other aspects
 	}
 
