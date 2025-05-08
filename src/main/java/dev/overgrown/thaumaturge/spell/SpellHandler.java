@@ -42,6 +42,11 @@ public class SpellHandler {
             bolt.setCaster(player);
             bolt.setPosition(player.getEyePos());
             Vec3d direction = player.getRotationVector().normalize();
+            bolt.setVelocity(
+                    direction.x * 1.5,
+                    direction.y * 1.5,
+                    direction.z * 1.5
+            );
             bolt.setVelocity(direction.multiply(1.5));
             bolt.setTier(tier.ordinal());
 

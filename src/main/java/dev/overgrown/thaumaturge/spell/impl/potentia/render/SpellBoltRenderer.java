@@ -61,33 +61,32 @@ public class SpellBoltRenderer extends EntityRenderer<SpellBoltEntity, SpellBolt
 
     private void generateBranch(Matrix4f matrix, VertexConsumer consumer, Random random, float r, float g, float b, float alpha) {
         int segments = 8;
-        float[] xOffsets = new float[segments];
-        float[] yOffsets = new float[segments];
-        float[] zOffsets = new float[segments];
+        float segmentLength = 0.5f;
+        float spread = 0.35f;
 
-        // Initialize starting points
-        xOffsets[0] = 0;
-        yOffsets[0] = 0;
-        zOffsets[0] = 0;
+        float prevX = 0;
+        float prevY = 0;
+        float prevZ = 0;
 
-        // Generate random offsets for each segment
-        for (int i = 1; i < segments; i++) {
-            xOffsets[i] = xOffsets[i-1] + (random.nextFloat() - 0.5f) * 0.5f;
-            yOffsets[i] = yOffsets[i-1] + random.nextFloat() * 1.5f;
-            zOffsets[i] = zOffsets[i-1] + (random.nextFloat() - 0.5f) * 0.5f;
-        }
+        for (int i = 0; i < segments; i++) {
+            // Move forward in local Z axis (bolt's direction)
+            float z = i * segmentLength;
 
-        // Draw the segments
-        for (int i = 0; i < segments - 1; i++) {
-            float x1 = xOffsets[i];
-            float y1 = yOffsets[i];
-            float z1 = zOffsets[i];
-            float x2 = xOffsets[i+1];
-            float y2 = yOffsets[i+1];
-            float z2 = zOffsets[i+1];
+            // Add lateral spread
+            float x = (random.nextFloat() - 0.5f) * spread;
+            float y = (random.nextFloat() - 0.5f) * spread;
 
-            // Draw lines between consecutive points
-            drawLine(matrix, consumer, x1, y1, z1, x2, y2, z2, r, g, b, alpha);
+            if (i > 0) {
+                // Draw line from previous point to current
+                consumer.vertex(matrix, prevX, prevY, prevZ)
+                        .color(r, g, b, alpha);
+                consumer.vertex(matrix, x, y, z)
+                        .color(r, g, b, alpha);
+            }
+
+            prevX = x;
+            prevY = y;
+            prevZ = z;
         }
     }
 

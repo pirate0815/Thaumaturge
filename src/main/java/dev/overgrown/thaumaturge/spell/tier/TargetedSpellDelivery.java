@@ -80,7 +80,7 @@ public class TargetedSpellDelivery {
             if (hit != null) {
                 Entity target = hit.getEntity();
                 if (swapActorTarget) {
-                    onHitEffects.forEach(effect -> effect.accept(caster));
+                    onHitEffects.forEach(effect -> effect.accept(target));
                 } else {
                     onHitEffects.forEach(effect -> effect.accept(target));
                 }
