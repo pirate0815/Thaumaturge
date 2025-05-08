@@ -5,12 +5,15 @@ import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.entity.ModEntities;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesRenderer;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.networking.ThaumaturgeModPacketsS2C;
+import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +24,8 @@ import net.minecraft.util.Identifier;
 public class ThaumaturgeClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
+
         // Register all keybinds used for spell casting
         KeybindManager.registerKeybinds();
 

@@ -36,6 +36,10 @@ public class TargetedSpellDelivery {
         return caster;
     }
 
+    public void setCaster(ServerPlayerEntity caster) {
+        this.caster = caster;
+    }
+
     public void setSwapActorTarget(boolean swap) {
         this.swapActorTarget = swap;
     }

@@ -1,9 +1,12 @@
 package dev.overgrown.thaumaturge.spell;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.entity.ModEntities;
 import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
+import dev.overgrown.thaumaturge.spell.impl.potentia.entity.SpellBoltEntity;
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import dev.overgrown.thaumaturge.spell.pattern.ModifierEffect;
@@ -11,29 +14,65 @@ import dev.overgrown.thaumaturge.spell.pattern.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpellHandler {
+    private static final Identifier POTENTIA_ID = Thaumaturge.identifier("potentia");
+
     public static void tryCastSpell(ServerPlayerEntity player, SpellCastPacket.SpellTier tier) {
         List<GauntletComponent.FociEntry> entries = getEquippedFociEntries(player, tier);
         if (entries.isEmpty()) return;
 
-        Object delivery = createDelivery(tier);
-        for (GauntletComponent.FociEntry entry : entries) {
-            AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
-            ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+        // Check if any entry has the Potentia aspect
+        boolean hasPotentia = entries.stream()
+                .anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
 
-            if (aspectEffect != null) applyEffect(delivery, aspectEffect);
-            if (modifierEffect != null) applyEffect(delivery, modifierEffect);
+        if (hasPotentia) {
+            // Create and shoot the spell bolt
+            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
+            bolt.setPosition(player.getEyePos());
+            Vec3d direction = player.getRotationVector().normalize();
+            bolt.setVelocity(direction.multiply(1.5));
+            bolt.setTier(tier.ordinal());
+
+            // Collect effects from other aspects and modifiers
+            TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery();
+            dummyDelivery.setCaster(player); // Set the caster here
+
+            for (GauntletComponent.FociEntry entry : entries) {
+                if (entry.aspectId().equals(POTENTIA_ID)) continue;
+
+                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
+                if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
+            }
+
+            // Attach the collected effects to the bolt
+            bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
+            player.getWorld().spawnEntity(bolt);
+        } else {
+            // Proceed with regular spell delivery
+            Object delivery = createDelivery(tier);
+            for (GauntletComponent.FociEntry entry : entries) {
+                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+                if (aspectEffect != null) applyEffect(delivery, aspectEffect);
+                if (modifierEffect != null) applyEffect(delivery, modifierEffect);
+            }
+            executeDelivery(delivery, player);
         }
-
-        executeDelivery(delivery, player);
     }
 
     private static Object createDelivery(SpellCastPacket.SpellTier tier) {
@@ -84,5 +123,21 @@ public class SpellHandler {
         if (item == ModItems.ADVANCED_FOCI) return SpellCastPacket.SpellTier.ADVANCED;
         if (item == ModItems.GREATER_FOCI) return SpellCastPacket.SpellTier.GREATER;
         return null;
+    }
+
+    public static void castPotentiaSpell(PlayerEntity caster, int tier) {
+        if(hasPotentiaFoci(caster)) {
+            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, caster.getWorld());
+            bolt.setPosition(caster.getEyePos());
+            Vec3d rotation = caster.getRotationVector().normalize();
+            bolt.setVelocity(rotation.multiply(1.5)); // Adjust speed as needed
+            bolt.setTier(tier);
+            caster.getWorld().spawnEntity(bolt);
+        }
+    }
+
+    private static boolean hasPotentiaFoci(PlayerEntity player) {
+        // Check gauntlet for Potentia aspect
+        return true;
     }
 }
