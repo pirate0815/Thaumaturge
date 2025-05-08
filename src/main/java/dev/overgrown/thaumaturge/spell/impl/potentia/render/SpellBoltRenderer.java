@@ -11,6 +11,8 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
 import org.joml.Matrix4f;
 
@@ -30,32 +32,70 @@ public class SpellBoltRenderer extends EntityRenderer<SpellBoltEntity, SpellBolt
         super.updateRenderState(entity, state, tickDelta);
         state.seed = entity.getSeed();
         state.tier = entity.getTier();
+        state.yaw = entity.getYaw();
+        state.pitch = entity.getPitch();
     }
 
     @Override
     public void render(SpellBoltRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+        matrices.push();
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw - 180.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(state.pitch));
         renderBolt(matrices, vertexConsumers, state.tier, state.seed);
+        matrices.pop();
     }
 
     private void renderBolt(MatrixStack matrices, VertexConsumerProvider consumers, int tier, long seed) {
         VertexConsumer consumer = consumers.getBuffer(RenderLayer.getLightning());
         Matrix4f matrix = matrices.peek().getPositionMatrix();
 
-        float r = 0.2f, g = 0.2f, b = 1.0f;
-        if (tier > 1) b = 0.8f;
+        float r = 0.2f, g = 0.9f, b = 1.0f; // Adjust color to be more electric
+        float alpha = 0.5f;
 
         Random random = Random.create(seed);
-        for (int i = 0; i < 3; i++) {
-            generateBranch(matrix, consumer, random, r, g, b);
+        // Generate multiple main branches
+        for (int i = 0; i < 4; i++) {
+            generateBranch(matrix, consumer, random, r, g, b, alpha);
         }
     }
 
-    private void generateBranch(Matrix4f matrix, VertexConsumer consumer, Random random, float r, float g, float b) {
-        for (int j = 0; j < 5; j++) {
-            float offset = j * 0.5f;
-            consumer.vertex(matrix, offset, 0, 0).color(r, g, b, 0.5f);
-            consumer.vertex(matrix, offset + 0.5f, 1, 0).color(r, g, b, 0.5f);
+    private void generateBranch(Matrix4f matrix, VertexConsumer consumer, Random random, float r, float g, float b, float alpha) {
+        int segments = 8;
+        float[] xOffsets = new float[segments];
+        float[] yOffsets = new float[segments];
+        float[] zOffsets = new float[segments];
+
+        // Initialize starting points
+        xOffsets[0] = 0;
+        yOffsets[0] = 0;
+        zOffsets[0] = 0;
+
+        // Generate random offsets for each segment
+        for (int i = 1; i < segments; i++) {
+            xOffsets[i] = xOffsets[i-1] + (random.nextFloat() - 0.5f) * 0.5f;
+            yOffsets[i] = yOffsets[i-1] + random.nextFloat() * 1.5f;
+            zOffsets[i] = zOffsets[i-1] + (random.nextFloat() - 0.5f) * 0.5f;
         }
+
+        // Draw the segments
+        for (int i = 0; i < segments - 1; i++) {
+            float x1 = xOffsets[i];
+            float y1 = yOffsets[i];
+            float z1 = zOffsets[i];
+            float x2 = xOffsets[i+1];
+            float y2 = yOffsets[i+1];
+            float z2 = zOffsets[i+1];
+
+            // Draw lines between consecutive points
+            drawLine(matrix, consumer, x1, y1, z1, x2, y2, z2, r, g, b, alpha);
+        }
+    }
+
+    private void drawLine(Matrix4f matrix, VertexConsumer consumer, float x1, float y1, float z1,
+                          float x2, float y2, float z2, float r, float g, float b, float alpha) {
+        // Draw a line between two points with given color and alpha
+        consumer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha);
+        consumer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha);
     }
 
     public Identifier getTexture(SpellBoltRenderState state) {

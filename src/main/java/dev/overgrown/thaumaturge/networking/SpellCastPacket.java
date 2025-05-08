@@ -1,17 +1,3 @@
-/**
- * SpellCastPacket.java
- * <p>
- * This class defines the packet sent when a player casts a spell.
- * The packet contains an enum value indicating which type of spell
- * was cast, which is translated to the corresponding spell identifier
- * on the server side.
- * <p>
- * The packet is registered for both client-to-server (player initiating spell cast)
- * and server-to-client (for potential spell effect synchronization).
- *
- * @see dev.overgrown.thaumaturge.ThaumaturgeClient
- * @see dev.overgrown.thaumaturge.Thaumaturge#handleSpellCast
- */
 package dev.overgrown.thaumaturge.networking;
 
 import com.mojang.serialization.Codec;

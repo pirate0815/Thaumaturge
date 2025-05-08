@@ -39,6 +39,7 @@ public class SpellHandler {
         if (hasPotentia) {
             // Create and shoot the spell bolt
             SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
+            bolt.setCaster(player);
             bolt.setPosition(player.getEyePos());
             Vec3d direction = player.getRotationVector().normalize();
             bolt.setVelocity(direction.multiply(1.5));
@@ -128,9 +129,10 @@ public class SpellHandler {
     public static void castPotentiaSpell(PlayerEntity caster, int tier) {
         if(hasPotentiaFoci(caster)) {
             SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, caster.getWorld());
+            bolt.setCaster(caster); // Corrected variable name
             bolt.setPosition(caster.getEyePos());
             Vec3d rotation = caster.getRotationVector().normalize();
-            bolt.setVelocity(rotation.multiply(1.5)); // Adjust speed as needed
+            bolt.setVelocity(rotation.multiply(1.5));
             bolt.setTier(tier);
             caster.getWorld().spawnEntity(bolt);
         }

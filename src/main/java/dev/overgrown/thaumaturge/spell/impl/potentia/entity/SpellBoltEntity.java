@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class SpellBoltEntity extends Entity {
+    private UUID casterUuid;
     private List<Consumer<Entity>> onHitEffects = new ArrayList<>();
     private static final TrackedData<Integer> TIER = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Long> SEED = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.LONG);
@@ -29,6 +30,10 @@ public class SpellBoltEntity extends Entity {
     public SpellBoltEntity(EntityType<?> type, World world) {
         super(type, world);
         this.life = 2;
+    }
+
+    public void setCaster(PlayerEntity caster) {
+        this.casterUuid = caster.getUuid();
     }
 
     @Override
@@ -64,7 +69,6 @@ public class SpellBoltEntity extends Entity {
             return;
         }
 
-        // Check for collisions
         Vec3d startPos = getPos();
         Vec3d endPos = startPos.add(getVelocity());
         EntityHitResult hitResult = ProjectileUtil.raycast(
@@ -72,19 +76,24 @@ public class SpellBoltEntity extends Entity {
                 startPos,
                 endPos,
                 getBoundingBox().stretch(getVelocity()),
-                entity -> !entity.isSpectator() && entity.isAlive(),
+                entity -> {
+                    if (entity.isSpectator() || !entity.isAlive()) {
+                        return false;
+                    }
+                    // Exclude the caster from collision
+                    return !entity.getUuid().equals(casterUuid);
+                },
                 getVelocity().lengthSquared()
         );
 
         if (hitResult != null) {
             Entity target = hitResult.getEntity();
-            // Apply all on-hit effects
             onHitEffects.forEach(effect -> effect.accept(target));
             discard();
         } else {
-            // Update position
             setVelocity(getVelocity().multiply(0.95));
             move(MovementType.SELF, getVelocity());
+            ProjectileUtil.setRotationFromVelocity(this, 1.0f);
         }
     }
 
