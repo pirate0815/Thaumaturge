@@ -15,6 +15,7 @@ import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,12 +43,15 @@ public class SpellHandler {
             bolt.setCaster(player);
             bolt.setPosition(player.getEyePos());
             Vec3d direction = player.getRotationVector().normalize();
+            Vec3d spawnPos = player.getEyePos().add(direction.multiply(0.2));
+            bolt.setPosition(spawnPos);
             bolt.setVelocity(
                     direction.x * 1.5,
                     direction.y * 1.5,
                     direction.z * 1.5
             );
             bolt.setVelocity(direction.multiply(1.5));
+            ProjectileUtil.setRotationFromVelocity(bolt, 1.0f);
             bolt.setTier(tier.ordinal());
 
             // Collect effects from other aspects and modifiers

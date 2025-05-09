@@ -39,7 +39,7 @@ public class SpellBoltRenderer extends EntityRenderer<SpellBoltEntity, SpellBolt
     @Override
     public void render(SpellBoltRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw - 180.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw + 180.0F));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(state.pitch));
         renderBolt(matrices, vertexConsumers, state.tier, state.seed);
         matrices.pop();
