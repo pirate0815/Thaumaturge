@@ -15,17 +15,13 @@ public class RecipeManager {
         recipes.add(recipe);
     }
 
-    public static void removeRecipe(Recipe recipe) {
-        recipes.remove(recipe);
-    }
-
     public static boolean isCatalyst(Item item) {
-        return recipes.stream().anyMatch(recipe -> recipe.getCatalyst() == item);
+        return recipes.stream().anyMatch(r -> r.getCatalyst() == item);
     }
 
-    public static Optional<Recipe> findMatchingRecipe(ItemStack catalystStack, AspectComponent totalAspects, VesselBlock.FluidType fluidType, int fluidLevel) {
+    public static Optional<Recipe> findMatchingRecipe(ItemStack catalyst, AspectComponent aspects, VesselBlock.FluidType fluidType, int fluidLevel) {
         return recipes.stream()
-                .filter(recipe -> recipe.matches(catalystStack, totalAspects, fluidType, fluidLevel))
+                .filter(recipe -> recipe.matches(catalyst, aspects, fluidType, fluidLevel))
                 .findFirst();
     }
 }

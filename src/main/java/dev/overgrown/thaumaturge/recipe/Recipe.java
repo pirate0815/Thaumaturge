@@ -24,13 +24,12 @@ public class Recipe {
         this.requiredFluidLevel = requiredFluidLevel;
     }
 
-    public boolean matches(ItemStack catalystStack, AspectComponent totalAspects, VesselBlock.FluidType currentFluidType, int currentFluidLevel) {
+    public boolean matches(ItemStack catalystStack, AspectComponent vesselAspects, VesselBlock.FluidType currentFluidType, int currentFluidLevel) {
         if (catalystStack.getItem() != catalyst) return false;
         if (requiredFluidType != null && requiredFluidType != currentFluidType) return false;
-        if (requiredFluidLevel > 0 && currentFluidLevel < requiredFluidLevel) return false;
         if (currentFluidLevel < requiredFluidLevel) return false;
         for (Object2IntMap.Entry<RegistryEntry<Aspect>> entry : requiredAspects.object2IntEntrySet()) {
-            if (totalAspects.getLevel(entry.getKey()) < entry.getIntValue()) return false;
+            if (vesselAspects.getMap().getInt(entry.getKey()) < entry.getIntValue()) return false;
         }
         return true;
     }

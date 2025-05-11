@@ -11,24 +11,16 @@ import net.minecraft.registry.entry.RegistryFixedCodec;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is the Aspect class, which holds an instance of Aspect derived from files found in
  * data/thaumaturge/thaumaturge/aspects/{json_file}.json
+ *
+ * @param name            This holds the name of the Aspect, as it should be rendered in displays.
+ * @param textureLocation This holds the location of the texture, if the player wishes to override the default texture with one from a specific directory.
  */
-public class Aspect {
-    /**
-     * This holds the name of the Aspect, as it should be rendered in displays.
-     */
-    private final String name;
-
-    /**
-     * This holds the location of the texture, if the player wishes to override the default texture with one from a specific directory.
-     */
-    private final Identifier textureLocation;
-
-
-
+public record Aspect(String name, Identifier textureLocation) {
     /**
      * This is the codec for encoding/decoding between Aspects and Json. it currently contains two fields,
      * "name" and "texture location", for the two current data fields. you can add up to 8 fields here,
@@ -36,8 +28,8 @@ public class Aspect {
      */
     public static final Codec<Aspect> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                            Codec.STRING.fieldOf("name").forGetter(Aspect::getName),
-                            Identifier.CODEC.optionalFieldOf("texture_location", Thaumaturge.identifier("empty")).forGetter(Aspect::getTextureLocation)
+                            Codec.STRING.fieldOf("name").forGetter(Aspect::name),
+                            Identifier.CODEC.optionalFieldOf("texture_location", Thaumaturge.identifier("empty")).forGetter(Aspect::textureLocation)
                     )
                     .apply(instance, Aspect::new)
     );
@@ -52,24 +44,24 @@ public class Aspect {
      * item's Aspect Component.
      */
     public static final PacketCodec<RegistryByteBuf, Aspect> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.STRING, Aspect::getName,
-            Identifier.PACKET_CODEC, Aspect::getTextureLocation,
+            PacketCodecs.STRING, Aspect::name,
+            Identifier.PACKET_CODEC, Aspect::textureLocation,
             Aspect::new
     );
 
     /**
      * The constructor for the Aspect Class.
-     * @param name the name of the Aspect.
+     *
+     * @param name            the name of the Aspect.
      * @param textureLocation the texture location used in rendering.
      */
-    public Aspect(String name, Identifier textureLocation) {
-        this.name = name;
-        this.textureLocation = textureLocation;
+    public Aspect {
     }
 
     /**
      * This method will get the text component name of the Aspect, defaulting to the name defined in the Json file
      * in the event that any name defined in the lang files is not found.
+     *
      * @return the text component containing the name of the Aspect.
      */
     public MutableText getTranslatedName() {
@@ -78,10 +70,11 @@ public class Aspect {
 
     /**
      * This method constructs a translation key based on the identifier of the item, or the name of the aspect.
+     *
      * @return a string translation key to be used in Text#translatable(String key).
      */
     public String getTranslatableKey() {
-        if(getIdentifier() != null){
+        if (getIdentifier() != null) {
             return "aspect." + getIdentifier().getNamespace() + "." + getIdentifier().getPath() + ".name";
         } else {
             return "aspect." + Thaumaturge.MOD_ID + "." + this.name.toLowerCase() + ".name";
@@ -90,14 +83,17 @@ public class Aspect {
 
     /**
      * A getter for the Aspect's name.
+     *
      * @return the name of the Aspect
      */
-    public String getName() {
+    @Override
+    public String name() {
         return this.name;
     }
 
     /**
      * A getter for the Aspect's identifier.
+     *
      * @return the identifier of the Aspect
      */
     private Identifier getIdentifier() {
@@ -106,12 +102,14 @@ public class Aspect {
 
     /**
      * A getter for the Aspect's texture location.
+     *
      * @return the identifier that points towards the texture used for the Aspect's rendering
      */
-    public Identifier getTextureLocation() {
-        if(!this.textureLocation.equals(Thaumaturge.identifier("empty"))) {
+    @Override
+    public Identifier textureLocation() {
+        if (!this.textureLocation.equals(Thaumaturge.identifier("empty"))) {
             return this.textureLocation;
-        } else if(getIdentifier() != null){
+        } else if (getIdentifier() != null) {
             return Identifier.of(this.getIdentifier().getNamespace(), "textures/aspects_icons/" + this.getIdentifier().getPath() + ".png");
         } else {
             return Thaumaturge.identifier("textures/aspects_icons/" + this.name.toLowerCase() + ".png");
@@ -119,7 +117,7 @@ public class Aspect {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.name;
     }
 }
