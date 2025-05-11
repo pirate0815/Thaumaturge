@@ -44,7 +44,7 @@ public class VesselBlock extends Block implements BlockEntityProvider {
     public VesselBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState()
-                .with(FLUID_TYPE, FluidType.WATER)
+                .with(FLUID_TYPE, FluidType.EMPTY)
                 .with(LEVEL, 0));
     }
 
@@ -66,181 +66,166 @@ public class VesselBlock extends Block implements BlockEntityProvider {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        // Check for shift-right-click with empty hand to empty the Vessel
-        for (Hand currentHand : Hand.values()) {
-            ItemStack stackInHand = player.getStackInHand(currentHand);
-            if (player.isSneaking() && stackInHand.isEmpty()) {
-                VesselBlockEntity blockEntity = (VesselBlockEntity) world.getBlockEntity(pos);
-                if (blockEntity == null) return ActionResult.PASS;
+        // Shift-right-click to reset only if not empty
+        if (player.isSneaking() && player.getStackInHand(Hand.MAIN_HAND).isEmpty() && player.getStackInHand(Hand.OFF_HAND).isEmpty()) {
+            VesselBlockEntity blockEntity = (VesselBlockEntity) world.getBlockEntity(pos);
+            boolean isFluidEmpty = state.get(FLUID_TYPE) == FluidType.EMPTY && state.get(LEVEL) == 0;
+            boolean hasAspects = blockEntity != null && !blockEntity.getAspectComponent().isEmpty();
 
-                BlockState currentState = world.getBlockState(pos);
-                FluidType currentFluid = currentState.get(FLUID_TYPE);
-                int currentLevel = currentState.get(LEVEL);
-
-                if (currentFluid != FluidType.EMPTY || currentLevel > 0 || !blockEntity.isEmpty()) {
-                    world.setBlockState(pos, getDefaultState());
-                    blockEntity.clear();
-                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    return ActionResult.SUCCESS;
-                } else {
-                    player.sendMessage(Text.translatable("block.thaumaturge.vessel.empty"), true);
-                    return ActionResult.CONSUME;
-                }
+            if (!isFluidEmpty || hasAspects) {
+                resetVessel(world, pos, state);
+                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                return ActionResult.SUCCESS;
+            } else {
+                return ActionResult.PASS;
             }
         }
-        // Check both hands for the item
-        Hand[] hands = Hand.values();
-        for (Hand currentHand : hands) {
-            ItemStack stackInHand = player.getStackInHand(currentHand);
-            FluidType fluidType = null;
 
-            if (stackInHand.isOf(Items.WATER_BUCKET)) {
-                fluidType = FluidType.WATER;
-            } else if (stackInHand.isOf(Items.LAVA_BUCKET)) {
-                fluidType = FluidType.LAVA;
-            } else if (stackInHand.isOf(Items.POWDER_SNOW_BUCKET)) {
-                fluidType = FluidType.POWDERED_SNOW;
+        // Check both hands for interactions
+        for (Hand hand : Hand.values()) {
+            ItemStack stack = player.getStackInHand(hand);
+
+            // Check for fluid filling
+            FluidType fluidType = getFluidType(stack);
+            if (fluidType != null) {
+                return handleFluidAddition(world, pos, state, player, stack, fluidType);
             }
 
-            if (fluidType != null && isHeatSource(world.getBlockState(pos.down()))) {
-                int currentLevel = state.get(LEVEL);
-                if (currentLevel < 3) {
-                    world.setBlockState(pos, state.with(FLUID_TYPE, fluidType).with(LEVEL, currentLevel + 1), Block.NOTIFY_ALL);
-                    if (!player.isCreative()) {
-                        stackInHand.decrement(1);
-                        player.giveItemStack(new ItemStack(Items.BUCKET));
-                    }
-                    world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    return ActionResult.SUCCESS;
-                } else {
-                    player.sendMessage(Text.translatable("block.thaumaturge.vessel.full"), true);
-                    return ActionResult.CONSUME;
-                }
-            }
-
-            // Handle catalyst and ingredient checks for each hand
             VesselBlockEntity blockEntity = (VesselBlockEntity) world.getBlockEntity(pos);
             if (blockEntity == null) continue;
 
-            if (RecipeManager.isCatalyst(stackInHand.getItem())) {
-                ActionResult catalystResult = handleCatalyst(world, pos, player, currentHand, stackInHand, blockEntity);
-                if (catalystResult.isAccepted()) {
-                    return catalystResult;
-                }
+            // Check heat and fluid requirements
+            if (!isHeatSource(world.getBlockState(pos.down())) || state.get(FLUID_TYPE) == FluidType.EMPTY) {
+                player.sendMessage(Text.translatable("block.thaumaturge.vessel.no_heat_or_fluid"), true);
+                return ActionResult.CONSUME;
+            }
+
+            // Handle catalyst or aspect item
+            if (RecipeManager.isCatalyst(stack.getItem())) {
+                return handleCatalyst(world, pos, player, hand, stack, blockEntity, state);
             } else {
-                ActionResult ingredientResult = handleIngredient(player, currentHand, stackInHand, blockEntity);
-                if (ingredientResult.isAccepted()) {
-                    return ingredientResult;
-                }
+                ActionResult result = handleIngredient(player, hand, stack, blockEntity);
+                if (result.isAccepted()) return result;
             }
         }
 
         return ActionResult.PASS;
     }
 
-    private ActionResult handleCatalyst(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack catalystStack, VesselBlockEntity blockEntity) {
-
-        BlockState currentState = world.getBlockState(pos);
-        FluidType currentFluid = currentState.get(FLUID_TYPE);
-        int currentLevel = currentState.get(LEVEL);
-
-        // Only check for heat if the Vessel has a fluid
-        if (currentFluid != FluidType.EMPTY && !isHeatSource(world.getBlockState(pos.down()))) {
-            player.sendMessage(Text.translatable("block.thaumaturge.vessel.no_heat_or_fluid"), true);
+    private ActionResult handleFluidAddition(World world, BlockPos pos, BlockState state, PlayerEntity player, ItemStack stack, FluidType fluidType) {
+        int currentLevel = state.get(LEVEL);
+        if (currentLevel < 3) {
+            world.setBlockState(pos, state.with(FLUID_TYPE, fluidType).with(LEVEL, currentLevel + 1));
+            if (!player.isCreative()) {
+                stack.decrement(1);
+                player.giveItemStack(new ItemStack(Items.BUCKET));
+            }
+            world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            return ActionResult.SUCCESS;
+        } else {
+            player.sendMessage(Text.translatable("block.thaumaturge.vessel.full"), true);
             return ActionResult.CONSUME;
         }
+    }
 
-        AspectComponent totalAspects = new AspectComponent(new Object2IntOpenHashMap<>());
-        for (ItemStack itemStack : blockEntity.getItems()) {
-            AspectComponent component = itemStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-            totalAspects.addAspect(component);
-        }
+    private ActionResult handleCatalyst(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack catalystStack, VesselBlockEntity blockEntity, BlockState state) {
+        FluidType currentFluid = state.get(FLUID_TYPE);
+        int currentLevel = state.get(LEVEL);
 
-        Optional<Recipe> recipe = RecipeManager.findMatchingRecipe(catalystStack, totalAspects, currentFluid, currentLevel);
-        if (recipe.isPresent()) {
-            boolean success = deductRequiredAspects(blockEntity, recipe.get().getRequiredAspects());
-            if (success) {
-                if (!player.isCreative()) catalystStack.decrement(1);
-                player.giveItemStack(recipe.get().getOutput());
-                world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.SUCCESS;
-            } else {
-                player.sendMessage(Text.translatable("block.thaumaturge.vessel.recipe_failed"), true);
-                return ActionResult.CONSUME;
-            }
-        } else {
+        Optional<Recipe> recipe = RecipeManager.findMatchingRecipe(catalystStack, blockEntity.getAspectComponent(), currentFluid, currentLevel);
+        if (recipe.isEmpty()) {
             player.sendMessage(Text.translatable("block.thaumaturge.vessel.recipe_failed"), true);
             return ActionResult.CONSUME;
+        }
+
+        if (!deductRequiredAspects(blockEntity, recipe.get().getRequiredAspects())) {
+            player.sendMessage(Text.translatable("block.thaumaturge.vessel.insufficient_aspects"), true);
+            return ActionResult.CONSUME;
+        }
+
+        // Successfully crafted
+        if (!player.isCreative()) {
+            catalystStack.decrement(1);
+        }
+        player.giveItemStack(recipe.get().getOutput());
+
+        // 50% chance to reduce fluid level
+        if (world.random.nextBoolean()) {
+            reduceFluidLevel(world, pos, state, blockEntity);
+        }
+
+        world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        return ActionResult.SUCCESS;
+    }
+
+    private void reduceFluidLevel(World world, BlockPos pos, BlockState state, VesselBlockEntity blockEntity) {
+        int currentLevel = state.get(LEVEL);
+        if (currentLevel > 0) {
+            int newLevel = currentLevel - 1;
+            BlockState newState;
+            if (newLevel == 0) {
+                newState = getDefaultState().with(FLUID_TYPE, FluidType.EMPTY).with(LEVEL, 0);
+                blockEntity.reset();
+            } else {
+                newState = state.with(LEVEL, newLevel);
+            }
+            world.setBlockState(pos, newState);
+            world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 1.0F);
         }
     }
 
     private boolean deductRequiredAspects(VesselBlockEntity blockEntity, Object2IntMap<RegistryEntry<Aspect>> requiredAspects) {
-        Object2IntOpenHashMap<RegistryEntry<Aspect>> remaining = new Object2IntOpenHashMap<>(requiredAspects);
-
-        for (int i = 0; i < blockEntity.size(); i++) {
-            ItemStack stack = blockEntity.getStack(i);
-            if (stack.isEmpty()) continue;
-
-            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-            Object2IntOpenHashMap<RegistryEntry<Aspect>> aspects = new Object2IntOpenHashMap<>(component.getMap());
-
-            boolean modified = false;
-
-            for (Object2IntMap.Entry<RegistryEntry<Aspect>> entry : remaining.object2IntEntrySet()) {
-                RegistryEntry<Aspect> aspect = entry.getKey();
-                int needed = entry.getIntValue();
-                if (needed <= 0) continue;
-
-                int present = aspects.getInt(aspect);
-                int deduct = Math.min(present, needed);
-
-                if (deduct > 0) {
-                    aspects.put(aspect, present - deduct);
-                    remaining.put(aspect, needed - deduct);
-                    modified = true;
-                }
-            }
-
-            if (modified) {
-                ItemStack newStack = stack.copy();
-                newStack.set(ModComponents.ASPECT, new AspectComponent(aspects));
-                blockEntity.setStack(i, newStack);
-            }
-
-            if (remaining.values().intStream().allMatch(v -> v <= 0)) {
-                break;
+        AspectComponent aspects = blockEntity.getAspectComponent();
+        for (Object2IntMap.Entry<RegistryEntry<Aspect>> entry : requiredAspects.object2IntEntrySet()) {
+            if (aspects.getMap().getInt(entry.getKey()) < entry.getIntValue()) {
+                return false;
             }
         }
 
-        // Remove empty aspect items by iterating backwards to avoid index issues
-        for (int i = blockEntity.size() - 1; i >= 0; i--) {
-            ItemStack stack = blockEntity.getStack(i);
-            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-            if (component.getMap().isEmpty()) {
-                blockEntity.removeStack(i);
+        // Deduct the aspects
+        for (Object2IntMap.Entry<RegistryEntry<Aspect>> entry : requiredAspects.object2IntEntrySet()) {
+            RegistryEntry<Aspect> aspect = entry.getKey();
+            int amount = entry.getIntValue();
+            aspects.getMap().put(aspect, aspects.getMap().getInt(aspect) - amount);
+            if (aspects.getMap().getInt(aspect) <= 0) {
+                aspects.getMap().removeInt(aspect);
             }
         }
 
-        return remaining.values().intStream().allMatch(v -> v <= 0);
+        blockEntity.markDirty();
+        return true;
     }
 
     private ActionResult handleIngredient(PlayerEntity player, Hand hand, ItemStack stack, VesselBlockEntity blockEntity) {
-
-        World world = player.getWorld();
-        BlockPos vesselPos = blockEntity.getPos();
-        BlockState currentState = world.getBlockState(vesselPos);
-        if (currentState.get(FLUID_TYPE) == FluidType.EMPTY || !isHeatSource(world.getBlockState(vesselPos.down()))) {
-            player.sendMessage(Text.translatable("block.thaumaturge.vessel.no_heat_or_fluid"), true);
-            return ActionResult.CONSUME;
+        AspectComponent itemAspects = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
+        if (itemAspects.isEmpty()) {
+            player.sendMessage(Text.translatable("block.thaumaturge.vessel.no_aspects"), true);
+            return ActionResult.PASS;
         }
 
-        if (blockEntity.addStack(stack)) {
-            if (!player.isCreative()) stack.decrement(1);
-            return ActionResult.SUCCESS;
-        } else {
-            player.sendMessage(Text.translatable("block.thaumaturge.vessel.inventory_full"), true);
-            return ActionResult.CONSUME;
+        blockEntity.getAspectComponent().addAspect(itemAspects);
+        if (!player.isCreative()) {
+            stack.decrement(1);
         }
+
+        player.getWorld().playSound(null, blockEntity.getPos(), SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        blockEntity.markDirty();
+        return ActionResult.SUCCESS;
+    }
+
+    private void resetVessel(World world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, getDefaultState());
+        VesselBlockEntity blockEntity = (VesselBlockEntity) world.getBlockEntity(pos);
+        if (blockEntity != null) {
+            blockEntity.reset();
+        }
+    }
+
+    private FluidType getFluidType(ItemStack stack) {
+        if (stack.isOf(Items.WATER_BUCKET)) return FluidType.WATER;
+        if (stack.isOf(Items.LAVA_BUCKET)) return FluidType.LAVA;
+        if (stack.isOf(Items.POWDER_SNOW_BUCKET)) return FluidType.POWDERED_SNOW;
+        return null;
     }
 
     @Override

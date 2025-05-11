@@ -68,7 +68,7 @@ public class AspectTooltipComponent implements TooltipComponent {
         for (var entry : aspects.object2IntEntrySet()) {
             if (MinecraftClient.getInstance().world != null) {
                 int value = entry.getIntValue();
-                Identifier texture = entry.getKey().value().getTextureLocation();
+                Identifier texture = entry.getKey().value().textureLocation();
 
                 context.drawTexture(RenderLayer::getGuiTextured, texture, currentX, y, 0, 0, 16, 16, 16, 16);
 

@@ -7,6 +7,7 @@ import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.item.ModItems;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlockEntity;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -107,52 +108,61 @@ public class AethericGogglesRenderer {
                 BlockPos pos = ((BlockHitResult) hit).getBlockPos();
                 BlockEntity blockEntity = client.world.getBlockEntity(pos);
 
-                if (blockEntity instanceof LootableContainerBlockEntity container) {
-                    Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
-                    boolean hasItems = false;
+                // Check for VesselBlockEntity first
+                switch (blockEntity) {
+                    case VesselBlockEntity vesselBlockEntity -> {
+                        currentAspects = vesselBlockEntity.getAspectComponent();
+                        tooltipPosition = calculateScreenPosition();
+                    }
+                    case LootableContainerBlockEntity container -> {
+                        Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
+                        boolean hasItems = false;
 
-                    // Use getInvStackList to handle potential client-side missing data
-                    for (int i = 0; i < container.size(); i++) {
-                        ItemStack stack = container.getStack(i);
-                        if (!stack.isEmpty()) {
-                            hasItems = true;
-                            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-                            component.getMap().forEach((aspect, count) ->
-                                    combinedAspects.mergeInt(aspect, count, Integer::sum)
-                            );
+                        // Use getInvStackList to handle potential client-side missing data
+                        for (int i = 0; i < container.size(); i++) {
+                            ItemStack stack = container.getStack(i);
+                            if (!stack.isEmpty()) {
+                                hasItems = true;
+                                AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
+                                component.getMap().forEach((aspect, count) ->
+                                        combinedAspects.mergeInt(aspect, count, Integer::sum)
+                                );
+                            }
+                        }
+
+                        if (hasItems) {
+                            currentAspects = new AspectComponent(combinedAspects);
+                        } else {
+                            // Fallback to block's aspects
+                            ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
+                            currentAspects = blockStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                         }
                     }
+                    case Inventory inventory -> {
+                        // Original inventory handling for other containers
+                        Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
+                        boolean hasItems = false;
 
-                    if (hasItems) {
-                        currentAspects = new AspectComponent(combinedAspects);
-                    } else {
-                        // Fallback to block's aspects
+                        for (int i = 0; i < inventory.size(); i++) {
+                            ItemStack stack = inventory.getStack(i);
+                            if (!stack.isEmpty()) {
+                                hasItems = true;
+                                AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
+                                component.getMap().forEach((aspect, count) ->
+                                        combinedAspects.mergeInt(aspect, count, Integer::sum)
+                                );
+                            }
+                        }
+
+                        currentAspects = hasItems
+                                ? new AspectComponent(combinedAspects)
+                                : client.world.getBlockState(pos).getBlock().asItem().getDefaultStack().getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
+                    }
+                    case null, default -> {
+                        // Default to block's aspects
                         ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
                         currentAspects = blockStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                     }
-                } else if (blockEntity instanceof Inventory inventory) {
-                    // Original inventory handling for other containers
-                    Object2IntOpenHashMap<RegistryEntry<Aspect>> combinedAspects = new Object2IntOpenHashMap<>();
-                    boolean hasItems = false;
-
-                    for (int i = 0; i < inventory.size(); i++) {
-                        ItemStack stack = inventory.getStack(i);
-                        if (!stack.isEmpty()) {
-                            hasItems = true;
-                            AspectComponent component = stack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-                            component.getMap().forEach((aspect, count) ->
-                                    combinedAspects.mergeInt(aspect, count, Integer::sum)
-                            );
-                        }
-                    }
-
-                    currentAspects = hasItems
-                            ? new AspectComponent(combinedAspects)
-                            : client.world.getBlockState(pos).getBlock().asItem().getDefaultStack().getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
-                } else {
-                    // Default block aspects
-                    ItemStack blockStack = client.world.getBlockState(pos).getBlock().asItem().getDefaultStack();
-                    currentAspects = blockStack.getOrDefault(ModComponents.ASPECT, AspectComponent.DEFAULT);
                 }
 
                 tooltipPosition = calculateScreenPosition();
