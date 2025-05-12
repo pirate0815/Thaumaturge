@@ -130,6 +130,7 @@ public class Thaumaturge implements ModInitializer {
 
 			RegistryKey<Aspect> praecantatioKey = RegistryKey.of(ModRegistries.ASPECTS, Thaumaturge.identifier("praecantatio"));
 			RegistryEntry.Reference<Aspect> praecantatio = aspectsRegistry.getOrThrow(praecantatioKey);
+
 			RegistryKey<Aspect> vitreusKey = RegistryKey.of(ModRegistries.ASPECTS, Thaumaturge.identifier("vitreus"));
 			RegistryEntry.Reference<Aspect> vitreusEntry = aspectsRegistry.getOrThrow(vitreusKey);
 
