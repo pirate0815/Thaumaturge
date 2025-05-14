@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -101,7 +102,7 @@ public record LaserRenderer(LaserPart glow,
         matrixStack.push();
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rot % 360F));
 
-        var consumer = bufferSource.getBuffer(this.normalTransparency ? PalladiumRenderTypes.LASER_NORMAL_TRANSPARENCY : PalladiumRenderTypes.LASER);
+        var consumer = bufferSource.getBuffer(RenderLayer.getLightning());
         var size = new Vector2f(this.size).mul(sizeMultiplier.x, sizeMultiplier.y).mul(this.core.getPulseScale(ticks + partialTick));
         Box box = new Box(-size.x / 2F, 0, -size.y / 2F, size.x / 2F, length, size.y / 2F);
 

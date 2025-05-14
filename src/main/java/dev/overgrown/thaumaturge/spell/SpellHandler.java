@@ -15,7 +15,7 @@ import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,22 +38,6 @@ public class SpellHandler {
                 .anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
 
         if (hasPotentia) {
-            // Create and shoot the spell bolt
-            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
-            bolt.setCaster(player);
-            bolt.setPosition(player.getEyePos());
-            Vec3d direction = player.getRotationVector().normalize();
-            Vec3d spawnPos = player.getEyePos().add(direction.multiply(0.2));
-            bolt.setPosition(spawnPos);
-            bolt.setVelocity(
-                    direction.x * 1.5,
-                    direction.y * 1.5,
-                    direction.z * 1.5
-            );
-            bolt.setVelocity(direction.multiply(1.5));
-            ProjectileUtil.setRotationFromVelocity(bolt, 1.0f);
-            bolt.setTier(tier.ordinal());
-
             // Collect effects from other aspects and modifiers
             TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery();
             dummyDelivery.setCaster(player); // Set the caster here
@@ -68,9 +52,15 @@ public class SpellHandler {
                 if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
             }
 
-            // Attach the collected effects to the bolt
-            bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
-            player.getWorld().spawnEntity(bolt);
+            // Spawn bolt
+            ProjectileEntity.spawnWithVelocity((world, shooter, stack) -> {
+                SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
+                bolt.setCaster(player);
+                bolt.setPosition(player.getEyePos());
+                bolt.setTier(tier.ordinal());
+                bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
+                return bolt;
+            }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
         } else {
             // Proceed with regular spell delivery
             Object delivery = createDelivery(tier);
@@ -136,7 +126,7 @@ public class SpellHandler {
     }
 
     public static void castPotentiaSpell(PlayerEntity caster, int tier) {
-        if(hasPotentiaFoci(caster)) {
+        if (hasPotentiaFoci(caster)) {
             SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, caster.getWorld());
             bolt.setCaster(caster); // Corrected variable name
             bolt.setPosition(caster.getEyePos());
