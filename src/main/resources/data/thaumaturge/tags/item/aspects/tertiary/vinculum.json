@@ -1,6 +1,10 @@
 {
     "replace": false,
     "values": [
+		{
+			"id":"thaumaturge:vinculum_aspect_shard",
+			"required":false
+		},
         {
 			"id": "minecraft:sponge",
 			"required": false

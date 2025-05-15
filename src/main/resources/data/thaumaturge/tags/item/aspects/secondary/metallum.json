@@ -2,6 +2,10 @@
    "replace":false,
    "values":[
       {
+         "id":"thaumaturge:metallum_aspect_shard",
+         "required":false
+      },
+      {
          "id":"#minecraft:anvil",
          "required":false
       },

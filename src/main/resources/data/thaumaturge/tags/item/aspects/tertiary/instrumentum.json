@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:instrumentum_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "minecraft:flint",
 			"required": false
 		},

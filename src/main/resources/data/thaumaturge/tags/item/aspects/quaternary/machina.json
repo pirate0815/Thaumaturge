@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
         {
+            "id":"thaumaturge:machina_aspect_shard",
+            "required":false
+        },
+        {
             "id": "minecraft:jukebox",
             "required": false
         },

@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:permutatio_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "minecraft:ender_chest",
 			"required": false
 		},

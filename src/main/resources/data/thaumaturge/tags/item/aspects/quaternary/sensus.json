@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:sensus_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "#minecraft:lapis_ores",
 			"required": false
 		},

@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
         {
+            "id":"thaumaturge:aversio_aspect_shard",
+            "required":false
+        },
+        {
             "id": "#minecraft:arrows",
             "required": false
         },

@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
         {
+            "id":"thaumaturge:humanus_aspect_shard",
+            "required":false
+        },
+        {
             "id": "minecraft:player_head",
             "required": false
         },

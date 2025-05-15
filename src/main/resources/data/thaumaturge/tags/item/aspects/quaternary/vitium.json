@@ -1,6 +1,10 @@
 {
     "replace": false,
     "values": [
+		{
+			"id":"thaumaturge:vitium_aspect_shard",
+			"required":false
+		},
         {
             "id": "minecraft:mycelium",
             "required": false

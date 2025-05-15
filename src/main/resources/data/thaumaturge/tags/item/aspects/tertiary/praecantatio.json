@@ -1,6 +1,10 @@
 {
     "replace": false,
     "values": [
+		{
+			"id":"thaumaturge:praecantatio_aspect_shard",
+			"required":false
+		},
         {
 			"id": "minecraft:end_portal_frame",
 			"required": false

@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:alienis_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "minecraft:purpur_block",
 			"required": false
 		},

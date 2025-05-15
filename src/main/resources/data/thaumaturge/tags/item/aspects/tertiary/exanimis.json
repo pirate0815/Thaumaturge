@@ -1,6 +1,10 @@
 {
     "replace": false,
     "values": [
+		{
+			"id":"thaumaturge:exanimis_aspect_shard",
+			"required":false
+		},
         {
 			"id": "minecraft:skeleton_skull",
 			"required": false

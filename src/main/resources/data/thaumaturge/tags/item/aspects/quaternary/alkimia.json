@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:alkimia_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "minecraft:nether_wart_block",
 			"required": false
 		},

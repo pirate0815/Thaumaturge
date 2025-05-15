@@ -2,6 +2,10 @@
     "replace": false,
     "values": [
 		{
+			"id":"thaumaturge:potentia_aspect_shard",
+			"required":false
+		},
+		{
 			"id": "#minecraft:coal_ores",
 			"required": false
 		},
