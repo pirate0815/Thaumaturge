@@ -34,13 +34,12 @@ public class SpellHandler {
         if (entries.isEmpty()) return;
 
         // Check if any entry has the Potentia aspect
-        boolean hasPotentia = entries.stream()
-                .anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
+        boolean hasPotentia = entries.stream().anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
 
         if (hasPotentia) {
             // Collect effects from other aspects and modifiers
             TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery(tier);
-            dummyDelivery.setCaster(player); // Set the caster here
+            dummyDelivery.setCaster(player);
 
             for (GauntletComponent.FociEntry entry : entries) {
                 if (entry.aspectId().equals(POTENTIA_ID)) continue;
@@ -48,8 +47,9 @@ public class SpellHandler {
                 AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
                 ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
 
-                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
+                // Apply modifier first, then aspect
                 if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
+                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
             }
 
             // Spawn bolt
@@ -62,14 +62,14 @@ public class SpellHandler {
                 return bolt;
             }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
         } else {
-            // Proceed with regular spell delivery
             Object delivery = createDelivery(tier);
             for (GauntletComponent.FociEntry entry : entries) {
                 AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
                 ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
 
-                if (aspectEffect != null) applyEffect(delivery, aspectEffect);
+                // Apply modifier first, then aspect
                 if (modifierEffect != null) applyEffect(delivery, modifierEffect);
+                if (aspectEffect != null) applyEffect(delivery, aspectEffect);
             }
             executeDelivery(delivery, player);
         }

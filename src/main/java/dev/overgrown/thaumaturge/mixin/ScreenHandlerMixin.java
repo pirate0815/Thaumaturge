@@ -90,9 +90,8 @@ public abstract class ScreenHandlerMixin {
             return;
         }
 
-        // New case: Sneak-click to remove modifier from Foci
-        if (player.isSneaking() && actionType == SlotActionType.SWAP && button >= 0 && button <= 9) {
-            // Check if the stack is a Foci
+        // Handle sneaking + right-click to remove modifier from Foci
+        if (player.isSneaking() && actionType == SlotActionType.PICKUP && button == 1) {
             if (isFoci(slotStack)) {
                 FociComponent component = slotStack.get(ModComponents.FOCI_COMPONENT);
                 if (component != null && !component.modifierId().equals(Thaumaturge.identifier("simple"))) {

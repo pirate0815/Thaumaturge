@@ -1,11 +1,15 @@
 package dev.overgrown.thaumaturge.event;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -28,6 +32,24 @@ public class ModEvents {
             }
 
             ItemStack stack = player.getStackInHand(hand);
+
+            // Handle Foci modifier removal
+            if (player.isSneaking() && isFoci(stack)) {
+                FociComponent component = stack.get(ModComponents.FOCI_COMPONENT);
+                if (component != null && !component.modifierId().equals(Thaumaturge.identifier("simple"))) {
+                    // Return modifier item to player
+                    Item modifierItem = Registries.ITEM.get(component.modifierId());
+                    if (modifierItem != Items.AIR) {
+                        player.giveItemStack(new ItemStack(modifierItem));
+                    }
+
+                    // Reset Foci modifier
+                    stack.set(ModComponents.FOCI_COMPONENT,
+                            new FociComponent(component.aspectId(), Thaumaturge.identifier("simple")));
+
+                    return ActionResult.SUCCESS;
+                }
+            }
 
             // Case 1: Using a foci item - try to add to gauntlet in other hand
             if (stack.getComponents().contains(ModComponents.FOCI_COMPONENT)) {
@@ -77,13 +99,12 @@ public class ModEvents {
         });
     }
 
-    /**
-     * Determines if an ItemStack is a gauntlet.
-     * Gauntlets are identified by having the MAX_FOCI component.
-     *
-     * @param stack The ItemStack to check
-     * @return true if the item is a gauntlet, false otherwise
-     */
+    // New Foci detection method
+    private static boolean isFoci(ItemStack stack) {
+        return stack.contains(ModComponents.FOCI_COMPONENT);
+    }
+
+    // Existing gauntlet detection method
     private static boolean isGauntlet(ItemStack stack) {
         return stack.contains(ModComponents.MAX_FOCI);
     }
