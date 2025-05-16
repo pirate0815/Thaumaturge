@@ -22,6 +22,7 @@ public class ModItemGroups {
     public static final RegistryKey<ItemGroup> THAUMATURGE_INGREDIENTS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_ingredients"));
     public static final RegistryKey<ItemGroup> THAUMATURGE_TOOLS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_tools"));
     public static final RegistryKey<ItemGroup> THAUMATURGE_FOCI = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_foci"));
+    public static final RegistryKey<ItemGroup> THAUMATURGE_RESONANCE_MODIFIERS = RegistryKey.of(RegistryKeys.ITEM_GROUP, Thaumaturge.identifier("thaumaturge_resonance_modifiers"));
 
     // Custom Item Group for crystals
     public static final ItemGroup THAUMATURGE_CRYSTAL_GROUP = Registry.register(Registries.ITEM_GROUP,
@@ -131,6 +132,19 @@ public class ModItemGroups {
                         entries.add(new ItemStack(ModItems.LESSER_FOCI));
                         entries.add(new ItemStack(ModItems.ADVANCED_FOCI));
                         entries.add(new ItemStack(ModItems.GREATER_FOCI));
+                    })
+                    .build());
+
+    // Custom Item Group for Resonance Modifiers
+    public static final ItemGroup THAUMATURGE_RESONANCE_MODIFIERS_GROUP = Registry.register(Registries.ITEM_GROUP,
+            Thaumaturge.identifier("thaumaturge_resonance_modifiers"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(ModItems.SCATTER_RESONANCE_MODIFIER))
+                    .displayName(Text.translatable("item_group.thaumaturge.resonance_modifiers"))
+                    .entries((displayContext, entries) -> {
+                        entries.add(new ItemStack(ModItems.SIMPLE_RESONANCE_MODIFIER));
+                        entries.add(new ItemStack(ModItems.SCATTER_RESONANCE_MODIFIER));
+                        entries.add(new ItemStack(ModItems.POWER_RESONANCE_MODIFIER));
                     })
                     .build());
 }

@@ -24,6 +24,7 @@ import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
 import dev.overgrown.thaumaturge.spell.impl.permutatio.PermutatioEffect;
 import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
+import dev.overgrown.thaumaturge.spell.modifier.PowerModifier;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifier;
 import dev.overgrown.thaumaturge.spell.modifier.SimpleModifier;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
@@ -100,6 +101,7 @@ public class Thaumaturge implements ModInitializer {
 	private void registerModifierEffects() {
 		ModifierRegistry.register(Thaumaturge.identifier("scatter"), new ScatterModifier());
 		ModifierRegistry.register(Thaumaturge.identifier("simple"), new SimpleModifier());
+		ModifierRegistry.register(Thaumaturge.identifier("power"), new PowerModifier());
 		// ... other modifiers
 	}
 
@@ -160,7 +162,7 @@ public class Thaumaturge implements ModInitializer {
 
 	private ItemStack createFociStack(Item fociItem, Identifier aspectId) {
 		ItemStack stack = new ItemStack(fociItem);
-		stack.set(ModComponents.FOCI_COMPONENT, new FociComponent(aspectId));
+		stack.set(ModComponents.FOCI_COMPONENT, new FociComponent(aspectId, Thaumaturge.identifier("simple")));
 		return stack;
 	}
 }

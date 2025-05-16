@@ -7,7 +7,9 @@ import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.utils.ModTags;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
@@ -82,6 +84,27 @@ public abstract class ScreenHandlerMixin {
                 }
             }
         }
+        // New case: Applying modifier to Foci
+        if (isFoci(slotStack) && isModifier(cursorStack)) {
+            handleModifierApplication(slotStack, cursorStack, player, ci);
+            return;
+        }
+
+        // New case: Sneak-click to remove modifier from Foci
+        if (player.isSneaking() && actionType == SlotActionType.SWAP && button >= 0 && button <= 9) {
+            // Check if the stack is a Foci
+            if (isFoci(slotStack)) {
+                FociComponent component = slotStack.get(ModComponents.FOCI_COMPONENT);
+                if (component != null && !component.modifierId().equals(Thaumaturge.identifier("simple"))) {
+                    Item modifierItem = Registries.ITEM.get(component.modifierId());
+                    if (modifierItem != Items.AIR) {
+                        player.giveItemStack(new ItemStack(modifierItem));
+                    }
+                    slotStack.set(ModComponents.FOCI_COMPONENT, new FociComponent(component.aspectId(), Thaumaturge.identifier("simple")));
+                    ci.cancel();
+                }
+            }
+        }
     }
 
     @Unique
@@ -97,22 +120,13 @@ public abstract class ScreenHandlerMixin {
                 RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
                 GauntletComponent.FociEntry entry = GauntletComponent.FociEntry.fromItemStack(fociStack, registries);
 
-                // Get modifier from offhand
-                ItemStack offhandStack = player.getOffHandStack();
-                Identifier modifierId = getModifierId(offhandStack);
-
-                // Create entry with modifier
+                // Use modifier from FociComponent
                 GauntletComponent.FociEntry modifiedEntry = new GauntletComponent.FociEntry(
                         entry.tier(),
                         entry.aspectId(),
-                        modifierId != null ? modifierId : Thaumaturge.identifier("simple"),
+                        fociComp.modifierId(),
                         entry.nbt()
                 );
-
-                // Consume modifier if used
-                if (modifierId != null) {
-                    offhandStack.decrement(1);
-                }
 
                 // Update gauntlet component
                 List<GauntletComponent.FociEntry> entries = new ArrayList<>(component.entries());
@@ -125,31 +139,22 @@ public abstract class ScreenHandlerMixin {
     }
 
     @Unique
-    private void handleModifierApplication(ItemStack gauntletStack, ItemStack modifierStack, PlayerEntity player, CallbackInfo ci) {
-        GauntletComponent component = gauntletStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-        Identifier modifierId = getModifierId(modifierStack);
+    private void handleModifierApplication(ItemStack fociStack, ItemStack modifierStack, PlayerEntity player, CallbackInfo ci) {
+        FociComponent component = fociStack.get(ModComponents.FOCI_COMPONENT);
+        Identifier newModifierId = getModifierId(modifierStack);
+        if (component == null || newModifierId == null) return;
 
-        if (modifierId != null && !component.entries().isEmpty()) {
-            // Get last inserted foci entry
-            GauntletComponent.FociEntry lastEntry = component.entries().get(component.entries().size() - 1);
-
-            // Create new entry with updated modifier
-            GauntletComponent.FociEntry modifiedEntry = new GauntletComponent.FociEntry(
-                    lastEntry.tier(),
-                    lastEntry.aspectId(),
-                    modifierId,
-                    lastEntry.nbt()
-            );
-
-            // Update component
-            List<GauntletComponent.FociEntry> entries = new ArrayList<>(component.entries());
-            entries.set(entries.size() - 1, modifiedEntry);
-            gauntletStack.set(ModComponents.GAUNTLET_STATE, new GauntletComponent(entries));
-
-            // Consume modifier
-            modifierStack.decrement(1);
-            ci.cancel();
+        // Replace existing modifier
+        if (!component.modifierId().equals(Thaumaturge.identifier("simple"))) {
+            Item existingModifier = Registries.ITEM.get(component.modifierId());
+            if (existingModifier != Items.AIR) {
+                player.giveItemStack(new ItemStack(existingModifier));
+            }
         }
+
+        fociStack.set(ModComponents.FOCI_COMPONENT, new FociComponent(component.aspectId(), newModifierId));
+        modifierStack.decrement(1);
+        ci.cancel();
     }
 
     @Unique

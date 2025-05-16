@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
+import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +14,9 @@ public class AoeSpellDelivery {
     private float radius = 5.0f;
     private final List<Consumer<BlockPos>> effects = new ArrayList<>();
     private ServerWorld casterWorld;
-    private ServerPlayerEntity caster; // Add caster field
+    private ServerPlayerEntity caster;
+    private final SpellCastPacket.SpellTier tier;
+    private float powerMultiplier = 1.0f;
 
     public void setCasterWorld(ServerWorld world) {
         this.casterWorld = world;
@@ -37,6 +40,22 @@ public class AoeSpellDelivery {
 
     public void addEffect(Consumer<BlockPos> effect) {
         effects.add(effect);
+    }
+
+    public AoeSpellDelivery(SpellCastPacket.SpellTier tier) {
+        this.tier = tier;
+    }
+
+    public SpellCastPacket.SpellTier getTier() {
+        return tier;
+    }
+
+    public float getPowerMultiplier() {
+        return powerMultiplier;
+    }
+
+    public void setPowerMultiplier(float powerMultiplier) {
+        this.powerMultiplier = powerMultiplier;
     }
 
     public void execute(ServerPlayerEntity caster) {

@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
+import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,12 +19,15 @@ public class TargetedSpellDelivery {
     private double maxDistance = 16.0;
     private ServerPlayerEntity caster;
     private boolean swapActorTarget = false;
+    private final SpellCastPacket.SpellTier tier;
+    private float powerMultiplier = 1.0f;
     private final List<Consumer<Entity>> onHitEffects = new ArrayList<>();
 
     public void setProjectileCount(int count) {
         this.projectileCount = count;
 
     }
+
     public void setSpread(float spread) {
         this.spread = spread;
     }
@@ -46,6 +50,22 @@ public class TargetedSpellDelivery {
 
     public void addOnHitEffect(Consumer<Entity> effect) {
         onHitEffects.add(effect);
+    }
+
+    public TargetedSpellDelivery(SpellCastPacket.SpellTier tier) {
+        this.tier = tier;
+    }
+
+    public SpellCastPacket.SpellTier getTier() {
+        return tier;
+    }
+
+    public float getPowerMultiplier() {
+        return powerMultiplier;
+    }
+
+    public void setPowerMultiplier(float powerMultiplier) {
+        this.powerMultiplier = powerMultiplier;
     }
 
     public List<Consumer<Entity>> getOnHitEffects() {

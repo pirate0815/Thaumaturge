@@ -39,7 +39,7 @@ public class SpellHandler {
 
         if (hasPotentia) {
             // Collect effects from other aspects and modifiers
-            TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery();
+            TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery(tier);
             dummyDelivery.setCaster(player); // Set the caster here
 
             for (GauntletComponent.FociEntry entry : entries) {
@@ -77,9 +77,9 @@ public class SpellHandler {
 
     private static Object createDelivery(SpellCastPacket.SpellTier tier) {
         return switch (tier) {
-            case LESSER -> new SelfSpellDelivery();
-            case ADVANCED -> new TargetedSpellDelivery();
-            case GREATER -> new AoeSpellDelivery();
+            case LESSER -> new SelfSpellDelivery(tier);
+            case ADVANCED -> new TargetedSpellDelivery(tier);
+            case GREATER -> new AoeSpellDelivery(tier);
         };
     }
 
