@@ -67,9 +67,15 @@ public class SpellHandler {
                 AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
                 ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
 
-                // Apply modifier first, then aspect
-                if (modifierEffect != null) applyEffect(delivery, modifierEffect);
-                if (aspectEffect != null) applyEffect(delivery, aspectEffect);
+                // Apply modifier first
+                if (modifierEffect != null) {
+                    applyEffect(delivery, modifierEffect);
+                }
+
+                // Apply aspect effect
+                if (aspectEffect != null) {
+                    applyEffect(delivery, aspectEffect);
+                }
             }
             executeDelivery(delivery, player);
         }

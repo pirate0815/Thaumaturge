@@ -23,5 +23,5 @@ public record FociComponent(Identifier aspectId, Identifier modifierId) {
             FociComponent::new
     );
 
-    public static final FociComponent DEFAULT = new FociComponent(null, Thaumaturge.identifier("simple"));
+    public static final FociComponent DEFAULT = new FociComponent(null, Thaumaturge.identifier("simple_resonance_modifier"));
 }

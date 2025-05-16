@@ -99,9 +99,9 @@ public class Thaumaturge implements ModInitializer {
 	}
 
 	private void registerModifierEffects() {
-		ModifierRegistry.register(Thaumaturge.identifier("scatter"), new ScatterModifier());
-		ModifierRegistry.register(Thaumaturge.identifier("simple"), new SimpleModifier());
-		ModifierRegistry.register(Thaumaturge.identifier("power"), new PowerModifier());
+		ModifierRegistry.register(Thaumaturge.identifier("scatter_resonance_modifier"), new ScatterModifier());
+		ModifierRegistry.register(Thaumaturge.identifier("power_resonance_modifier"), new PowerModifier());
+		ModifierRegistry.register(Thaumaturge.identifier("simple_resonance_modifier"), new SimpleModifier());
 		// ... other modifiers
 	}
 
@@ -162,7 +162,7 @@ public class Thaumaturge implements ModInitializer {
 
 	private ItemStack createFociStack(Item fociItem, Identifier aspectId) {
 		ItemStack stack = new ItemStack(fociItem);
-		stack.set(ModComponents.FOCI_COMPONENT, new FociComponent(aspectId, Thaumaturge.identifier("simple")));
+		stack.set(ModComponents.FOCI_COMPONENT, new FociComponent(aspectId, Thaumaturge.identifier("simple_resonance_modifier")));
 		return stack;
 	}
 }
