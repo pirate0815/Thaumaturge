@@ -1,9 +1,6 @@
 package dev.overgrown.thaumaturge.client.render;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.overgrown.thaumaturge.Thaumaturge;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexFormats;
 
 public abstract class ModRenderTypes extends RenderLayer {
 

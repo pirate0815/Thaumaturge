@@ -77,7 +77,7 @@ public class CustomItemTagManager extends JsonDataLoader<JsonElement> implements
                     }
                 }
             });
-            Thaumaturge.LOGGER.info("Finished loading aspects from item tags. Registry contains " + ItemAspectRegistry.size() + " item aspects.");
+            Thaumaturge.LOGGER.info("Finished loading aspects from item tags. Registry contains {} item aspects.", ItemAspectRegistry.size());
         }
     }
 
