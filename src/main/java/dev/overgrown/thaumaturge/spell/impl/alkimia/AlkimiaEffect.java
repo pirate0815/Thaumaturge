@@ -56,8 +56,7 @@ public class AlkimiaEffect implements AspectEffect {
 
             if (this.age % 5 == 0 && !effects.isEmpty() && this.getWorld() instanceof ServerWorld) {
                 this.getWorld().getOtherEntities(
-                        null,
-                        this.getBoundingBox().expand(this.getRadius()),
+                        null, this.getBoundingBox(),
                         e -> e instanceof LivingEntity
                 ).forEach(entity -> effects.forEach(effect -> effect.accept(entity)));
             }
