@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.spell.impl.potentia.render;
 
 import dev.overgrown.thaumaturge.client.render.LaserRenderer;
+import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.spell.impl.potentia.entity.SpellBoltEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,6 +10,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector2f;
@@ -43,8 +45,16 @@ public class SpellBoltRenderer extends EntityRenderer<SpellBoltEntity, SpellBolt
         state.yaw = entity.getYaw();
         state.pitch = entity.getPitch();
         var caster = entity.getCaster();
-        state.originPos = caster != null ? caster.getLerpedPos(tickDelta).add(0, entity.getEyeHeight(entity.getPose()), 0) : null;
+        state.originPos = null;
         state.opacity = entity.getOpacity(tickDelta);
+
+        if (caster != null) {
+            state.originPos = caster.getLerpedPos(tickDelta).add(0, caster.getHeight() / 2.4F, 0);
+            var headRot = -MathHelper.lerp(tickDelta, caster.lastBodyYaw, caster.bodyYaw);
+            var isRightHand = caster.getMainHandStack().hasChangedComponent(ModComponents.GAUNTLET_STATE);
+            var handVec = new Vec3d((isRightHand ? -1 : 1) * entity.getWidth() / 1.2F, 0, 0);
+            state.originPos = state.originPos.add(handVec.rotateY((float) Math.toRadians(headRot)));
+        }
     }
 
     @Override
