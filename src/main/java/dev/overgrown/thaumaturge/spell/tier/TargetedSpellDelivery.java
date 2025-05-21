@@ -106,7 +106,7 @@ public class TargetedSpellDelivery {
 
             // Apply effects if an entity is hit
             if (entityHit != null) {
-                Entity target = entityHit.getEntity();
+                Entity target = swapActorTarget ? caster : entityHit.getEntity();
                 onHitEffects.forEach(effect -> effect.accept(target));
             } else {
                 // Check for block hit

@@ -8,13 +8,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.Heightmap;
 
 import java.util.EnumSet;
@@ -24,34 +24,45 @@ public class AlienisEffect implements AspectEffect {
 
     @Override
     public void apply(SelfSpellDelivery delivery) {
-        delivery.addEffect(caster -> {
-            MinecraftServer server = caster.getServer();
-            if (server == null) return;
+        delivery.addEffect(entity -> {
+            if (!(entity instanceof ServerPlayerEntity player)) return;
 
+            MinecraftServer server = player.getServer();
+            assert server != null;
             ServerWorld targetWorld = server.getOverworld();
-            TeleportTarget spawnTarget = caster.getRespawnTarget(false, TeleportTarget.NO_OP);
 
-            if (spawnTarget == null) {
-                BlockPos spawnPos = targetWorld.getSpawnPos();
-                spawnTarget = new TeleportTarget(
-                        targetWorld,
-                        Vec3d.ofCenter(spawnPos),
-                        Vec3d.ZERO,
-                        caster.getYaw(),
-                        caster.getPitch(),
-                        TeleportTarget.NO_OP
-                );
+            // Get player's spawn position in the target world or use world spawn
+            ServerPlayerEntity.Respawn respawn = player.getRespawn();
+            BlockPos spawnPos = (respawn != null && respawn.dimension() == targetWorld.getRegistryKey())
+                    ? respawn.pos()
+                    : targetWorld.getSpawnPos();
+
+            Vec3d spawnPoint = Vec3d.ofBottomCenter(spawnPos);
+
+            // Teleport with correct parameters
+            if (player.teleport(
+                    targetWorld,
+                    spawnPoint.x,
+                    spawnPoint.y,
+                    spawnPoint.z,
+                    EnumSet.noneOf(PositionFlag.class),
+                    player.getYaw(),
+                    player.getPitch(),
+                    true)) {
+                playTeleportEffects(targetWorld, spawnPoint);
+                player.fallDistance = 0;
             }
-
-            caster.teleportTo(spawnTarget);
-            caster.fallDistance = 0;
-
-            targetWorld.playSound(null, caster.getX(), caster.getY(), caster.getZ(),
-                    SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            targetWorld.spawnParticles(ParticleTypes.PORTAL,
-                    caster.getX(), caster.getY() + 1, caster.getZ(), 20,
-                    0.5, 0.5, 0.5, 0.1);
         });
+    }
+
+    private void playTeleportEffects(ServerWorld world, Vec3d pos) {
+        world.playSound(null, pos.x, pos.y, pos.z,
+                SoundEvents.ENTITY_ENDERMAN_TELEPORT,
+                SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+        world.spawnParticles(ParticleTypes.PORTAL,
+                pos.x, pos.y + 1, pos.z, 20,
+                0.5, 0.5, 0.5, 0.1);
     }
 
     @Override
