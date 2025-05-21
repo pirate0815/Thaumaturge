@@ -4,9 +4,12 @@ import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ public class TargetedSpellDelivery {
     private final SpellCastPacket.SpellTier tier;
     private float powerMultiplier = 1.0f;
     private final List<Consumer<Entity>> onHitEffects = new ArrayList<>();
+    private final List<Consumer<BlockHitResult>> onBlockHitEffects = new ArrayList<>();
 
     public void setProjectileCount(int count) {
         this.projectileCount = count;
@@ -72,6 +76,10 @@ public class TargetedSpellDelivery {
         return onHitEffects;
     }
 
+    public void addBlockHitEffect(Consumer<BlockHitResult> effect) {
+        onBlockHitEffects.add(effect);
+    }
+
     public void execute(ServerPlayerEntity caster) {
         this.caster = caster;
         World world = caster.getWorld();
@@ -87,7 +95,7 @@ public class TargetedSpellDelivery {
             Vec3d endPos = eyePos.add(direction.multiply(maxDistance));
 
             // Perform ray-cast to find the first entity in the path
-            EntityHitResult hit = ProjectileUtil.raycast(
+            EntityHitResult entityHit = ProjectileUtil.raycast(
                     caster,
                     eyePos,
                     endPos,
@@ -97,12 +105,20 @@ public class TargetedSpellDelivery {
             );
 
             // Apply effects if an entity is hit
-            if (hit != null) {
-                Entity target = hit.getEntity();
-                if (swapActorTarget) {
-                    onHitEffects.forEach(effect -> effect.accept(target));
-                } else {
-                    onHitEffects.forEach(effect -> effect.accept(target));
+            if (entityHit != null) {
+                Entity target = entityHit.getEntity();
+                onHitEffects.forEach(effect -> effect.accept(target));
+            } else {
+                // Check for block hit
+                RaycastContext raycastContext = new RaycastContext(
+                        eyePos, endPos,
+                        RaycastContext.ShapeType.COLLIDER,
+                        RaycastContext.FluidHandling.ANY,
+                        caster
+                );
+                BlockHitResult blockHit = world.raycast(raycastContext);
+                if (blockHit != null && blockHit.getType() == HitResult.Type.BLOCK) {
+                    onBlockHitEffects.forEach(effect -> effect.accept(blockHit));
                 }
             }
         }

@@ -12,9 +12,8 @@ public class VitiumEffect implements AspectEffect {
         float damage = BASE_DAMAGE * delivery.getPowerMultiplier();
         delivery.addOnHitEffect(entity -> {
             if (delivery.getCaster() != null) {
-                // Cast the world to ServerWorld to match the method signature
                 entity.damage(
-                        (ServerWorld) delivery.getCaster().getWorld(), // Corrected to ServerWorld
+                        (ServerWorld) delivery.getCaster().getWorld(),
                         delivery.getCaster().getDamageSources().magic(),
                         damage
                 );
