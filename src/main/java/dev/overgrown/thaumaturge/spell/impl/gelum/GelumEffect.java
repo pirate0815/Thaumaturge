@@ -35,7 +35,7 @@ public class GelumEffect implements AspectEffect {
         delivery.addBlockHitEffect(blockHitResult -> {
             ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
             BlockPos center = blockHitResult.getBlockPos();
-            int radius = 3;
+            int radius = 1;
 
             BlockPos.iterate(center.add(-radius, -radius, -radius), center.add(radius, radius, radius))
                     .forEach(pos -> {
