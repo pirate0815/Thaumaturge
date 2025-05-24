@@ -28,31 +28,46 @@ import java.util.List;
 
 public class SpellHandler {
     private static final Identifier POTENTIA_ID = Thaumaturge.identifier("potentia");
+    private static final Identifier VINCULUM_ID = Thaumaturge.identifier("vinculum");
 
     public static void tryCastSpell(ServerPlayerEntity player, SpellCastPacket.SpellTier tier) {
         List<GauntletComponent.FociEntry> entries = getEquippedFociEntries(player, tier);
         if (entries.isEmpty()) return;
 
-        // Check if any entry has the Potentia aspect
+        List<GauntletComponent.FociEntry> nonVinculumEntries = new ArrayList<>();
+        List<GauntletComponent.FociEntry> vinculumEntries = new ArrayList<>();
+        for (GauntletComponent.FociEntry entry : entries) {
+            if (entry.aspectId().equals(VINCULUM_ID)) {
+                vinculumEntries.add(entry);
+            } else {
+                nonVinculumEntries.add(entry);
+            }
+        }
+
         boolean hasPotentia = entries.stream().anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
 
         if (hasPotentia) {
-            // Collect effects from other aspects and modifiers
             TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery(tier);
             dummyDelivery.setCaster(player);
 
-            for (GauntletComponent.FociEntry entry : entries) {
+            for (GauntletComponent.FociEntry entry : nonVinculumEntries) {
                 if (entry.aspectId().equals(POTENTIA_ID)) continue;
 
                 AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
                 ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
 
-                // Apply modifier first, then aspect
                 if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
                 if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
             }
 
-            // Spawn bolt
+            for (GauntletComponent.FociEntry entry : vinculumEntries) {
+                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+                if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
+                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
+            }
+
             ProjectileEntity.spawnWithVelocity((world, shooter, stack) -> {
                 SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
                 bolt.setCaster(player);
@@ -63,16 +78,27 @@ public class SpellHandler {
             }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
         } else {
             Object delivery = createDelivery(tier);
-            for (GauntletComponent.FociEntry entry : entries) {
+            for (GauntletComponent.FociEntry entry : nonVinculumEntries) {
                 AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
                 ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
 
-                // Apply modifier first
                 if (modifierEffect != null) {
                     applyEffect(delivery, modifierEffect);
                 }
 
-                // Apply aspect effect
+                if (aspectEffect != null) {
+                    applyEffect(delivery, aspectEffect);
+                }
+            }
+
+            for (GauntletComponent.FociEntry entry : vinculumEntries) {
+                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+                if (modifierEffect != null) {
+                    applyEffect(delivery, modifierEffect);
+                }
+
                 if (aspectEffect != null) {
                     applyEffect(delivery, aspectEffect);
                 }
