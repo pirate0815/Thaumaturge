@@ -76,6 +76,10 @@ public class TargetedSpellDelivery {
         return onHitEffects;
     }
 
+    public List<Consumer<BlockHitResult>> getOnBlockHitEffects() {
+        return onBlockHitEffects;
+    }
+
     public void addBlockHitEffect(Consumer<BlockHitResult> effect) {
         onBlockHitEffects.add(effect);
     }

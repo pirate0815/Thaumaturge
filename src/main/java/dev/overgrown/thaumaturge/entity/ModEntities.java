@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.entity;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.impl.potentia.entity.SpellBoltEntity;
+import dev.overgrown.thaumaturge.spell.impl.vinculum.entity.ArcaneMineEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
@@ -18,4 +19,12 @@ public class ModEntities {
                             .dimensions(0.5f, 0.5f)
                             .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Thaumaturge.identifier("spell_bolt")))
             );
+
+    public static final EntityType<ArcaneMineEntity> ARCANE_MINE = Registry.register(
+            Registries.ENTITY_TYPE,
+            Thaumaturge.identifier("arcane_mine"),
+            EntityType.Builder.create(ArcaneMineEntity::new, SpawnGroup.MISC)
+                    .dimensions(0.5f, 0.5f)
+                    .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Thaumaturge.identifier("arcane_mine")))
+    );
 }
