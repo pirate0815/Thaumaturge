@@ -33,6 +33,7 @@ import dev.overgrown.thaumaturge.spell.modifier.ScatterModifier;
 import dev.overgrown.thaumaturge.spell.modifier.SimpleModifier;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import dev.overgrown.thaumaturge.spell.pattern.ModifierRegistry;
+import dev.overgrown.thaumaturge.utils.ModSounds;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -68,6 +69,7 @@ public class Thaumaturge implements ModInitializer {
 		ModItemGroups.register();
 		ModComponents.register();
 		ModEvents.register();
+		ModSounds.initialize();
 		ModComponentPredicateTypes.register();
 		registerRecipes();
 		ModBlockEntities.register();

@@ -4,11 +4,11 @@ import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.utils.ModSounds;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 
 public class AerEffect implements AspectEffect {
@@ -22,7 +22,7 @@ public class AerEffect implements AspectEffect {
             // Play sound and particles
             ServerWorld world = (ServerWorld) player.getWorld();
             world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_BREEZE_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    ModSounds.AER_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
             world.spawnParticles(ParticleTypes.GUST_EMITTER_SMALL,
                     player.getX(), player.getY(), player.getZ(), 1,
                     0.5, 0.1, 0.5, 0.1);
@@ -40,7 +40,7 @@ public class AerEffect implements AspectEffect {
             ServerWorld world = (ServerWorld) caster.getWorld();
 
             world.playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.ENTITY_BREEZE_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                    ModSounds.AER_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
             world.spawnParticles(ParticleTypes.GUST_EMITTER_SMALL,
                     target.getX(), target.getY(), target.getZ(), 5,
                     0.5, 0.1, 0.5, 0.1);
@@ -66,7 +66,7 @@ public class AerEffect implements AspectEffect {
                     entity.velocityModified = true;
 
                     world.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                            SoundEvents.ENTITY_BREEZE_SHOOT, SoundCategory.PLAYERS, 0.8f, 1.0f);
+                            ModSounds.AER_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
                     world.spawnParticles(ParticleTypes.GUST_EMITTER_SMALL,
                             entity.getX(), entity.getY(), entity.getZ(), 3,
                             0.3, 0.1, 0.3, 0.1);

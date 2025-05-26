@@ -14,11 +14,14 @@ import dev.overgrown.thaumaturge.spell.pattern.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.utils.ModSounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
@@ -74,6 +77,12 @@ public class SpellHandler {
                 bolt.setPosition(player.getEyePos());
                 bolt.setTier(tier.ordinal());
                 bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
+
+                // Play sound when the bolt is cast
+                ServerWorld serverWorld = (ServerWorld) player.getWorld();
+                serverWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        ModSounds.POTENTIA_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
+
                 return bolt;
             }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
         } else {

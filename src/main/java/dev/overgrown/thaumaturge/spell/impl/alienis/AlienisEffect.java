@@ -4,6 +4,7 @@ import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.utils.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.particle.ParticleTypes;
@@ -57,8 +58,7 @@ public class AlienisEffect implements AspectEffect {
 
     private void playTeleportEffects(ServerWorld world, Vec3d pos) {
         world.playSound(null, pos.x, pos.y, pos.z,
-                SoundEvents.ENTITY_ENDERMAN_TELEPORT,
-                SoundCategory.PLAYERS, 1.0F, 1.0F);
+                ModSounds.ALIENIS_SPELL_CAST, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
         world.spawnParticles(ParticleTypes.PORTAL,
                 pos.x, pos.y + 1, pos.z, 20,
@@ -97,7 +97,7 @@ public class AlienisEffect implements AspectEffect {
                 Set<PositionFlag> flags = EnumSet.noneOf(PositionFlag.class);
                 if (entity.teleport(world, teleportVec.x, teleportVec.y, teleportVec.z, flags, entity.getYaw(), entity.getPitch(), true)) {
                     world.playSound(null, teleportVec.x, teleportVec.y, teleportVec.z,
-                            SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            ModSounds.ALIENIS_SPELL_CAST, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     world.spawnParticles(ParticleTypes.PORTAL, teleportVec.x, teleportVec.y + 1, teleportVec.z, 10, 0.5, 0.5, 0.5, 0.05);
                     break;
                 }
