@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge.mixin.client;
 import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.component.ModComponents;
+import dev.overgrown.thaumaturge.config.AspectConfig;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.data.ModRegistries;
 import dev.overgrown.thaumaturge.item.ModItems;
@@ -70,6 +71,12 @@ public abstract class ItemStackClientMixin {
         boolean hasHeadGear = thaumaturge$hasAethericGogglesOrMonocle(player);
 
         if (hasAspectLens || hasHeadGear) {
+            cir.setReturnValue(Optional.of(new AspectTooltipData(component.getMap())));
+        }
+
+        boolean shouldShow = AspectConfig.ALWAYS_SHOW_ASPECTS || hasAspectLens || hasHeadGear;
+
+        if (shouldShow) {
             cir.setReturnValue(Optional.of(new AspectTooltipData(component.getMap())));
         }
     }

@@ -1,4 +1,8 @@
 {
+  "config.thaumaturge.title": "Thaumaturge Config",
+  "config.thaumaturge.always_show_aspects": "Always Show Aspects",
+  "config.thaumaturge.always_show_aspects.tooltip": "Show Aspect icons in tooltips without needing Aetheric Goggles or Aspect Lens",
+
   "key.category.thaumaturge.spells": "Thaumaturge: Spells",
   "key.thaumaturge.primary": "Primary Spell",
   "key.thaumaturge.secondary": "Secondary Spell",

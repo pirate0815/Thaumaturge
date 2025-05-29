@@ -23,6 +23,9 @@
 		],
 		"client": [
 			"dev.overgrown.thaumaturge.ThaumaturgeClient"
+		],
+		"modmenu": [
+			"dev.overgrown.thaumaturge.compat.modmenu.ModMenuCompat"
 		]
 	},
 	"mixins": [
@@ -35,6 +38,16 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"modmenu": "*"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.issues": "https://github.com/0vergrown/Thaumaturge/issues",
+				"modmenu.discord": "https://discord.gg/YOUR_INVITE_CODE"
+			},
+			"update_checker": true,
+			"badges": []
+		}
 	}
 }

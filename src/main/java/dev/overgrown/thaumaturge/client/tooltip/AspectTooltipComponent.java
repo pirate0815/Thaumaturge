@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.client.tooltip;
 
+import dev.overgrown.thaumaturge.config.AspectConfig;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.item.ModItems;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -42,6 +43,12 @@ public class AspectTooltipComponent implements TooltipComponent {
         return headStack.getItem() == ModItems.AETHERIC_GOGGLES;
     }
 
+    private boolean shouldShowTranslation() {
+        // Check config first, then fall back to items
+        if (AspectConfig.ALWAYS_SHOW_ASPECTS) return true;
+        return hasRequiredItems() && (AspectConfig.ALWAYS_SHOW_ASPECTS || Screen.hasShiftDown());
+    }
+
     @Override
     public int getHeight(TextRenderer textRenderer) {
         return 18;
@@ -62,7 +69,7 @@ public class AspectTooltipComponent implements TooltipComponent {
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext context) {
-        boolean showTranslation = Screen.hasShiftDown() && hasRequiredItems();
+        boolean showTranslation = shouldShowTranslation();
         int currentX = x;
 
         for (var entry : aspects.object2IntEntrySet()) {
