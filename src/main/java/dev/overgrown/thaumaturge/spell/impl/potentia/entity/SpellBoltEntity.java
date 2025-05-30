@@ -29,6 +29,7 @@ public class SpellBoltEntity extends ThrownEntity {
     private static final TrackedData<Integer> TIER = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Long> SEED = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.LONG);
     private static final TrackedData<Boolean> HIT_TARGET = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private List<Consumer<BlockHitResult>> onBlockHitEffects = new ArrayList<>();
     private int despawnTimer = 10;
 
     public SpellBoltEntity(EntityType<? extends ThrownEntity> type, World world) {
@@ -67,6 +68,10 @@ public class SpellBoltEntity extends ThrownEntity {
 
     public void setTier(int tier) {
         dataTracker.set(TIER, tier);
+    }
+
+    public void setOnBlockHitEffects(List<Consumer<BlockHitResult>> effects) {
+        this.onBlockHitEffects = effects;
     }
 
     public void setOnHitEffects(List<Consumer<Entity>> effects) {
@@ -113,6 +118,11 @@ public class SpellBoltEntity extends ThrownEntity {
 
         super.onBlockHit(blockHitResult);
         this.setHitTarget(true);
+
+        // Apply block hit effects
+        for (Consumer<BlockHitResult> effect : onBlockHitEffects) {
+            effect.accept(blockHitResult);
+        }
     }
 
     @Override

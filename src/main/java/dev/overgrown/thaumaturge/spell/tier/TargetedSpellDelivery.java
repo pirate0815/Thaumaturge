@@ -4,13 +4,13 @@ import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,6 @@ public class TargetedSpellDelivery {
 
     public void setProjectileCount(int count) {
         this.projectileCount = count;
-
     }
 
     public void setSpread(float spread) {
@@ -93,9 +92,13 @@ public class TargetedSpellDelivery {
         onBlockHitEffects.add(effect);
     }
 
+    public ServerWorld getWorld() {
+        return (ServerWorld) caster.getWorld();
+    }
+
     public void execute(ServerPlayerEntity caster) {
         this.caster = caster;
-        World world = caster.getWorld();
+        ServerWorld world = getWorld();
         Vec3d eyePos = caster.getEyePos();
 
         for (int i = 0; i < projectileCount; i++) {
@@ -120,7 +123,9 @@ public class TargetedSpellDelivery {
             // Apply effects if an entity is hit
             if (entityHit != null) {
                 Entity target = swapActorTarget ? caster : entityHit.getEntity();
-                onHitEffects.forEach(effect -> effect.accept(target));
+                for (Consumer<Entity> effect : onHitEffects) {
+                    effect.accept(target);
+                }
             } else {
                 // Check for block hit
                 RaycastContext raycastContext = new RaycastContext(
@@ -131,7 +136,9 @@ public class TargetedSpellDelivery {
                 );
                 BlockHitResult blockHit = world.raycast(raycastContext);
                 if (blockHit != null && blockHit.getType() == HitResult.Type.BLOCK) {
-                    onBlockHitEffects.forEach(effect -> effect.accept(blockHit));
+                    for (Consumer<BlockHitResult> effect : onBlockHitEffects) {
+                        effect.accept(blockHit);
+                    }
                 }
             }
         }

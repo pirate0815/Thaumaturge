@@ -50,41 +50,7 @@ public class SpellHandler {
         boolean hasPotentia = entries.stream().anyMatch(entry -> entry.aspectId().equals(POTENTIA_ID));
 
         if (hasPotentia) {
-            TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery(tier);
-            dummyDelivery.setCaster(player);
-
-            for (GauntletComponent.FociEntry entry : nonVinculumEntries) {
-                if (entry.aspectId().equals(POTENTIA_ID)) continue;
-
-                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
-                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
-
-                if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
-                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
-            }
-
-            for (GauntletComponent.FociEntry entry : vinculumEntries) {
-                AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
-                ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
-
-                if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
-                if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
-            }
-
-            ProjectileEntity.spawnWithVelocity((world, shooter, stack) -> {
-                SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
-                bolt.setCaster(player);
-                bolt.setPosition(player.getEyePos());
-                bolt.setTier(tier.ordinal());
-                bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
-
-                // Play sound when the bolt is cast
-                ServerWorld serverWorld = (ServerWorld) player.getWorld();
-                serverWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        ModSounds.POTENTIA_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
-
-                return bolt;
-            }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
+            handlePotentiaSpell(player, tier, nonVinculumEntries, vinculumEntries);
         } else {
             Object delivery = createDelivery(tier);
             for (GauntletComponent.FociEntry entry : nonVinculumEntries) {
@@ -114,6 +80,68 @@ public class SpellHandler {
             }
             executeDelivery(delivery, player);
         }
+    }
+
+    private static boolean hasPotentiaFoci(PlayerEntity player) {
+        // Check gauntlet for Potentia aspect
+        return true;
+    }
+
+    public static void castPotentiaSpell(PlayerEntity caster, int tier) {
+        if (hasPotentiaFoci(caster)) {
+            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, caster.getWorld());
+            bolt.setCaster(caster);
+            bolt.setPosition(caster.getEyePos());
+            Vec3d rotation = caster.getRotationVector().normalize();
+            bolt.setVelocity(rotation.multiply(1.5));
+            bolt.setTier(tier);
+            caster.getWorld().spawnEntity(bolt);
+        }
+    }
+
+    private static void handlePotentiaSpell(ServerPlayerEntity player, SpellCastPacket.SpellTier tier,
+                                            List<GauntletComponent.FociEntry> nonVinculumEntries,
+                                            List<GauntletComponent.FociEntry> vinculumEntries) {
+        TargetedSpellDelivery dummyDelivery = new TargetedSpellDelivery(tier);
+        dummyDelivery.setCaster(player);
+
+        // Apply effects from non-Vinculum Foci
+        for (GauntletComponent.FociEntry entry : nonVinculumEntries) {
+            if (entry.aspectId().equals(POTENTIA_ID)) continue;
+
+            AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+            ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+            if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
+            if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
+        }
+
+        // Apply effects from Vinculum Foci
+        for (GauntletComponent.FociEntry entry : vinculumEntries) {
+            AspectEffect aspectEffect = AspectRegistry.get(entry.aspectId());
+            ModifierEffect modifierEffect = ModifierRegistry.get(entry.modifierId());
+
+            if (modifierEffect != null) modifierEffect.apply(dummyDelivery);
+            if (aspectEffect != null) aspectEffect.apply(dummyDelivery);
+        }
+
+        ProjectileEntity.spawnWithVelocity((world, shooter, stack) -> {
+            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, player.getWorld());
+            bolt.setCaster(player);
+            bolt.setPosition(player.getEyePos());
+            bolt.setTier(tier.ordinal());
+
+            // Set BOTH entity and block effects
+            bolt.setOnHitEffects(dummyDelivery.getOnHitEffects());
+            bolt.setOnBlockHitEffects(dummyDelivery.getOnBlockHitEffects());
+
+            // Play sound when the bolt is cast
+            ServerWorld serverWorld = (ServerWorld) player.getWorld();
+            serverWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    ModSounds.POTENTIA_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
+
+            return bolt;
+        }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
     }
 
     private static Object createDelivery(SpellCastPacket.SpellTier tier) {
@@ -164,22 +192,5 @@ public class SpellHandler {
         if (item == ModItems.ADVANCED_FOCI) return SpellCastPacket.SpellTier.ADVANCED;
         if (item == ModItems.GREATER_FOCI) return SpellCastPacket.SpellTier.GREATER;
         return null;
-    }
-
-    public static void castPotentiaSpell(PlayerEntity caster, int tier) {
-        if (hasPotentiaFoci(caster)) {
-            SpellBoltEntity bolt = new SpellBoltEntity(ModEntities.SPELL_BOLT, caster.getWorld());
-            bolt.setCaster(caster); // Corrected variable name
-            bolt.setPosition(caster.getEyePos());
-            Vec3d rotation = caster.getRotationVector().normalize();
-            bolt.setVelocity(rotation.multiply(1.5));
-            bolt.setTier(tier);
-            caster.getWorld().spawnEntity(bolt);
-        }
-    }
-
-    private static boolean hasPotentiaFoci(PlayerEntity player) {
-        // Check gauntlet for Potentia aspect
-        return true;
     }
 }
