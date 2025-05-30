@@ -23,6 +23,7 @@ import dev.overgrown.thaumaturge.spell.impl.alkimia.AlkimiaEffect;
 import dev.overgrown.thaumaturge.spell.impl.gelum.GelumEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
+import dev.overgrown.thaumaturge.spell.impl.perditio.PerditioEffect;
 import dev.overgrown.thaumaturge.spell.impl.permutatio.PermutatioEffect;
 import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
 import dev.overgrown.thaumaturge.spell.impl.victus.VictusEffect;
@@ -105,6 +106,7 @@ public class Thaumaturge implements ModInitializer {
 		AspectRegistry.register(Thaumaturge.identifier("gelum"), new GelumEffect());
 		AspectRegistry.register(Thaumaturge.identifier("victus"), new VictusEffect());
 		AspectRegistry.register(Thaumaturge.identifier("vinculum"), new VinculumEffect());
+		AspectRegistry.register(Thaumaturge.identifier("perditio"), new PerditioEffect());
 		// ... other aspects
 	}
 

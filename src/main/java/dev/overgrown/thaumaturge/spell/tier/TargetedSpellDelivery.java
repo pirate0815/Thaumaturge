@@ -26,6 +26,15 @@ public class TargetedSpellDelivery {
     private float powerMultiplier = 1.0f;
     private final List<Consumer<Entity>> onHitEffects = new ArrayList<>();
     private final List<Consumer<BlockHitResult>> onBlockHitEffects = new ArrayList<>();
+    private int scatterSize = 0;
+
+    public int getScatterSize() {
+        return scatterSize;
+    }
+
+    public void setScatterSize(int scatterSize) {
+        this.scatterSize = scatterSize;
+    }
 
     public void setProjectileCount(int count) {
         this.projectileCount = count;

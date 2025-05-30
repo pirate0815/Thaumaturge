@@ -17,6 +17,15 @@ public class AoeSpellDelivery {
     private ServerPlayerEntity caster;
     private final SpellCastPacket.SpellTier tier;
     private float powerMultiplier = 1.0f;
+    private int scatterSize = 0;
+
+    public int getScatterSize() {
+        return scatterSize;
+    }
+
+    public void setScatterSize(int scatterSize) {
+        this.scatterSize = scatterSize;
+    }
 
     public void setCasterWorld(ServerWorld world) {
         this.casterWorld = world;

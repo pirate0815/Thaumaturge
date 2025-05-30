@@ -19,6 +19,7 @@ public class SelfSpellDelivery {
     private float powerMultiplier = 1.0f;
     private final List<Consumer<Entity>> effects = new ArrayList<>();
     private boolean redirectToTarget = false;
+    private int scatterSize = 0;
 
     public SelfSpellDelivery(SpellCastPacket.SpellTier tier) {
         this.tier = tier;
@@ -46,6 +47,14 @@ public class SelfSpellDelivery {
 
     public void addEffect(Consumer<Entity> effect) {
         effects.add(effect);
+    }
+
+    public int getScatterSize() {
+        return scatterSize;
+    }
+
+    public void setScatterSize(int scatterSize) {
+        this.scatterSize = scatterSize;
     }
 
     public void execute(ServerPlayerEntity caster) {
