@@ -10,6 +10,7 @@ import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesRenderer;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.networking.ThaumaturgeModPacketsS2C;
 import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
+import dev.overgrown.thaumaturge.spell.impl.metallum.render.MetalShardRenderer;
 import net.minecraft.client.render.entity.EmptyEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -27,6 +28,7 @@ public class ThaumaturgeClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
         EntityRendererRegistry.register(ModEntities.ARCANE_MINE, EmptyEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.METAL_SHARD, MetalShardRenderer::new);
 
         // Register all keybinds used for spell casting
         KeybindManager.registerKeybinds();
