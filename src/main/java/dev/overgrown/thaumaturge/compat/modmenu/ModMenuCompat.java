@@ -2,7 +2,7 @@ package dev.overgrown.thaumaturge.compat.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import dev.overgrown.thaumaturge.config.AspectConfig;
+import dev.overgrown.thaumaturge.compat.modmenu.config.AspectConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;

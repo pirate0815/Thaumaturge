@@ -4,6 +4,7 @@ import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.clusters.aer.*;
 import dev.overgrown.thaumaturge.block.clusters.ignis.*;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.spell.impl.vacuos.block.BlackholeBlock;
 import dev.overgrown.thaumaturge.utils.BlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemGroups;
@@ -16,11 +17,17 @@ public class ModBlocks {
         Thaumaturge.LOGGER.info("Registering Blocks for " + Thaumaturge.MOD_ID);
     }
 
-    public static final Block AMBER_BEARING_STONE = BlockBuilder.create("amber_bearing_stone")
-            .setItemGroup(ItemGroups.BUILDING_BLOCKS)
-            .withBlockSettings(settings -> settings.strength(4.0f))
-            .withItemSettings(settings -> settings.maxCount(64))
-            .buildAndRegister(Block::new);
+    public static final Block BLACKHOLE = BlockBuilder.create("blackhole")
+            .setItemGroup(ItemGroups.FUNCTIONAL)
+            .withBlockSettings(settings -> settings
+                    .strength(4.0f)
+                    .nonOpaque()
+                    .dynamicBounds()
+            )
+            .withItemSettings(settings -> settings
+                    .maxCount(1)
+            )
+            .buildAndRegister(BlackholeBlock::new);
 
     public static final Block BUDDING_AER_CRYSTAL = BlockBuilder.create("budding_aer_crystal")
             .setItemGroup(ItemGroups.NATURAL)

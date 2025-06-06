@@ -1,6 +1,6 @@
 package dev.overgrown.thaumaturge.client.tooltip;
 
-import dev.overgrown.thaumaturge.config.AspectConfig;
+import dev.overgrown.thaumaturge.compat.modmenu.config.AspectConfig;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.item.ModItems;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;

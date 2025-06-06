@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.config;
+package dev.overgrown.thaumaturge.compat.modmenu.config;
 
 import com.google.gson.*;
 import dev.overgrown.thaumaturge.Thaumaturge;

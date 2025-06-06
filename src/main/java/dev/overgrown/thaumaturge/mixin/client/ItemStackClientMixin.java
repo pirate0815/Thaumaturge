@@ -3,7 +3,7 @@ package dev.overgrown.thaumaturge.mixin.client;
 import dev.overgrown.thaumaturge.component.AspectComponent;
 import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
 import dev.overgrown.thaumaturge.component.ModComponents;
-import dev.overgrown.thaumaturge.config.AspectConfig;
+import dev.overgrown.thaumaturge.compat.modmenu.config.AspectConfig;
 import dev.overgrown.thaumaturge.data.Aspect;
 import dev.overgrown.thaumaturge.data.ModRegistries;
 import dev.overgrown.thaumaturge.item.ModItems;
