@@ -32,6 +32,8 @@ import dev.overgrown.thaumaturge.spell.impl.vacuos.VacuosEffect;
 import dev.overgrown.thaumaturge.spell.impl.victus.VictusEffect;
 import dev.overgrown.thaumaturge.spell.impl.vinculum.VinculumEffect;
 import dev.overgrown.thaumaturge.spell.impl.vitium.VitiumEffect;
+import dev.overgrown.thaumaturge.spell.impl.volatus.VolatusEffect;
+import dev.overgrown.thaumaturge.spell.impl.volatus.effect.VolatusFlightEffect;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifier;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifier;
 import dev.overgrown.thaumaturge.spell.modifier.SimpleModifier;
@@ -43,10 +45,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -63,6 +67,9 @@ public class Thaumaturge implements ModInitializer {
 	public static Identifier identifier(String path) {
 		return Identifier.of(MOD_ID, path);
 	}
+
+	public static final RegistryEntry<StatusEffect> VOLATUS_FLIGHT_EFFECT =
+			Registry.registerReference(Registries.STATUS_EFFECT, identifier("volatus_flight"), new VolatusFlightEffect());
 
 	@Override
 	public void onInitialize() {
@@ -113,6 +120,7 @@ public class Thaumaturge implements ModInitializer {
 		AspectRegistry.register(Thaumaturge.identifier("metallum"), new MetallumEffect());
 		AspectRegistry.register(Thaumaturge.identifier("vacuos"), new VacuosEffect());
 		AspectRegistry.register(Thaumaturge.identifier("herba"), new HerbaEffect());
+		AspectRegistry.register(Thaumaturge.identifier("volatus"), new VolatusEffect());
 		// ... other aspects
 	}
 

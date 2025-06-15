@@ -1,15 +1,17 @@
 {
-	"required": true,
-	"package": "dev.overgrown.thaumaturge.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"ItemMixin",
-		"ScreenHandlerMixin"
-	  ],
-	  "client": [
-		"client.ItemStackClientMixin"
-	  ],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "dev.overgrown.thaumaturge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FallDamageMixin",
+    "ItemMixin",
+    "LivingEntityMixin",
+    "ScreenHandlerMixin"
+  ],
+  "client": [
+    "client.ItemStackClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
