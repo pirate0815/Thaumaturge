@@ -15,7 +15,7 @@ import dev.overgrown.thaumaturge.item.ModItems;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.networking.SyncAspectIdentifierPacket;
 import dev.overgrown.thaumaturge.predicate.component.ModComponentPredicateTypes;
-import dev.overgrown.thaumaturge.recipe.Recipe;
+import dev.overgrown.thaumaturge.block.vessel.recipe.Recipe;
 import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
 import dev.overgrown.thaumaturge.spell.impl.alienis.AlienisEffect;

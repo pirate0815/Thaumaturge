@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.recipe;
+package dev.overgrown.thaumaturge.block.vessel.recipe;
 
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.component.AspectComponent;
