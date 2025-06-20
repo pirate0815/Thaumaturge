@@ -37,7 +37,7 @@ public class AerEffect implements AspectEffect {
             target.velocityModified = true;
 
             ServerPlayerEntity caster = delivery.getCaster();
-            ServerWorld world = (ServerWorld) caster.getWorld();
+            ServerWorld world = caster.getWorld();
 
             world.playSound(null, target.getX(), target.getY(), target.getZ(),
                     ModSounds.AER_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);

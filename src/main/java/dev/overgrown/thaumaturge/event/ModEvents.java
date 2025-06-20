@@ -85,10 +85,9 @@ public class ModEvents {
                     if (!component.entries().isEmpty()) {
                         RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
                         for (GauntletComponent.FociEntry entry : component.entries()) {
-                            ItemStack fociStack = ItemStack.fromNbt(registries, entry.nbt()).orElse(ItemStack.EMPTY);
-                            if (!fociStack.isEmpty()) {
-                                player.giveItemStack(fociStack);
-                            }
+                            ItemStack fociStack = new ItemStack(entry.item());
+                            fociStack.set(ModComponents.FOCI_COMPONENT, new FociComponent(entry.aspectId(), entry.modifierId()));
+                            player.getInventory().offerOrDrop(fociStack);
                         }
                         // Reset gauntlet state
                         gauntletStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);

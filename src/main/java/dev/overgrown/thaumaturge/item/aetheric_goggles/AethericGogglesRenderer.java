@@ -11,8 +11,9 @@ import dev.overgrown.thaumaturge.block.vessel.VesselBlockEntity;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -172,8 +173,8 @@ public class AethericGogglesRenderer {
             }
         });
 
-        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(
-                Identifier.of("minecraft", "misc_overlays"),
+        HudElementRegistry.attachElementAfter(
+                VanillaHudElements.MISC_OVERLAYS,
                 Identifier.of(Thaumaturge.MOD_ID, "aetheric_goggles_hud"),
                 (context, tickCounter) -> {
                     if (currentAspects == null || currentAspects.isEmpty() || tooltipPosition == null) return;
@@ -191,7 +192,7 @@ public class AethericGogglesRenderer {
 
                     tooltip.drawItems(textRenderer, x, y, width, height, context);
                 }
-        ));
+        );
     }
 
     // Method to center on cross-hair

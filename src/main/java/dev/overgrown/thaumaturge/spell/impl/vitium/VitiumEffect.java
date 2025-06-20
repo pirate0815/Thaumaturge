@@ -13,7 +13,7 @@ public class VitiumEffect implements AspectEffect {
         delivery.addOnHitEffect(entity -> {
             if (delivery.getCaster() != null) {
                 entity.damage(
-                        (ServerWorld) delivery.getCaster().getWorld(),
+                        delivery.getCaster().getWorld(),
                         delivery.getCaster().getDamageSources().magic(),
                         damage
                 );

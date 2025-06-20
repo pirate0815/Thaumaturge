@@ -8,8 +8,9 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Vec3d;
@@ -43,7 +44,7 @@ public class SpellBoltEntity extends ThrownEntity {
 
     @Nullable
     public PlayerEntity getCaster() {
-        if (this.caster == null && this.getEntityWorld() != null && this.getEntityWorld().getEntityById(this.dataTracker.get(CASTER_ID)) instanceof PlayerEntity player) {
+        if (this.caster == null && this.getWorld() != null && this.getWorld().getEntityById(this.dataTracker.get(CASTER_ID)) instanceof PlayerEntity player) {
             this.caster = player;
         }
 
@@ -94,7 +95,7 @@ public class SpellBoltEntity extends ThrownEntity {
     public void tick() {
         super.tick();
 
-        if (this.age >= 60 && !this.getEntityWorld().isClient) {
+        if (this.age >= 60 && !this.getWorld().isClient) {
             discard();
             return;
         }
@@ -104,7 +105,7 @@ public class SpellBoltEntity extends ThrownEntity {
 
             this.despawnTimer--;
 
-            if (this.despawnTimer <= 0 && !this.getEntityWorld().isClient) {
+            if (this.despawnTimer <= 0 && !this.getWorld().isClient) {
                 this.discard();
             }
         }
@@ -141,18 +142,23 @@ public class SpellBoltEntity extends ThrownEntity {
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {
-
+    protected void writeCustomData(WriteView view) {
+        view.putInt("CasterId", this.dataTracker.get(CASTER_ID));
+        view.putInt("Tier", this.dataTracker.get(TIER));
+        view.putLong("Seed", this.dataTracker.get(SEED));
+        view.putBoolean("HitTarget", this.dataTracker.get(HIT_TARGET));
     }
 
     @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {
-
+    protected void readCustomData(ReadView view) {
+        this.dataTracker.set(CASTER_ID, view.getInt("CasterId", 0));
+        this.dataTracker.set(TIER, view.getInt("Tier", 0));
+        this.dataTracker.set(SEED, view.getLong("Seed", this.getWorld().getRandom().nextLong()));
+        this.dataTracker.set(HIT_TARGET, view.getBoolean("HitTarget", false));
     }
 
     @Override
     public boolean shouldRender(double distance) {
         return true;
     }
-
 }

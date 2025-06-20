@@ -69,7 +69,7 @@ public class AoeSpellDelivery {
 
     public void execute(ServerPlayerEntity caster) {
         this.caster = caster; // Store the caster when executing
-        this.casterWorld = (ServerWorld) caster.getWorld();
+        this.casterWorld = caster.getWorld();
         BlockPos center = caster.getBlockPos();
         int radiusInt = MathHelper.floor(this.radius);
         BlockPos min = center.add(-radiusInt, -radiusInt, -radiusInt);

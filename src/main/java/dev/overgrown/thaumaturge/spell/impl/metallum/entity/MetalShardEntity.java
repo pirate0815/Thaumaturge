@@ -11,9 +11,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -92,18 +93,18 @@ public class MetalShardEntity extends PersistentProjectileEntity {
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putInt("Lifetime", this.dataTracker.get(LIFETIME));
-        nbt.putInt("Age", this.dataTracker.get(AGE));
-        nbt.putInt("Punch", this.dataTracker.get(PUNCH));
+    protected void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        view.putInt("Lifetime", this.dataTracker.get(LIFETIME));
+        view.putInt("Age", this.dataTracker.get(AGE));
+        view.putInt("Punch", this.dataTracker.get(PUNCH));
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.dataTracker.set(LIFETIME, nbt.getInt("Lifetime", 100));
-        this.dataTracker.set(AGE, nbt.getInt("Age", 0));
-        this.dataTracker.set(PUNCH, nbt.getInt("Punch", 0));
+    protected void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.dataTracker.set(LIFETIME, view.getInt("Lifetime", 100));
+        this.dataTracker.set(AGE, view.getInt("Age", 0));
+        this.dataTracker.set(PUNCH, view.getInt("Punch", 0));
     }
 }

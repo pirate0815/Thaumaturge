@@ -1,16 +1,15 @@
 package dev.overgrown.thaumaturge.block.vessel;
 
-import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.ModBlockEntities;
 import dev.overgrown.thaumaturge.component.AspectComponent;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.Optional;
 
 public class VesselBlockEntity extends BlockEntity {
     private final AspectComponent aspectComponent = new AspectComponent(new Object2IntOpenHashMap<>());
@@ -29,22 +28,18 @@ public class VesselBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
-        super.readNbt(nbt, registries);
+    protected void readData(ReadView view) {
+        super.readData(view);
         aspectComponent.getMap().clear();
-        NbtElement aspectsNbt = nbt.get("Aspects");
-        if (aspectsNbt != null) {
-            AspectComponent.CODEC.parse(registries.getOps(NbtOps.INSTANCE), aspectsNbt)
-                    .resultOrPartial(Thaumaturge.LOGGER::error)
-                    .ifPresent(comp -> aspectComponent.getMap().putAll(comp.getMap()));
+        Optional<AspectComponent> aspectsNbt = view.read("Aspects", AspectComponent.CODEC);
+        if (aspectsNbt.isPresent()) {
+            aspectComponent.getMap().putAll(aspectsNbt.get().getMap());
         }
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
-        super.writeNbt(nbt, registries);
-        AspectComponent.CODEC.encodeStart(registries.getOps(NbtOps.INSTANCE), aspectComponent)
-                .resultOrPartial(Thaumaturge.LOGGER::error)
-                .ifPresent(element -> nbt.put("Aspects", element));
+    protected void writeData(WriteView view) {
+        super.writeData(view);
+        view.put("Aspects", AspectComponent.CODEC, aspectComponent);
     }
 }

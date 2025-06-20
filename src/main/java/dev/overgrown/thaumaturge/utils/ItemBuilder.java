@@ -121,15 +121,15 @@ public class ItemBuilder<T extends Item> {
      * the item with Minecraft’s item registry, and then associating the item with the proper creative groups.
      *
      * @param itemFunction A function that takes Item.Settings and returns a new item instance.
-     * @param <T>          The type of the item.
+     * @param <R>          The type of the item.
      * @return The newly created and registered item.
      */
-    public <T extends Item> T buildAndRegister(@NotNull Function<Item.Settings, T> itemFunction) {
+    public <R extends Item> R buildAndRegister(@NotNull Function<Item.Settings, R> itemFunction) {
         // Create a registry key for the item using the mod-specific identifier.
         RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, this.id);
 
         // Create a new item instance using the provided itemFunction, binding the registry key to the settings.
-        T item = itemFunction.apply(this.itemSettings.registryKey(itemKey));
+        R item = itemFunction.apply(this.itemSettings.registryKey(itemKey));
 
         // Register the item in Minecraft's global registry.
         Registry.register(Registries.ITEM, itemKey, item);

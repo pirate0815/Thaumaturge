@@ -5,7 +5,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
@@ -19,6 +18,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +91,14 @@ public class ArcaneMineEntity extends Entity {
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {}
+    protected void readCustomData(ReadView view) {
+        // Implement if needed
+    }
 
     @Override
-    protected void writeCustomDataToNbt(NbtCompound nbt) {}
+    protected void writeCustomData(WriteView view) {
+        // Implement if needed
+    }
 
     public Packet<ClientPlayPacketListener> getAddEntityPacket() {
         return new EntitySpawnS2CPacket(

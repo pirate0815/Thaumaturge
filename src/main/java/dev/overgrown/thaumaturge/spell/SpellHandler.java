@@ -136,12 +136,12 @@ public class SpellHandler {
             bolt.setOnBlockHitEffects(dummyDelivery.getOnBlockHitEffects());
 
             // Play sound when the bolt is cast
-            ServerWorld serverWorld = (ServerWorld) player.getWorld();
+            ServerWorld serverWorld = player.getWorld();
             serverWorld.playSound(null, player.getX(), player.getY(), player.getZ(),
                     ModSounds.POTENTIA_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
             return bolt;
-        }, player.getServerWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
+        }, player.getWorld(), ItemStack.EMPTY, player, 0.0F, 1.5F, 1.0F);
     }
 
     private static Object createDelivery(SpellCastPacket.SpellTier tier) {

@@ -5,12 +5,16 @@ import dev.overgrown.thaumaturge.component.FociComponent;
 import dev.overgrown.thaumaturge.component.GauntletComponent;
 import dev.overgrown.thaumaturge.component.ModComponents;
 import dev.overgrown.thaumaturge.networking.SpellCastPacket;
+import dev.overgrown.thaumaturge.spell.SpellHandler;
 import dev.overgrown.thaumaturge.utils.ModTags;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -29,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static dev.overgrown.thaumaturge.spell.SpellHandler.getFociTier;
+import static com.mojang.text2speech.Narrator.LOGGER;
 
 @Mixin(ScreenHandler.class)
 public abstract class ScreenHandlerMixin {
@@ -72,12 +76,11 @@ public abstract class ScreenHandlerMixin {
                     RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
 
                     if (!component.entries().isEmpty()) {
-                        component.entries().forEach(entry -> {
-                            ItemStack stack = ItemStack.fromNbt(registries, entry.nbt()).orElse(ItemStack.EMPTY);
-                            if (!stack.isEmpty()) {
-                                player.getInventory().offerOrDrop(stack);
-                            }
-                        });
+                        for (GauntletComponent.FociEntry entry : component.entries()) {
+                            ItemStack stack = new ItemStack(entry.item());
+                            stack.set(ModComponents.FOCI_COMPONENT, new FociComponent(entry.aspectId(), entry.modifierId()));
+                            player.getInventory().offerOrDrop(stack);
+                        }
                         gauntletStack.set(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
                         ci.cancel();
                     }
@@ -109,7 +112,7 @@ public abstract class ScreenHandlerMixin {
     @Unique
     private void handleFociInsertion(ItemStack gauntletStack, ItemStack fociStack, PlayerEntity player, CallbackInfo ci) {
         FociComponent fociComp = fociStack.get(ModComponents.FOCI_COMPONENT);
-        SpellCastPacket.SpellTier tier = getFociTier(fociStack.getItem());
+        SpellCastPacket.SpellTier tier = SpellHandler.getFociTier(fociStack.getItem());
 
         if (fociComp != null && tier != null) {
             GauntletComponent component = gauntletStack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
@@ -119,17 +122,9 @@ public abstract class ScreenHandlerMixin {
                 RegistryWrapper.WrapperLookup registries = Objects.requireNonNull(player.getServer()).getRegistryManager();
                 GauntletComponent.FociEntry entry = GauntletComponent.FociEntry.fromItemStack(fociStack, registries);
 
-                // Use modifier from FociComponent
-                GauntletComponent.FociEntry modifiedEntry = new GauntletComponent.FociEntry(
-                        entry.tier(),
-                        entry.aspectId(),
-                        fociComp.modifierId(),
-                        entry.nbt()
-                );
-
                 // Update gauntlet component
                 List<GauntletComponent.FociEntry> entries = new ArrayList<>(component.entries());
-                entries.add(modifiedEntry);
+                entries.add(entry);
                 gauntletStack.set(ModComponents.GAUNTLET_STATE, new GauntletComponent(entries));
                 fociStack.decrement(1);
                 ci.cancel();

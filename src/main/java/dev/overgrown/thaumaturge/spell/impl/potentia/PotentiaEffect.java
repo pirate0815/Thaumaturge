@@ -11,7 +11,7 @@ public class PotentiaEffect implements AspectEffect {
     public void apply(TargetedSpellDelivery delivery) {
         delivery.setMaxDistance(16.0);
         delivery.addOnHitEffect(entity -> {
-            ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
+            ServerWorld world = delivery.getCaster().getWorld();
             world.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                     ModSounds.POTENTIA_SPELL_CAST, SoundCategory.PLAYERS, 1.0f, 1.0f);
         });

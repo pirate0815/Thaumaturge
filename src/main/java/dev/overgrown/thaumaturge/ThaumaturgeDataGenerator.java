@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
 
@@ -15,8 +14,6 @@ public class ThaumaturgeDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-
-		// Remove the redundant cast
 		pack.addProvider(ItemTagProvider::new);
 	}
 
@@ -27,7 +24,7 @@ public class ThaumaturgeDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup arg) {
-			getOrCreateTagBuilder(ItemTags.DYEABLE)
+			valueLookupBuilder(ItemTags.DYEABLE)
 					.add(ModItems.BASIC_CASTING_GAUNTLET);
 		}
 	}

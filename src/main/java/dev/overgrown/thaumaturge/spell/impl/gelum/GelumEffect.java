@@ -31,7 +31,7 @@ public class GelumEffect implements AspectEffect {
 
     private void handleEntityHit(TargetedSpellDelivery delivery, LivingEntity entity) {
         float damage = 4.0f * delivery.getPowerMultiplier();
-        ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
+        ServerWorld world = delivery.getCaster().getWorld();
         LivingEntity caster = delivery.getCaster();
 
         entity.damage(world, entity.getDamageSources().mobProjectile(null, caster), damage);
@@ -49,7 +49,7 @@ public class GelumEffect implements AspectEffect {
     }
 
     private void handleBlockEffect(TargetedSpellDelivery delivery, BlockPos center) {
-        ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
+        ServerWorld world = delivery.getCaster().getWorld();
         int radius = 1; // 3x3x3 area
 
         BlockPos.iterate(center.add(-radius, -radius, -radius), center.add(radius, radius, radius))

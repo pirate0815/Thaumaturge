@@ -93,7 +93,7 @@ public class TargetedSpellDelivery {
     }
 
     public ServerWorld getWorld() {
-        return (ServerWorld) caster.getWorld();
+        return caster.getWorld();
     }
 
     public void execute(ServerPlayerEntity caster) {

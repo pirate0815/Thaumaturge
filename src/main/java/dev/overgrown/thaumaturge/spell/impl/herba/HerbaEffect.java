@@ -42,7 +42,7 @@ public class HerbaEffect implements AspectEffect {
     @Override
     public void apply(TargetedSpellDelivery delivery) {
         delivery.addBlockHitEffect(hit -> {
-            ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
+            ServerWorld world = delivery.getCaster().getWorld();
             BlockPos pos = hit.getBlockPos();
             int powerLevel = (int) (delivery.getPowerMultiplier() - 1.0f);
             int scatterSize = delivery.getScatterSize();

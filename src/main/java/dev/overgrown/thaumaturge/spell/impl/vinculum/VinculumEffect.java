@@ -26,7 +26,7 @@ public class VinculumEffect implements AspectEffect {
         // Add effect to spawn mine on block hit
         delivery.addBlockHitEffect(blockHit -> {
             if (delivery.getCaster() != null) {
-                ServerWorld world = (ServerWorld) delivery.getCaster().getWorld();
+                ServerWorld world = delivery.getCaster().getWorld();
                 ArcaneMineEntity mine = new ArcaneMineEntity(ModEntities.ARCANE_MINE, world);
                 mine.setPosition(blockHit.getPos());
                 mine.setArmTime(40);

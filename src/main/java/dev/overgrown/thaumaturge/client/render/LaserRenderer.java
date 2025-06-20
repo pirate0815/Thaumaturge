@@ -8,7 +8,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
@@ -138,8 +137,8 @@ public record LaserRenderer(LaserPart glow,
             int n = l % m;
             int o = (l + 1) % m;
             float h = ((float) (ticks % rate) + partialTick) / rate;
-            int p = SheepEntity.getRgbColor(DyeColor.byIndex(n));
-            int q = SheepEntity.getRgbColor(DyeColor.byIndex(o));
+            int p = DyeColor.byIndex(n).getSignColor();
+            int q = DyeColor.byIndex(o).getSignColor();
             return new Color(ColorHelper.lerp(h, p, q));
         } else {
             return part.color;

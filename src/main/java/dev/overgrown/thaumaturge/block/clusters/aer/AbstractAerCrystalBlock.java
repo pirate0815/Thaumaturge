@@ -21,7 +21,7 @@ public abstract class AbstractAerCrystalBlock extends AmethystClusterBlock {
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (random.nextInt(10) == 0) {
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                    SoundEvents.BLOCK_SAND_WIND,
+                    SoundEvents.BLOCK_SAND_IDLE,
                     SoundCategory.BLOCKS, 0.1f, 0.6f + random.nextFloat() * 0.3f);
         }
 

@@ -52,7 +52,7 @@ public class AlkimiaEffect implements AspectEffect {
     private record BlockCloudSpawnerConsumer(AlkimiaEffect effect, TargetedSpellDelivery delivery) implements Consumer<BlockHitResult> {
         @Override
         public void accept(BlockHitResult hit) {
-            effect.createCloud((ServerWorld) delivery.getCaster().getWorld(), hit.getPos(), delivery);
+            effect.createCloud(delivery.getCaster().getWorld(), hit.getPos(), delivery);
         }
     }
 
