@@ -22,5 +22,11 @@
     "sounds":[
       "thaumaturge:potentia_spell_cast"
     ]
+  },
+  "victus_spell_cast":{
+    "subtitle":"subtitles.thaumaturge.victus_spell_cast",
+    "sounds":[
+      "thaumaturge:victus_spell_cast"
+    ]
   }
 }

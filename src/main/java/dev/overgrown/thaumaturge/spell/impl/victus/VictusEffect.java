@@ -5,8 +5,10 @@ import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 public class VictusEffect implements AspectEffect {
 
@@ -37,7 +39,9 @@ public class VictusEffect implements AspectEffect {
             if (world == null) return;
 
             Box box = new Box(blockPos);
-            world.getEntitiesByClass(LivingEntity.class, box, e -> true).forEach(entity -> handleHealingOrDamage(entity, delivery.getPowerMultiplier(), world));
+            world.getEntitiesByClass(LivingEntity.class, box, e -> true).forEach(entity ->
+                    handleHealingOrDamage(entity, delivery.getPowerMultiplier(), world)
+            );
         });
     }
 
@@ -56,6 +60,26 @@ public class VictusEffect implements AspectEffect {
             entity.damage(world, world.getDamageSources().magic(), amount);
         } else {
             entity.heal(amount);
+            // Spawn heart particles around the entity
+            spawnHeartParticles(entity, world);
+        }
+    }
+
+    private void spawnHeartParticles(LivingEntity entity, ServerWorld world) {
+        Vec3d pos = entity.getPos();
+        for (int i = 0; i < 5; i++) {
+            double offsetX = world.random.nextGaussian() * 0.5;
+            double offsetY = world.random.nextDouble() * 2;
+            double offsetZ = world.random.nextGaussian() * 0.5;
+            world.spawnParticles(
+                    ParticleTypes.HEART,
+                    pos.x + offsetX,
+                    pos.y + entity.getHeight() / 2 + offsetY,
+                    pos.z + offsetZ,
+                    1,
+                    0, 0, 0,
+                    0.1
+            );
         }
     }
 }

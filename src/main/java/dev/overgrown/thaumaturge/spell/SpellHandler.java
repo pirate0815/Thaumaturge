@@ -32,10 +32,14 @@ import java.util.List;
 public class SpellHandler {
     private static final Identifier POTENTIA_ID = Thaumaturge.identifier("potentia");
     private static final Identifier VINCULUM_ID = Thaumaturge.identifier("vinculum");
+    private static final Identifier VICTUS_ID = Thaumaturge.identifier("victus");
 
     public static void tryCastSpell(ServerPlayerEntity player, SpellCastPacket.SpellTier tier) {
         List<GauntletComponent.FociEntry> entries = getEquippedFociEntries(player, tier);
         if (entries.isEmpty()) return;
+
+        boolean hasVictus = entries.stream()
+                .anyMatch(entry -> entry.aspectId().equals(VICTUS_ID));
 
         List<GauntletComponent.FociEntry> nonVinculumEntries = new ArrayList<>();
         List<GauntletComponent.FociEntry> vinculumEntries = new ArrayList<>();
@@ -79,6 +83,19 @@ public class SpellHandler {
                 }
             }
             executeDelivery(delivery, player);
+        }
+
+        if (hasVictus) {
+            player.getWorld().playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    ModSounds.VICTUS_SPELL_CAST,
+                    SoundCategory.PLAYERS,
+                    1.0f,
+                    1.0f
+            );
         }
     }
 
