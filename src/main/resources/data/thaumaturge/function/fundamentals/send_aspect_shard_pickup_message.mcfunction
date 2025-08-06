@@ -1,1 +1,0 @@
-tellraw @s {"bold":false,"color":"dark_purple","italic":false,"obfuscated":false,"strikethrough":false,"translate":"text.thaumaturge.strange_dreams.touched_aspect_shard","underlined":false}
