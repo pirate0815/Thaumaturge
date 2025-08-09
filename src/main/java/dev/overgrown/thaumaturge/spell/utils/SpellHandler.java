@@ -1,9 +1,9 @@
 package dev.overgrown.thaumaturge.spell.utils;
 
-import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
-import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
+import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
+import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
@@ -16,13 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Central entry point for executing spells on the server.
- * Backport-safe: only uses AspectEffect self/entity/aoe entry points.
+ * Central entry for executing spells on the server using delivery-based Aspect API.
+ * Parity with original: AspectEffect.apply*(delivery) drives behavior.
  */
 public final class SpellHandler {
-
-    // radius used when a block face was targeted (no block-specific API in AspectEffect)
-    private static final float BLOCK_TARGET_RADIUS = 0.75f;
 
     private SpellHandler() {}
 
@@ -34,7 +31,8 @@ public final class SpellHandler {
         if (aspect == null) return;
 
         List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.deliver(aspect, mods);
+        delivery.setModifiers(mods);
+        aspect.applySelf(delivery);
     }
 
     public static void castTargeted(ServerPlayerEntity player, TargetedSpellDelivery delivery) {
@@ -43,20 +41,21 @@ public final class SpellHandler {
         if (aspect == null) return;
 
         List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.deliver(aspect, mods);
+        delivery.setModifiers(mods);
+        aspect.applyTargeted(delivery);
     }
 
-    /**
-     * Convenience for BLOCK-targeted casts coming from the packet (pos + face).
-     * Mapped to an AoE cast centered on the block to avoid adding new API to AspectEffect.
-     */
+    /** Convenience for BLOCK-target casts coming from networking (pos + face). */
     public static void castTargeted(ServerPlayerEntity player, BlockPos pos, Direction face) {
+        TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, pos, face);
+
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
         AspectEffect aspect = resolveAspect(ctx.aspectId());
         if (aspect == null) return;
 
         List<ModifierEffect> mods = resolveModifiers(ctx);
-        aspect.castAoe(player, pos, BLOCK_TARGET_RADIUS, mods);
+        delivery.setModifiers(mods);
+        aspect.applyTargeted(delivery);
     }
 
     public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery delivery) {
@@ -65,7 +64,8 @@ public final class SpellHandler {
         if (aspect == null) return;
 
         List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.deliver(aspect, mods);
+        delivery.setModifiers(mods);
+        aspect.applyAoe(delivery);
     }
 
     // === Helpers ===
@@ -80,11 +80,8 @@ public final class SpellHandler {
 
         List<ModifierEffect> out = new ArrayList<>(ctx.modifiers().size());
         for (Identifier id : ctx.modifiers()) {
-            // ModifierRegistry#get returns a ModifierEffect (not Optional) in this backport
             ModifierEffect eff = ModifierRegistry.get(id);
-            if (eff != null) {
-                out.add(eff);
-            }
+            if (eff != null) out.add(eff);
         }
         return out;
     }
