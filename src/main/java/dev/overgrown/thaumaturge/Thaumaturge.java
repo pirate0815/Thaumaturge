@@ -6,13 +6,11 @@ import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifierEffect;
+import dev.overgrown.thaumaturge.spell.modifier.StableModifierEffect;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
-import dev.overgrown.thaumaturge.spell.utils.SpellHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +32,7 @@ public class Thaumaturge implements ModInitializer {
         registerModifierEffects();
 
         // Register packet handler
-        ServerPlayNetworking.registerGlobalReceiver(SpellCastPacket.ID, (server, player, handler, buf, responseSender) -> {
-            SpellCastPacket packet = new SpellCastPacket(buf);
-            server.execute(() -> SpellHandler.castSpell(player, packet.getHand(), packet.getSpellKey()));
-        });
+        SpellCastPacket.registerServer();
 
         LOGGER.info("Thaumaturge initialized!");
     }
@@ -49,6 +44,6 @@ public class Thaumaturge implements ModInitializer {
     private void registerModifierEffects() {
         ModifierRegistry.register(identifier("power"), new PowerModifierEffect());
         ModifierRegistry.register(identifier("scatter"), new ScatterModifierEffect());
-        ModifierRegistry.register(identifier("stable"), context -> {}); // Stable does nothing
+        ModifierRegistry.register(identifier("stable"), new StableModifierEffect()); // no-op modifier
     }
 }

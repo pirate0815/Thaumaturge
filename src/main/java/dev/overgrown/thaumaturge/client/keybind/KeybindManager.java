@@ -1,59 +1,61 @@
 package dev.overgrown.thaumaturge.client.keybind;
 
-import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-public class KeybindManager {
-    // Different spell keybindings for different spell slots
-    public static KeyBinding PRIMARY_SPELL; // Default: R key
-    public static KeyBinding SECONDARY_SPELL; // Default: V key
-    public static KeyBinding TERNARY_SPELL; // Default: G key
-    public static KeyBinding QUATERNARY_SPELL; // Default: B key
-    public static KeyBinding QUINARY_SPELL; // Default: H key
-    public static KeyBinding SENARY_SPELL; // Default: N key
-    public static KeyBinding SEPTENARY_SPELL; // Default: Y key
-    public static KeyBinding OCTONARY_SPELL; // Default: U key
-    public static KeyBinding NONARY_SPELL; // Default: I key
-    public static KeyBinding DENARY_SPELL; // Default: O key
+/**
+ * Registers spell keybinds and forwards presses to networking senders.
+ * Default keys:
+ *  - Z: Self cast
+ *  - X: Targeted cast (block/entity under crosshair)
+ *  - C: AOE cast (centered at crosshair block or player) with fixed radius
+ */
+public final class KeybindManager implements ClientModInitializer {
+    private static KeyBinding CAST_SELF;
+    private static KeyBinding CAST_TARGETED;
+    private static KeyBinding CAST_AOE;
 
-    /**
-     * Registers all keybindings for the mod
-     * Called during client initialization in ThaumaturgeClient
-     */
-    public static void registerKeybinds() {
-        PRIMARY_SPELL = registerKey("primary", GLFW.GLFW_KEY_R);
-        SECONDARY_SPELL = registerKey("secondary", GLFW.GLFW_KEY_V);
-        TERNARY_SPELL = registerKey("ternary", GLFW.GLFW_KEY_G);
-        QUATERNARY_SPELL = registerKey("quaternary", GLFW.GLFW_KEY_B);
-        QUINARY_SPELL = registerKey("quinary", GLFW.GLFW_KEY_H);
-        SENARY_SPELL = registerKey("senary", GLFW.GLFW_KEY_N);
-        SEPTENARY_SPELL = registerKey("septenary", GLFW.GLFW_KEY_Y);
-        OCTONARY_SPELL = registerKey("octonary", GLFW.GLFW_KEY_U);
-        NONARY_SPELL = registerKey("nonary", GLFW.GLFW_KEY_I);
-        DENARY_SPELL = registerKey("denary", GLFW.GLFW_KEY_O);
-    }
+    // Default AOE radius; server clamps anyway
+    private static final float DEFAULT_AOE_RADIUS = 3.0f;
 
-    /**
-     * Helper method to register a keybinding with standard naming convention
-     *
-     * @param name Base name for the keybind
-     * @param keycode Default GLFW keycode to assign
-     * @return The registered KeyBinding
-     */
-    private static KeyBinding registerKey(String name, int keycode) {
-        String translationKey = "key." + Thaumaturge.MOD_ID + "." + name;
-        String categoryKey = "key.category." + Thaumaturge.MOD_ID + ".spells";
+    @Override
+    public void onInitializeClient() {
+        CAST_SELF = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.thaumaturge.cast_self",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_Z,
+                "category.thaumaturge.spells"
+        ));
+        CAST_TARGETED = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.thaumaturge.cast_targeted",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_X,
+                "category.thaumaturge.spells"
+        ));
+        CAST_AOE = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.thaumaturge.cast_aoe",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_C,
+                "category.thaumaturge.spells"
+        ));
 
-        return KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(
-                        translationKey,
-                        InputUtil.Type.KEYSYM,
-                        keycode,
-                        categoryKey
-                )
-        );
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null) return;
+
+            while (CAST_SELF.wasPressed()) {
+                SpellCastPacket.sendSelf();
+            }
+            while (CAST_TARGETED.wasPressed()) {
+                SpellCastPacket.sendTargetedFromCrosshair();
+            }
+            while (CAST_AOE.wasPressed()) {
+                SpellCastPacket.sendAoeFromCrosshair(DEFAULT_AOE_RADIUS);
+            }
+        });
     }
 }
