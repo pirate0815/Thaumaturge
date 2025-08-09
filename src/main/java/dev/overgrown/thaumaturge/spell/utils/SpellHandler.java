@@ -1,137 +1,88 @@
 package dev.overgrown.thaumaturge.spell.utils;
 
-import dev.overgrown.thaumaturge.Thaumaturge;
-import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
-import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;          // <- corrected package
+import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;       // <- corrected package
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Central spell dispatch. Treats client packets as "intent", resolves the Aspect and Modifiers
- * from the player's equipped focus (AspectsLib), builds the appropriate delivery, and lets
- * the Aspect perform the effect.
+ * Central entry point for executing spells on the server.
+ * - Resolves Aspect + Modifiers (via SpellContextResolver and registries)
+ * - Dispatches to delivery strategies (Self / Targeted / AOE)
  *
- * NOTE:
- *  - Delivery types are data-holders for targets (self / block+face / entity / aoe).
- *  - AspectRegistry maps aspect IDs to AspectEffect implementations.
- *  - ModifierRegistry maps modifier IDs to ModifierEffect implementations.
+ * Notes:
+ *  - If no valid Aspect is found on the player's focus, the cast is ignored.
+ *  - Modifiers are resolved via ModifierRegistry using IDs from the context (may be empty).
+ *  - For BLOCK-targeted casts, we provide a convenience overload without a delivery instance.
  */
 public final class SpellHandler {
+
     private SpellHandler() {}
 
-    /* ===================== ENTRY POINTS USED BY NETWORK HANDLER ===================== */
+    // === Public API used by networking handler ===
 
-    public static void castSelf(ServerPlayerEntity player, SelfSpellDelivery ignored) {
+    public static void castSelf(ServerPlayerEntity player, SelfSpellDelivery delivery) {
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
         if (aspect == null) return;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx.modifierIds);
-
-        // Rebuild delivery with resolved context
-        SelfSpellDelivery delivery = new SelfSpellDelivery(player, aspect, mods);
-        try {
-            aspect.applySelf(delivery);
-        } catch (Throwable t) {
-            Thaumaturge.LOGGER.error("Spell self-cast failed for aspect {}", ctx.aspectId, t);
-        }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.deliver(aspect, mods);
     }
 
-    /** Targeted cast on an entity. */
-    public static void castTargeted(ServerPlayerEntity player, TargetedSpellDelivery deliveryWithTargetEntity) {
-        // deliveryWithTargetEntity is expected to carry either an entity OR a (pos, face).
+    public static void castTargeted(ServerPlayerEntity player, TargetedSpellDelivery delivery) {
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
         if (aspect == null) return;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx.modifierIds);
-
-        TargetedSpellDelivery delivery = deliveryWithTargetEntity.withContext(aspect, mods);
-        try {
-            aspect.applyTargeted(delivery);
-        } catch (Throwable t) {
-            Thaumaturge.LOGGER.error("Spell targeted-cast failed for aspect {}", ctx.aspectId, t);
-        }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.deliver(aspect, mods);
     }
 
-    /** Targeted cast on a block face. Convenience for network path that passes pos/face. */
+    /**
+     * Convenience for BLOCK-targeted casts coming from the packet (pos + face).
+     */
     public static void castTargeted(ServerPlayerEntity player, BlockPos pos, Direction face) {
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
         if (aspect == null) return;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx.modifierIds);
-
-        TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, aspect, mods, pos, face);
-        try {
-            aspect.applyTargeted(delivery);
-        } catch (Throwable t) {
-            Thaumaturge.LOGGER.error("Spell targeted-cast (block) failed for aspect {}", ctx.aspectId, t);
-        }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        aspect.castOnBlock(player, pos, face, mods);
     }
 
-    public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery ignored) {
-        // ignored contains center+radius already; we rebuild with aspect/mods.
+    public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery delivery) {
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
         if (aspect == null) return;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx.modifierIds);
-
-        AoeSpellDelivery delivery = ignored.withContext(aspect, mods);
-        try {
-            aspect.applyAoe(delivery);
-        } catch (Throwable t) {
-            Thaumaturge.LOGGER.error("Spell AOE-cast failed for aspect {}", ctx.aspectId, t);
-        }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.deliver(aspect, mods);
     }
 
-    /** Convenience overload if you want to call with raw center+radius. */
-    public static void castAoe(ServerPlayerEntity player, BlockPos center, float radius) {
-        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId);
-        if (aspect == null) return;
+    // === Helpers ===
 
-        List<ModifierEffect> mods = resolveModifiers(ctx.modifierIds);
-
-        AoeSpellDelivery delivery = new AoeSpellDelivery(player, aspect, mods, center, radius);
-        try {
-            aspect.applyAoe(delivery);
-        } catch (Throwable t) {
-            Thaumaturge.LOGGER.error("Spell AOE-cast failed for aspect {}", ctx.aspectId, t);
-        }
+    private static AspectEffect resolveAspect(Identifier aspectId) {
+        if (aspectId == null) return null;
+        return AspectRegistry.get(aspectId).orElse(null);
     }
 
-    /* ===================== HELPERS ===================== */
+    private static List<ModifierEffect> resolveModifiers(SpellContextResolver.SpellContext ctx) {
+        if (ctx.modifiers() == null || ctx.modifiers().isEmpty()) return List.of();
 
-    private static AspectEffect resolveAspect(Identifier id) {
-        if (id == null) return null;
-        AspectEffect effect = AspectRegistry.get(id);
-        if (effect == null) {
-            Thaumaturge.LOGGER.warn("No AspectEffect registered for id {}", id);
-        }
-        return effect;
-    }
-
-    private static List<ModifierEffect> resolveModifiers(List<Identifier> ids) {
-        if (ids == null || ids.isEmpty()) return Collections.emptyList();
-        List<ModifierEffect> out = new ArrayList<>(ids.size());
-        for (Identifier id : ids) {
-            ModifierEffect eff = ModifierRegistry.get(id);
-            if (eff != null) out.add(eff);
+        List<ModifierEffect> out = new ArrayList<>(ctx.modifiers().size());
+        for (Identifier id : ctx.modifiers()) {
+            ModifierRegistry.get(id).ifPresent(out::add);
         }
         return out;
     }

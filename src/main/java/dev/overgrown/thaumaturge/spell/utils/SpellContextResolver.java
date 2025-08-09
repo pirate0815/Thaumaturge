@@ -1,98 +1,98 @@
 package dev.overgrown.thaumaturge.spell.utils;
 
-import dev.overgrown.thaumaturge.Thaumaturge;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Resolves spell casting context (aspect + modifiers) from the player's equipped focus.
- * Aspect is sourced from AspectsLib NBT:
- *   AspectsLibData -> AspectData -> aspects : { "<namespace:id>": weight, ... }
- * Picks the entry with the highest weight. Modifiers are empty for now.
+ * Resolves the active Aspect and Modifiers for a cast, using AspectsLib-style NBT on the held Focus.
+ *
+ * Expected NBT (example):
+ *   AspectsLibData: {
+ *     AspectData: {
+ *       aspects: {
+ *         "aspectslib:ignis": 1
+ *       }
+ *     }
+ *   }
+ *
+ * This resolver is intentionally conservative: it looks at main-hand first, then off-hand.
+ * Modifiers are returned empty for now (wire up when your modifier storage is finalized).
  */
 public final class SpellContextResolver {
 
-    public static final class SpellContext {
-        public final @Nullable Identifier aspectId;
-        public final List<Identifier> modifierIds;
-
-        public SpellContext(@Nullable Identifier aspectId, List<Identifier> modifierIds) {
-            this.aspectId = aspectId;
-            this.modifierIds = modifierIds;
-        }
-    }
-
-    private static final String KEY_ASPECTS_LIB = "AspectsLibData";
-    private static final String KEY_ASPECT_DATA  = "AspectData";
-    private static final String KEY_ASPECTS      = "aspects";
+    private static final String TAG_ASPECTS_LIB = "AspectsLibData";
+    private static final String TAG_ASPECT_DATA = "AspectData";
+    private static final String TAG_ASPECTS     = "aspects";
 
     private SpellContextResolver() {}
 
-    /** Resolve from player's main/off-hand (then hotbar) for a focus carrying AspectsLib data. */
     public static SpellContext resolve(ServerPlayerEntity player) {
-        ItemStack focus = findFocusStack(player);
-        Identifier aspect = readAspectIdFrom(focus);
-        // TODO: resolve modifiers from your storage schema
-        return new SpellContext(aspect, Collections.emptyList());
+        // 1) Resolve aspect id from whichever hand holds a Focus-like item with AspectsLibData
+        Identifier aspectId = resolveAspectFromHands(player);
+
+        // 2) Resolve modifiers (placeholder: empty list until storage is decided)
+        List<Identifier> modifiers = List.of();
+
+        return new SpellContext(aspectId, modifiers);
     }
 
-    private static ItemStack findFocusStack(PlayerEntity player) {
-        ItemStack main = player.getMainHandStack();
-        if (hasAspectsLib(main)) return main;
+    @Nullable
+    private static Identifier resolveAspectFromHands(ServerPlayerEntity player) {
+        ItemStack main  = player.getMainHandStack();
+        ItemStack off   = player.getOffHandStack();
 
-        ItemStack off = player.getOffHandStack();
-        if (hasAspectsLib(off)) return off;
+        Identifier id = readAspectId(main);
+        if (id != null) return id;
 
-        for (int i = 0; i < 9; i++) {
-            ItemStack s = player.getInventory().getStack(i);
-            if (hasAspectsLib(s)) return s;
-        }
-        return ItemStack.EMPTY;
+        return readAspectId(off);
     }
 
-    private static boolean hasAspectsLib(ItemStack stack) {
-        NbtCompound tag = stack.getNbt();
-        return tag != null && tag.contains(KEY_ASPECTS_LIB, NbtElement.COMPOUND_TYPE);
-    }
+    @Nullable
+    private static Identifier readAspectId(ItemStack stack) {
+        if (stack.isEmpty()) return null;
 
-    private static @Nullable Identifier readAspectIdFrom(ItemStack stack) {
-        NbtCompound tag = stack.getNbt();
-        if (tag == null || !tag.contains(KEY_ASPECTS_LIB, NbtElement.COMPOUND_TYPE)) return null;
+        NbtCompound root = stack.getNbt();
+        if (root == null || !root.contains(TAG_ASPECTS_LIB, NbtCompound.COMPOUND_TYPE)) return null;
 
-        NbtCompound lib = tag.getCompound(KEY_ASPECTS_LIB);
-        if (!lib.contains(KEY_ASPECT_DATA, NbtElement.COMPOUND_TYPE)) return null;
+        NbtCompound lib = root.getCompound(TAG_ASPECTS_LIB);
+        if (!lib.contains(TAG_ASPECT_DATA, NbtCompound.COMPOUND_TYPE)) return null;
 
-        NbtCompound data = lib.getCompound(KEY_ASPECT_DATA);
-        if (!data.contains(KEY_ASPECTS, NbtElement.COMPOUND_TYPE)) return null;
+        NbtCompound data = lib.getCompound(TAG_ASPECT_DATA);
+        if (!data.contains(TAG_ASPECTS, NbtCompound.COMPOUND_TYPE)) return null;
 
-        NbtCompound aspects = data.getCompound(KEY_ASPECTS);
-        if (aspects.isEmpty()) return null;
+        NbtCompound aspects = data.getCompound(TAG_ASPECTS);
 
-        String bestKey = null;
-        int bestWeight = Integer.MIN_VALUE;
-
-        for (String key : aspects.getKeys()) {
-            int weight = aspects.getInt(key); // /give example uses int weights
-            if (weight > bestWeight) {
-                bestWeight = weight;
-                bestKey = key;
+        // Pick the first aspect with a positive level. Deterministic by key order.
+        Set<String> keys = aspects.getKeys();
+        for (String key : keys) {
+            int level = aspects.getInt(key);
+            if (level > 0) {
+                try {
+                    return new Identifier(key);
+                } catch (IllegalArgumentException ignored) {
+                    // bad id string; skip
+                }
             }
         }
+        return null;
+    }
 
-        if (bestKey == null) return null;
-
-        Identifier id = Identifier.tryParse(bestKey);
-        if (id == null) {
-            Thaumaturge.LOGGER.warn("Invalid aspect id in AspectsLib data: {}", bestKey);
+    /**
+     * Simple immutable context for a spell cast.
+     * `aspectId` may be null if no valid aspect was found on the player.
+     * `modifiers` is currently empty until modifier storage is integrated.
+     */
+    public record SpellContext(@Nullable Identifier aspectId, List<Identifier> modifiers) {
+        public SpellContext {
+            // ensure non-null list instance
+            modifiers = modifiers == null ? new ArrayList<>() : List.copyOf(modifiers);
         }
-        return id;
     }
 }

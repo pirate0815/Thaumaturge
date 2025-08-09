@@ -8,52 +8,48 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-/**
- * Registers spell keybinds and forwards presses to networking senders.
- * Default keys:
- *  - Z: Self cast
- *  - X: Targeted cast (block/entity under crosshair)
- *  - C: AOE cast (centered at crosshair block or player) with fixed radius
- */
 public final class KeybindManager implements ClientModInitializer {
-    private static KeyBinding CAST_SELF;
-    private static KeyBinding CAST_TARGETED;
-    private static KeyBinding CAST_AOE;
 
-    // Default AOE radius; server clamps anyway
+    private static KeyBinding SELF_CAST;
+    private static KeyBinding TARGETED_CAST;
+    private static KeyBinding AOE_CAST;
+
+    // default AOE radius (server clamps anyway)
     private static final float DEFAULT_AOE_RADIUS = 3.0f;
 
     @Override
     public void onInitializeClient() {
-        CAST_SELF = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        SELF_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.thaumaturge.cast_self",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_Z,
-                "category.thaumaturge.spells"
+                "key.categories.thaumaturge"
         ));
-        CAST_TARGETED = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+
+        TARGETED_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.thaumaturge.cast_targeted",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_X,
-                "category.thaumaturge.spells"
+                "key.categories.thaumaturge"
         ));
-        CAST_AOE = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+
+        AOE_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.thaumaturge.cast_aoe",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_C,
-                "category.thaumaturge.spells"
+                "key.categories.thaumaturge"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            while (CAST_SELF.wasPressed()) {
+            while (SELF_CAST.wasPressed()) {
                 SpellCastPacket.sendSelf();
             }
-            while (CAST_TARGETED.wasPressed()) {
+            while (TARGETED_CAST.wasPressed()) {
                 SpellCastPacket.sendTargetedFromCrosshair();
             }
-            while (CAST_AOE.wasPressed()) {
+            while (AOE_CAST.wasPressed()) {
                 SpellCastPacket.sendAoeFromCrosshair(DEFAULT_AOE_RADIUS);
             }
         });
