@@ -1,60 +1,47 @@
 package dev.overgrown.thaumaturge.client.keybind;
 
-import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
-public final class KeybindManager implements ClientModInitializer {
+/**
+ * KeybindManager.java
+ * Registers up to 10 spell keybinds (primary → denary).
+ * No tick handling here—ThaumaturgeClient handles presses.
+ */
+public class KeybindManager {
+    public static KeyBinding PRIMARY_SPELL;    // R
+    public static KeyBinding SECONDARY_SPELL;  // V
+    public static KeyBinding TERNARY_SPELL;    // G
+    public static KeyBinding QUATERNARY_SPELL; // B
+    public static KeyBinding QUINARY_SPELL;    // H
+    public static KeyBinding SENARY_SPELL;     // N
+    public static KeyBinding SEPTENARY_SPELL;  // Y
+    public static KeyBinding OCTONARY_SPELL;   // U
+    public static KeyBinding NONARY_SPELL;     // I
+    public static KeyBinding DENARY_SPELL;     // O
 
-    private static KeyBinding SELF_CAST;
-    private static KeyBinding TARGETED_CAST;
-    private static KeyBinding AOE_CAST;
+    /** Called during client init from ThaumaturgeClient. */
+    public static void registerKeybinds() {
+        PRIMARY_SPELL    = registerKey("primary",    GLFW.GLFW_KEY_R);
+        SECONDARY_SPELL  = registerKey("secondary",  GLFW.GLFW_KEY_V);
+        TERNARY_SPELL    = registerKey("ternary",    GLFW.GLFW_KEY_G);
+        QUATERNARY_SPELL = registerKey("quaternary", GLFW.GLFW_KEY_B);
+        QUINARY_SPELL    = registerKey("quinary",    GLFW.GLFW_KEY_H);
+        SENARY_SPELL     = registerKey("senary",     GLFW.GLFW_KEY_N);
+        SEPTENARY_SPELL  = registerKey("septenary",  GLFW.GLFW_KEY_Y);
+        OCTONARY_SPELL   = registerKey("octonary",   GLFW.GLFW_KEY_U);
+        NONARY_SPELL     = registerKey("nonary",     GLFW.GLFW_KEY_I);
+        DENARY_SPELL     = registerKey("denary",     GLFW.GLFW_KEY_O);
+    }
 
-    // default AOE radius (server clamps anyway)
-    private static final float DEFAULT_AOE_RADIUS = 3.0f;
-
-    @Override
-    public void onInitializeClient() {
-        SELF_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.thaumaturge.cast_self",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_Z,
-                "key.categories.thaumaturge"
-        ));
-
-        TARGETED_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.thaumaturge.cast_targeted",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_X,
-                "key.categories.thaumaturge"
-        ));
-
-        AOE_CAST = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.thaumaturge.cast_aoe",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_C,
-                "key.categories.thaumaturge"
-        ));
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
-
-            while (SELF_CAST.wasPressed()) {
-                SpellCastPacket.sendSelf();
-            }
-            while (TARGETED_CAST.wasPressed()) {
-                SpellCastPacket.sendTargetedFromCrosshair();
-            }
-            while (AOE_CAST.wasPressed()) {
-                SpellCastPacket.sendAoeFromCrosshair(DEFAULT_AOE_RADIUS);
-            }
-        });
+    private static KeyBinding registerKey(String name, int keycode) {
+        String translationKey = "key." + Thaumaturge.MOD_ID + "." + name;
+        String categoryKey    = "key.category." + Thaumaturge.MOD_ID + ".spells";
+        return KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(translationKey, InputUtil.Type.KEYSYM, keycode, categoryKey)
+        );
     }
 }

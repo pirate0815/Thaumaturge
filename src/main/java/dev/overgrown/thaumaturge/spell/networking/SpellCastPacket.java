@@ -23,21 +23,11 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 public final class SpellCastPacket {
 
     public static final Identifier ID = new Identifier("thaumaturge", "spell_cast");
 
     public enum Tier { SELF, TARGETED, AOE }
-
-    private static final double MAX_TARGET_RANGE = 64.0;
-    private static final double MAX_SQ_DIST = MAX_TARGET_RANGE * MAX_TARGET_RANGE;
-
-    private static final int MIN_CAST_TICKS = 2;
-    private static final Map<UUID, Long> LAST_CAST_TICK = new ConcurrentHashMap<>();
 
     // target kind tag
     private static final int T_NONE = 0, T_SELF = 1, T_BLOCK = 2, T_ENTITY = 3, T_AOE = 4;
@@ -163,12 +153,6 @@ public final class SpellCastPacket {
         server.execute(() -> {
             if (player.isRemoved() || player.isSpectator()) return;
 
-            // simple server-side cooldown against packet spam
-            long now = player.getWorld().getTime();
-            Long last = LAST_CAST_TICK.get(player.getUuid());
-            if (last != null && now - last < MIN_CAST_TICKS) return;
-            LAST_CAST_TICK.put(player.getUuid(), now);
-
             switch (pkt.tier) {
                 case SELF -> {
                     SpellHandler.castSelf(player, new SelfSpellDelivery(player, null, null));
@@ -177,29 +161,15 @@ public final class SpellCastPacket {
                     if (pkt.tKind == T_ENTITY) {
                         var target = player.getWorld().getEntityById(pkt.entityId);
                         if (target != null) {
-                            if (!target.isAlive()) return;
-                            if (player.squaredDistanceTo(target) > MAX_SQ_DIST) return;
                             SpellHandler.castTargeted(player, new TargetedSpellDelivery(player, null, null, target));
                         }
                     } else if (pkt.tKind == T_BLOCK && pkt.face != null) {
-                        var world = player.getWorld();
-                        if (!world.isChunkLoaded(pkt.pos) || !world.getWorldBorder().contains(pkt.pos)) return;
-                        double d = player.squaredDistanceTo(
-                                pkt.pos.getX() + 0.5, pkt.pos.getY() + 0.5, pkt.pos.getZ() + 0.5
-                        );
-                        if (d > MAX_SQ_DIST) return;
                         SpellHandler.castTargeted(player, pkt.pos, pkt.face);
                     }
                 }
                 case AOE -> {
                     if (pkt.tKind == T_AOE) {
-                        var world = player.getWorld();
-                        if (!world.isChunkLoaded(pkt.pos) || !world.getWorldBorder().contains(pkt.pos)) return;
                         float radius = Math.max(0f, Math.min(pkt.radius, 32f));
-                        double d = player.squaredDistanceTo(
-                                pkt.pos.getX() + 0.5, pkt.pos.getY() + 0.5, pkt.pos.getZ() + 0.5
-                        );
-                        if (d > MAX_SQ_DIST) return;
                         SpellHandler.castAoe(player, new AoeSpellDelivery(player, null, null, pkt.pos, radius));
                     }
                 }
