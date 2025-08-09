@@ -3,7 +3,9 @@
   "package": "dev.overgrown.thaumaturge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ItemRendererAccessor"
+    "ItemRendererAccessor",
+    "ServerPlayNetworkHandlerMixin",
+    "SlotClickMixin"
   ],
   "injectors": {
     "defaultRequire": 1

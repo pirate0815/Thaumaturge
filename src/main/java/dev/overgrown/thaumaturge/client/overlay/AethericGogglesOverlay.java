@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.client;
+package dev.overgrown.thaumaturge.client.overlay;
 
 import dev.overgrown.aspectslib.api.IAspectAffinityEntity;
 import dev.overgrown.aspectslib.data.Aspect;

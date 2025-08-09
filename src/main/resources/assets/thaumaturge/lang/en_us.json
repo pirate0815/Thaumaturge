@@ -1,4 +1,16 @@
 {
+  "key.category.thaumaturge.spells": "Thaumaturge: Spells",
+  "key.thaumaturge.primary": "Primary Spell",
+  "key.thaumaturge.secondary": "Secondary Spell",
+  "key.thaumaturge.ternary": "Ternary Spell",
+  "key.thaumaturge.quaternary": "Quaternary Spell",
+  "key.thaumaturge.quinary": "Quinary Spell",
+  "key.thaumaturge.senary": "Senary Spell",
+  "key.thaumaturge.septenary": "Septenary Spell",
+  "key.thaumaturge.octonary": "Octonary Spell",
+  "key.thaumaturge.nonary": "Nonary Spell",
+  "key.thaumaturge.denary": "Denary Spell",
+
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",
