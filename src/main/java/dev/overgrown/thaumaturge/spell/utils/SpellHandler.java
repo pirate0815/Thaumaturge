@@ -1,118 +1,88 @@
 package dev.overgrown.thaumaturge.spell.utils;
 
-import dev.overgrown.thaumaturge.item.focus.FocusItem;
-import dev.overgrown.thaumaturge.item.gauntlet.ResonanceGauntletItem;
-import dev.overgrown.thaumaturge.spell.effect.SpellEffect;
-import dev.overgrown.thaumaturge.spell.tier.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Hand;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
+import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
+import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
+import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
+import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
+import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class SpellHandler {
-    public static void castSpell(PlayerEntity player, Hand hand, int spellKey) {
-        ItemStack stack = player.getStackInHand(hand);
-        if (!(stack.getItem() instanceof ResonanceGauntletItem gauntlet)) return;
+/**
+ * Central entry for executing spells on the server using delivery-based Aspect API.
+ * Parity with original: AspectEffect.apply*(delivery) drives behavior.
+ */
+public final class SpellHandler {
 
-        NbtList fociNbt = gauntlet.getFoci(stack);
-        List<SpellFocus> foci = new ArrayList<>();
+    private SpellHandler() {}
 
-        for (NbtElement element : fociNbt) {
-            NbtCompound focusNbt = (NbtCompound) element;
-            ItemStack focusStack = ItemStack.fromNbt(focusNbt);
-            if (focusStack.getItem() instanceof FocusItem focusItem) {
-                Identifier aspectId = focusItem.getAspect(focusStack);
-                Identifier modifierId = focusItem.getModifier(focusStack);
+    // === Public API used by networking handler ===
 
-                // Use raw Identifier instead of string
-                foci.add(new SpellFocus(
-                        focusItem.getTier(),
-                        aspectId,
-                        modifierId
-                ));
-            }
-        }
+    public static void castSelf(ServerPlayerEntity player, SelfSpellDelivery delivery) {
+        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
+        if (aspect == null) return;
 
-        Map<String, List<SpellFocus>> grouped = groupFociByTier(foci);
-        SpellDelivery delivery = null;
-        List<SpellEffect> effects = new ArrayList<>();
-
-        switch (spellKey) {
-            case 0 -> delivery = new SelfSpellDelivery();
-            case 1 -> delivery = new TargetedSpellDelivery();
-            case 2 -> delivery = new AoeSpellDelivery();
-        }
-
-        // Get the tier for this spell key
-        String tier = tierForSpellKey(spellKey);
-        if (tier != null) {
-            List<SpellFocus> tierFoci = grouped.getOrDefault(tier, new ArrayList<>());
-            effects = combineEffects(tierFoci);
-        }
-
-        if (delivery != null && !effects.isEmpty()) {
-            delivery.cast(player.getWorld(), player, effects);
-        }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.setModifiers(mods);
+        aspect.applySelf(delivery);
     }
 
-    private static String tierForSpellKey(int key) {
-        return switch (key) {
-            case 0 -> "lesser";
-            case 1 -> "advanced";
-            case 2 -> "greater";
-            default -> null;
-        };
+    public static void castTargeted(ServerPlayerEntity player, TargetedSpellDelivery delivery) {
+        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
+        if (aspect == null) return;
+
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.setModifiers(mods);
+        aspect.applyTargeted(delivery);
     }
 
-    private static List<SpellEffect> combineEffects(List<SpellFocus> foci) {
-        Map<Identifier, SpellEffect> effectMap = new HashMap<>();
+    /** Convenience for BLOCK-target casts coming from networking (pos + face). */
+    public static void castTargeted(ServerPlayerEntity player, BlockPos pos, Direction face) {
+        TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, pos, face);
 
-        for (SpellFocus focus : foci) {
-            Identifier aspectId = focus.aspect();
-            Identifier modifierId = focus.modifier();
+        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
+        if (aspect == null) return;
 
-            // Create or update existing effect
-            SpellEffect effect = effectMap.get(aspectId);
-            if (effect == null) {
-                effect = new SpellEffect(aspectId, modifierId, 1);
-                effectMap.put(aspectId, effect);
-            } else {
-                // Increase amplification for same aspect
-                effect = new SpellEffect(
-                        effect.aspectId(),
-                        effect.modifierId(),
-                        effect.amplifier() + 1
-                );
-                effectMap.put(aspectId, effect);
-            }
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.setModifiers(mods);
+        aspect.applyTargeted(delivery);
+    }
+
+    public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery delivery) {
+        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
+        AspectEffect aspect = resolveAspect(ctx.aspectId());
+        if (aspect == null) return;
+
+        List<ModifierEffect> mods = resolveModifiers(ctx);
+        delivery.setModifiers(mods);
+        aspect.applyAoe(delivery);
+    }
+
+    // === Helpers ===
+
+    private static AspectEffect resolveAspect(Identifier aspectId) {
+        if (aspectId == null) return null;
+        return AspectRegistry.get(aspectId).orElse(null);
+    }
+
+    private static List<ModifierEffect> resolveModifiers(SpellContextResolver.SpellContext ctx) {
+        if (ctx.modifiers() == null || ctx.modifiers().isEmpty()) return List.of();
+
+        List<ModifierEffect> out = new ArrayList<>(ctx.modifiers().size());
+        for (Identifier id : ctx.modifiers()) {
+            ModifierEffect eff = ModifierRegistry.get(id);
+            if (eff != null) out.add(eff);
         }
-
-        return new ArrayList<>(effectMap.values());
+        return out;
     }
-
-    private static Map<String, List<SpellFocus>> groupFociByTier(List<SpellFocus> foci) {
-        Map<String, List<SpellFocus>> grouped = new HashMap<>();
-        grouped.put("lesser", new ArrayList<>());
-        grouped.put("advanced", new ArrayList<>());
-        grouped.put("greater", new ArrayList<>());
-
-        for (SpellFocus focus : foci) {
-            switch (focus.tier()) {
-                case "lesser" -> grouped.get("lesser").add(focus);
-                case "advanced" -> grouped.get("advanced").add(focus);
-                case "greater" -> grouped.get("greater").add(focus);
-            }
-        }
-        return grouped;
-    }
-
-    private record SpellFocus(String tier, Identifier aspect, Identifier modifier) {}
 }

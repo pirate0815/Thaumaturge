@@ -1,74 +1,70 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
-import dev.overgrown.thaumaturge.spell.effect.SpellEffect;
-import dev.overgrown.thaumaturge.spell.utils.SpellContext;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
+import net.minecraft.util.math.Direction;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Objects;
 
-public class TargetedSpellDelivery implements SpellDelivery {
-    @Override
-    public void cast(World world, PlayerEntity caster, List<SpellEffect> effects) {
-        Vec3d start = caster.getCameraPosVec(1.0F);
-        Vec3d rotationVec = caster.getRotationVec(1.0F);
-        Vec3d end = start.add(rotationVec.multiply(32));
+/**
+ * Delivery for targeted spells: either an entity OR a block face.
+ */
+public final class TargetedSpellDelivery {
 
-        // Create a bounding box for entity ray-casting
-        Box box = caster.getBoundingBox().stretch(rotationVec.multiply(32)).expand(1.0);
-        Predicate<Entity> predicate = entity ->
-                !entity.isSpectator() && entity.isCollidable();
+    private final ServerPlayerEntity caster;
+    private final ServerWorld world;
 
-        // Raycast for entities
-        EntityHitResult entityHit = ProjectileUtil.raycast(
-                caster, start, end, box, predicate, 32.0 * 32.0
-        );
+    private final Entity targetEntity;
+    private final BlockPos blockPos;
+    private final Direction face;
 
-        // Use block raycast as fallback
-        HitResult hit = world.raycast(new RaycastContext(
-                start, end,
-                RaycastContext.ShapeType.COLLIDER,
-                RaycastContext.FluidHandling.NONE,
-                caster
-        ));
+    private List<ModifierEffect> modifiers = List.of();
 
-        // Prefer entity hit if available
-        if (entityHit != null) {
-            hit = entityHit;
-        }
-
-        SpellContext context = createContextFromHit(world, caster, hit);
-
-        for (SpellEffect effect : effects) {
-            effect.apply(context);
-        }
+    /** Entity-target constructor. */
+    public TargetedSpellDelivery(ServerPlayerEntity caster, Entity targetEntity) {
+        this.caster = Objects.requireNonNull(caster, "caster");
+        this.world = (ServerWorld) caster.getWorld();
+        this.targetEntity = Objects.requireNonNull(targetEntity, "targetEntity");
+        this.blockPos = null;
+        this.face = null;
     }
 
-    private SpellContext createContextFromHit(World world, PlayerEntity caster, HitResult hit) {
-        if (hit == null) {
-            return new SpellContext(world, caster, null, null);
-        }
+    /** Block-target constructor. */
+    public TargetedSpellDelivery(ServerPlayerEntity caster, BlockPos blockPos, Direction face) {
+        this.caster = Objects.requireNonNull(caster, "caster");
+        this.world = (ServerWorld) caster.getWorld();
+        this.blockPos = Objects.requireNonNull(blockPos, "blockPos");
+        this.face = Objects.requireNonNull(face, "face");
+        this.targetEntity = null;
+    }
 
-        return switch (hit.getType()) {
-            case ENTITY -> {
-                Entity target = ((EntityHitResult) hit).getEntity();
-                yield new SpellContext(world, caster, target, target.getBlockPos());
-            }
-            case BLOCK -> {
-                BlockPos pos = ((BlockHitResult) hit).getBlockPos();
-                yield new SpellContext(world, caster, null, pos);
-            }
-            default -> // MISS
-                    new SpellContext(world, caster, null, null);
-        };
+    // Back-compat with old callsites that passed unused context args.
+    @SuppressWarnings("unused")
+    public TargetedSpellDelivery(ServerPlayerEntity caster, Object _unused1, Object _unused2, Entity target) {
+        this(caster, target);
+    }
+
+    public ServerPlayerEntity getCaster() { return caster; }
+    public ServerWorld getWorld() { return world; }
+
+    public boolean isEntityTarget() { return targetEntity != null; }
+    public boolean isBlockTarget()  { return blockPos != null && face != null; }
+
+    public Entity getTargetEntity() { return targetEntity; }
+    public BlockPos getBlockPos()   { return blockPos; }
+    public Direction getFace()      { return face; }
+
+    public List<ModifierEffect> getModifiers() { return modifiers; }
+    public void setModifiers(List<ModifierEffect> mods) {
+        if (mods == null || mods.isEmpty()) {
+            this.modifiers = List.of();
+        } else {
+            this.modifiers = List.copyOf(new ArrayList<>(mods));
+        }
     }
 }

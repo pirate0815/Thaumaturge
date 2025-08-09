@@ -1,7 +1,10 @@
 package dev.overgrown.thaumaturge.spell.modifier;
 
-import dev.overgrown.thaumaturge.spell.utils.SpellContext;
-
+/**
+ * Marker interface for spell modifiers in the 1.20.1 backport.
+ * Aspect effects inspect the list of modifiers directly (e.g., instanceof PowerModifierEffect).
+ * No hooks here; execution is centralized in AspectEffect implementations.
+ */
 public interface ModifierEffect {
-    void modify(SpellContext context);
+    // marker only
 }

@@ -7,43 +7,36 @@ import dev.overgrown.thaumaturge.item.AspectLensItem;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Hand;
 
 public class ThaumaturgeClient implements ClientModInitializer {
+    private static final float DEFAULT_AOE_RADIUS = 3.0f;
+
     @Override
     public void onInitializeClient() {
-        // Add condition to show aspects when player has the lens
-        AspectsTooltipConfig.addVisibilityCondition((stack, player) ->
-                AspectLensItem.hasLens(player));
-
-        // Register Spell Keybinds
-        KeybindManager.registerKeybinds();
-
-        // Register Aetheric Goggles overlay
+        // Tooltips visible only with lens
         AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));
 
+        // Register spell keybinds (original flow)
+        KeybindManager.registerKeybinds();
+
+        // Overlay
         HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
 
+        // Handle presses: Primary=Lesser(self), Secondary=Advanced(targeted), Ternary=Greater(aoe)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                sendSpellCastPacket(Hand.MAIN_HAND, 0);
-            }
-            if (KeybindManager.SECONDARY_SPELL.wasPressed()) {
-                sendSpellCastPacket(Hand.MAIN_HAND, 1);
-            }
-            if (KeybindManager.TERNARY_SPELL.wasPressed()) {
-                sendSpellCastPacket(Hand.MAIN_HAND, 2);
-            }
-        });
-    }
+            if (client.player == null) return;
 
-    private void sendSpellCastPacket(Hand hand, int spellKey) {
-        PacketByteBuf buf = PacketByteBufs.create();
-        new SpellCastPacket(hand, spellKey).write(buf);
-        ClientPlayNetworking.send(SpellCastPacket.ID, buf);
+            while (KeybindManager.PRIMARY_SPELL.wasPressed()) {
+                SpellCastPacket.sendSelf();
+            }
+            while (KeybindManager.SECONDARY_SPELL.wasPressed()) {
+                SpellCastPacket.sendTargetedFromCrosshair();
+            }
+            while (KeybindManager.TERNARY_SPELL.wasPressed()) {
+                SpellCastPacket.sendAoeFromCrosshair(DEFAULT_AOE_RADIUS);
+            }
+            // The remaining keys (quaternary..denary) are registered for future use, unchanged.
+        });
     }
 }
