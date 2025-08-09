@@ -6,7 +6,6 @@ import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ScatterModifierEffect;
-import dev.overgrown.thaumaturge.spell.modifier.StableModifierEffect;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import net.fabricmc.api.ModInitializer;
@@ -19,19 +18,19 @@ public class Thaumaturge implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static Identifier identifier(String path) {
-        return new Identifier(Thaumaturge.MOD_ID, path);
+        return new Identifier(MOD_ID, path);
     }
 
     @Override
     public void onInitialize() {
-        // Register all items
+        // Items
         ModItems.initialize();
 
-        // Register spell components
+        // Spell components
         registerAspectEffects();
         registerModifierEffects();
 
-        // Register packet handler
+        // Networking
         SpellCastPacket.registerServer();
 
         LOGGER.info("Thaumaturge initialized!");
@@ -44,6 +43,5 @@ public class Thaumaturge implements ModInitializer {
     private void registerModifierEffects() {
         ModifierRegistry.register(identifier("power"), new PowerModifierEffect());
         ModifierRegistry.register(identifier("scatter"), new ScatterModifierEffect());
-        ModifierRegistry.register(identifier("stable"), new StableModifierEffect()); // no-op modifier
     }
 }

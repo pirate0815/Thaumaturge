@@ -3,9 +3,6 @@ package dev.overgrown.thaumaturge.spell.impl.ignis;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
-import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -13,7 +10,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 
 import java.util.List;
@@ -21,46 +20,37 @@ import java.util.List;
 public final class IgnisEffect implements AspectEffect {
 
     @Override
-    public void applySelf(SelfSpellDelivery delivery) {
-        float mult = powerMult(delivery.getModifiers());
+    public void castOnSelf(ServerPlayerEntity caster, List<ModifierEffect> modifiers) {
+        float mult = powerMult(modifiers);
         int durationTicks = (int) (100 * mult); // 5s base → scaled
-        delivery.getCaster().addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, durationTicks, 0, false, true));
+        caster.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, durationTicks, 0, false, true));
     }
 
     @Override
-    public void applyTargeted(TargetedSpellDelivery delivery) {
-        float mult = powerMult(delivery.getModifiers());
-
-        if (delivery.isEntityTarget()) {
-            Entity e = delivery.getTargetEntity();
-            if (e != null) {
-                int seconds = Math.max(1, Math.round(3 * mult));
-                e.setOnFireFor(seconds);
-            }
-            return;
-        }
-
-        if (delivery.isBlockTarget()) {
-            ServerWorld level = delivery.getWorld();
-            BlockPos pos = delivery.getBlockPos();
-            Direction face = delivery.getFace();
-            if (pos != null && face != null) {
-                BlockPos place = pos.offset(face);
-                tryPlaceFire(level, place);
-            }
-        }
+    public void castOnEntity(ServerPlayerEntity caster, Entity target, List<ModifierEffect> modifiers) {
+        if (target == null || !target.isAlive()) return;
+        float mult = powerMult(modifiers);
+        int seconds = Math.max(1, Math.round(3 * mult));
+        target.setOnFireFor(seconds);
     }
 
     @Override
-    public void applyAoe(AoeSpellDelivery delivery) {
-        float mult = powerMult(delivery.getModifiers());
-        ServerWorld level = delivery.getWorld();
-        BlockPos center = delivery.getCenter();
-        float radius = delivery.getRadius();
+    public void castAoe(ServerPlayerEntity caster, BlockPos center, float radius, List<ModifierEffect> modifiers) {
+        ServerWorld level = (ServerWorld) caster.getWorld();
+        float mult = powerMult(modifiers);
 
         // Ignite entities in radius
-        List<LivingEntity> hits = delivery.getEntitiesInAabb(LivingEntity.class, e -> e.isAlive() && e.distanceTo(delivery.getCaster()) <= radius + 0.5f);
+        double cx = center.getX() + 0.5;
+        double cy = center.getY() + 0.5;
+        double cz = center.getZ() + 0.5;
+        Box box = new Box(cx - radius, cy - 2, cz - radius, cx + radius, cy + 2, cz + radius);
         int seconds = Math.max(1, Math.round(2 * mult));
+
+        List<LivingEntity> hits = level.getEntitiesByClass(
+                LivingEntity.class,
+                box,
+                e -> e.isAlive() && e.squaredDistanceTo(cx, cy, cz) <= (radius + 0.5f) * (radius + 0.5f)
+        );
         for (LivingEntity le : hits) {
             le.setOnFireFor(seconds);
         }
@@ -71,7 +61,6 @@ public final class IgnisEffect implements AspectEffect {
             for (int dz = -r; dz <= r; dz++) {
                 if (dx * dx + dz * dz > r * r) continue;
                 BlockPos p = center.add(dx, 0, dz);
-                // try ground or just above ground
                 BlockPos ground = findGround(level, p);
                 if (ground != null) {
                     tryPlaceFire(level, ground.up());
@@ -81,8 +70,11 @@ public final class IgnisEffect implements AspectEffect {
     }
 
     private static float powerMult(List<ModifierEffect> mods) {
+        if (mods == null) return 1.0f;
         for (ModifierEffect m : mods) {
-            if (m instanceof PowerModifierEffect p) return Math.max(0.1f, p.getMultiplier());
+            if (m instanceof PowerModifierEffect p) {
+                return Math.max(0.1f, p.getMultiplier());
+            }
         }
         return 1.0f;
     }
@@ -100,7 +92,7 @@ public final class IgnisEffect implements AspectEffect {
         // search down a bit for solid surface
         for (int i = 0; i < 4; i++) {
             if (!level.isAir(m) && level.getBlockState(m).isSolidBlock(level, m)) {
-                return m;
+                return m.toImmutable();
             }
             m.move(Direction.DOWN);
         }

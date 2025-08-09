@@ -2,8 +2,8 @@ package dev.overgrown.thaumaturge.spell.utils;
 
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
-import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;          // <- corrected package
-import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;       // <- corrected package
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
@@ -17,15 +17,12 @@ import java.util.List;
 
 /**
  * Central entry point for executing spells on the server.
- * - Resolves Aspect + Modifiers (via SpellContextResolver and registries)
- * - Dispatches to delivery strategies (Self / Targeted / AOE)
- *
- * Notes:
- *  - If no valid Aspect is found on the player's focus, the cast is ignored.
- *  - Modifiers are resolved via ModifierRegistry using IDs from the context (may be empty).
- *  - For BLOCK-targeted casts, we provide a convenience overload without a delivery instance.
+ * Backport-safe: only uses AspectEffect self/entity/aoe entry points.
  */
 public final class SpellHandler {
+
+    // radius used when a block face was targeted (no block-specific API in AspectEffect)
+    private static final float BLOCK_TARGET_RADIUS = 0.75f;
 
     private SpellHandler() {}
 
@@ -51,6 +48,7 @@ public final class SpellHandler {
 
     /**
      * Convenience for BLOCK-targeted casts coming from the packet (pos + face).
+     * Mapped to an AoE cast centered on the block to avoid adding new API to AspectEffect.
      */
     public static void castTargeted(ServerPlayerEntity player, BlockPos pos, Direction face) {
         SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
@@ -58,7 +56,7 @@ public final class SpellHandler {
         if (aspect == null) return;
 
         List<ModifierEffect> mods = resolveModifiers(ctx);
-        aspect.castOnBlock(player, pos, face, mods);
+        aspect.castAoe(player, pos, BLOCK_TARGET_RADIUS, mods);
     }
 
     public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery delivery) {
@@ -82,7 +80,11 @@ public final class SpellHandler {
 
         List<ModifierEffect> out = new ArrayList<>(ctx.modifiers().size());
         for (Identifier id : ctx.modifiers()) {
-            ModifierRegistry.get(id).ifPresent(out::add);
+            // ModifierRegistry#get returns a ModifierEffect (not Optional) in this backport
+            ModifierEffect eff = ModifierRegistry.get(id);
+            if (eff != null) {
+                out.add(eff);
+            }
         }
         return out;
     }
