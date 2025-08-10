@@ -34,10 +34,10 @@ public final class IgnisEffect implements AspectEffect {
         float mult = powerMult(delivery.getModifiers());
 
         if (delivery.isEntityTarget()) {
-            Entity e = delivery.getTargetEntity();
-            if (e != null && e.isAlive()) {
+            Entity entity = delivery.getTargetEntity();
+            if (entity != null && entity.isAlive()) {
                 int seconds = Math.max(1, Math.round(3 * mult));
-                e.setOnFireFor(seconds);
+                entity.setOnFireFor(seconds);
             }
             return;
         }

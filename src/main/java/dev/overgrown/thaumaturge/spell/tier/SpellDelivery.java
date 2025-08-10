@@ -1,10 +1,12 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
+
+import java.util.List;
+
 /**
- * Backport compatibility marker.
- * The new delivery flow uses concrete classes (Self/Targeted/Aoe) and no longer calls this interface.
- * Keep as an empty type to satisfy any legacy references.
+ * Marker interface for spell deliveries
  */
 public interface SpellDelivery {
-    // marker only
+    void setModifiers(List<ModifierEffect> mods);
 }

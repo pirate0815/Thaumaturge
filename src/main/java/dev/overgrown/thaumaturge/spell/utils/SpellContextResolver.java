@@ -33,7 +33,7 @@ public final class SpellContextResolver {
 
     @Nullable
     private static Identifier resolveAspectFromEquipment(ServerPlayerEntity player) {
-        // Prefer main hand, then off hand — each may be a Focus OR a Gauntlet holding a Focus.
+        // Prefer main hand, then offhand — each may be a Focus OR a Gauntlet holding a Focus.
         Identifier id = readAspectId(player.getMainHandStack());
         if (id != null) return id;
         return readAspectId(player.getOffHandStack());

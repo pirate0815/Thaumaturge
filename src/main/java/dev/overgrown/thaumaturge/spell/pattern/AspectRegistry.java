@@ -11,7 +11,7 @@ import java.util.Optional;
  * Simple aspect registry for server execution.
  * - Thread-safe for typical mod init + runtime reads.
  * - API matches SpellHandler's expectations (Optional-returning get).
- *
+ * <p>
  * Swap-in plan for AspectsLib:
  *  - Replace the internal map with a delegating lookup that resolves Identifier -> AspectEffect
  *    using AspectsLib data, or register adapters during init.

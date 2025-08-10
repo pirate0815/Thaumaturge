@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Delivery for targeted spells: either an entity OR a block face.
  */
-public final class TargetedSpellDelivery {
+public final class TargetedSpellDelivery implements SpellDelivery {
 
     private final ServerPlayerEntity caster;
     private final ServerWorld world;

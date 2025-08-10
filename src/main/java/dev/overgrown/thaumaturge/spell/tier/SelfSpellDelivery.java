@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Delivery for self-cast spells.
  */
-public final class SelfSpellDelivery {
+public final class SelfSpellDelivery implements SpellDelivery {
 
     private final ServerPlayerEntity caster;
     private List<ModifierEffect> modifiers = List.of();

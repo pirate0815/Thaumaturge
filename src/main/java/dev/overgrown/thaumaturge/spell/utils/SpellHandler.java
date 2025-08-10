@@ -1,88 +1,94 @@
 package dev.overgrown.thaumaturge.spell.utils;
 
+import dev.overgrown.thaumaturge.item.gauntlet.ResonanceGauntletItem;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
-import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.spell.pattern.SpellPattern;
+import dev.overgrown.thaumaturge.spell.tier.*;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-/**
- * Central entry for executing spells on the server using delivery-based Aspect API.
- * Parity with original: AspectEffect.apply*(delivery) drives behavior.
- */
 public final class SpellHandler {
 
     private SpellHandler() {}
 
-    // === Public API used by networking handler ===
+    public static void cast(ServerPlayerEntity player, Object delivery, String keyType) {
+        SpellPattern pattern = resolvePattern(player, keyType);
+        if (pattern == null || pattern.getAspects().isEmpty()) return;
 
-    public static void castSelf(ServerPlayerEntity player, SelfSpellDelivery delivery) {
-        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId());
-        if (aspect == null) return;
+        for (Map.Entry<Identifier, Identifier> entry : pattern.getAspects().entrySet()) {
+            AspectEffect aspect = resolveAspect(entry.getKey());
+            ModifierEffect modifier = resolveModifier(entry.getValue());
+            if (aspect == null) continue;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.setModifiers(mods);
-        aspect.applySelf(delivery);
+            List<ModifierEffect> mods = modifier != null ?
+                    Collections.singletonList(modifier) : Collections.emptyList();
+
+            if (delivery instanceof SelfSpellDelivery selfDelivery) {
+                selfDelivery.setModifiers(mods);
+                aspect.applySelf(selfDelivery);
+            }
+            else if (delivery instanceof TargetedSpellDelivery targetedDelivery) {
+                targetedDelivery.setModifiers(mods);
+                aspect.applyTargeted(targetedDelivery);
+            }
+            else if (delivery instanceof AoeSpellDelivery aoeDelivery) {
+                aoeDelivery.setModifiers(mods);
+                aspect.applyAoe(aoeDelivery);
+            }
+        }
     }
 
-    public static void castTargeted(ServerPlayerEntity player, TargetedSpellDelivery delivery) {
-        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId());
-        if (aspect == null) return;
+    private static SpellPattern resolvePattern(ServerPlayerEntity player, String keyType) {
+        ItemStack gauntlet = findGauntlet(player);
+        if (gauntlet.isEmpty()) return null;
 
-        List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.setModifiers(mods);
-        aspect.applyTargeted(delivery);
+        String tier = switch (keyType) {
+            case "primary" -> "lesser";
+            case "secondary" -> "advanced";
+            case "ternary" -> "greater";
+            default -> null;
+        };
+
+        return tier != null ? SpellPattern.fromGauntlet(gauntlet, tier) : null;
     }
 
-    /** Convenience for BLOCK-target casts coming from networking (pos + face). */
-    public static void castTargeted(ServerPlayerEntity player, BlockPos pos, Direction face) {
-        TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, pos, face);
-
-        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId());
-        if (aspect == null) return;
-
-        List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.setModifiers(mods);
-        aspect.applyTargeted(delivery);
+    private static ModifierEffect resolveModifier(Identifier modifierId) {
+        if (modifierId == null) return null;
+        return ModifierRegistry.get(modifierId);
     }
 
-    public static void castAoe(ServerPlayerEntity player, AoeSpellDelivery delivery) {
-        SpellContextResolver.SpellContext ctx = SpellContextResolver.resolve(player);
-        AspectEffect aspect = resolveAspect(ctx.aspectId());
-        if (aspect == null) return;
+    private static ItemStack findGauntlet(PlayerEntity player) {
+        // Check hands first
+        for (Hand hand : Hand.values()) {
+            ItemStack stack = player.getStackInHand(hand);
+            if (stack.getItem() instanceof ResonanceGauntletItem) {
+                return stack;
+            }
+        }
 
-        List<ModifierEffect> mods = resolveModifiers(ctx);
-        delivery.setModifiers(mods);
-        aspect.applyAoe(delivery);
+        // Check equipment slots
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack stack = player.getEquippedStack(slot);
+            if (stack.getItem() instanceof ResonanceGauntletItem) {
+                return stack;
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     // === Helpers ===
-
     private static AspectEffect resolveAspect(Identifier aspectId) {
         if (aspectId == null) return null;
         return AspectRegistry.get(aspectId).orElse(null);
-    }
-
-    private static List<ModifierEffect> resolveModifiers(SpellContextResolver.SpellContext ctx) {
-        if (ctx.modifiers() == null || ctx.modifiers().isEmpty()) return List.of();
-
-        List<ModifierEffect> out = new ArrayList<>(ctx.modifiers().size());
-        for (Identifier id : ctx.modifiers()) {
-            ModifierEffect eff = ModifierRegistry.get(id);
-            if (eff != null) out.add(eff);
-        }
-        return out;
     }
 }

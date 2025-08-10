@@ -28,15 +28,14 @@ public class ThaumaturgeClient implements ClientModInitializer {
             if (client.player == null) return;
 
             while (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                SpellCastPacket.sendSelf();
+                SpellCastPacket.send(SpellCastPacket.KeyType.PRIMARY);
             }
             while (KeybindManager.SECONDARY_SPELL.wasPressed()) {
-                SpellCastPacket.sendTargetedFromCrosshair();
+                SpellCastPacket.send(SpellCastPacket.KeyType.SECONDARY);
             }
             while (KeybindManager.TERNARY_SPELL.wasPressed()) {
-                SpellCastPacket.sendAoeFromCrosshair(DEFAULT_AOE_RADIUS);
+                SpellCastPacket.send(SpellCastPacket.KeyType.TERNARY);
             }
-            // The remaining keys (quaternary..denary) are registered for future use, unchanged.
         });
     }
 }

@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 /**
  * Delivery for area-of-effect spells.
  */
-public final class AoeSpellDelivery {
+public final class AoeSpellDelivery implements SpellDelivery {
 
     private final ServerPlayerEntity caster;
     private final ServerWorld world;
