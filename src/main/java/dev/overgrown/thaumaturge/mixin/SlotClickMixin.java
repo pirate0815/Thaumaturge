@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.mixin;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.item.focus.FocusItem;
 import dev.overgrown.thaumaturge.item.gauntlet.ResonanceGauntletItem;
 import dev.overgrown.thaumaturge.item.modifier.ResonanceModifierItem;
@@ -30,9 +31,8 @@ public abstract class SlotClickMixin {
                 slotStack.getItem() instanceof FocusItem) {
 
             // Convert string to Identifier
-            Identifier modifierId = new Identifier("thaumaturge", modifierItem.getModifierType());
+            Identifier modifierId = Thaumaturge.identifier(modifierItem.getModifierType());
 
-            // Fixed: Cast to FocusItem and call setModifier
             FocusItem focusItem = (FocusItem) slotStack.getItem();
             focusItem.setModifier(slotStack, modifierId);
             cursorStack.decrement(1);

@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.spell.networking;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 public final class SpellCastPacket {
 
-    public static final Identifier ID = new Identifier("thaumaturge", "spell_cast");
+    public static final Identifier ID = Thaumaturge.identifier("spell_cast");
 
     public enum KeyType { PRIMARY, SECONDARY, TERNARY }
 

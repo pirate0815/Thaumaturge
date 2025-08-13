@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.item.focus;
 
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.registry.ModItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -31,7 +32,7 @@ public interface FocusItem {
 
     // Add a default modifier getter
     static Identifier getDefaultModifier() {
-        return new Identifier("thaumaturge", "stable");
+        return Thaumaturge.identifier("stable");
     }
 
     // Removed @Override annotation and added null check
