@@ -4,10 +4,20 @@
 	"version": "${version}",
 	"name": "Thaumaturge",
 	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": ["Me!"],
+	"authors": [
+      "Overgrown"
+    ],
+  "contributors":[
+    "thatrobin3001",
+    "leclowndu93150",
+    "electrictaco",
+    "Nitgo",
+    "Eggohito",
+    "Lucas Bandermann"
+  ],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "",
+		"sources": "https://github.com/0vergrown/Thaumaturge"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/thaumaturge/icon.png",
@@ -33,6 +43,6 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"aspectslib": "1.0.5"
+		"aspectslib": "1.1.0"
 	}
 }
