@@ -35,7 +35,9 @@ public class VictusEffect implements AspectEffect {
             applyVictusEffect(target, getPowerMultiplier(delivery.getModifiers()), delivery.getCaster());
         } else if (delivery.isBlockTarget()) {
             BlockPos pos = delivery.getBlockPos();
-            playSound(delivery.getWorld(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            if (pos != null) { // Null check added here
+                playSound(delivery.getWorld(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            }
         }
     }
 
