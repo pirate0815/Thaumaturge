@@ -4,6 +4,7 @@ import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.registry.ModSounds;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
+import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
 import dev.overgrown.thaumaturge.spell.impl.victus.VictusEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
@@ -43,6 +44,7 @@ public class Thaumaturge implements ModInitializer {
 
     private void registerAspectEffects() {
         AspectRegistry.register(AspectsLib.identifier("ignis"), new IgnisEffect());
+        AspectRegistry.register(AspectsLib.identifier("motus"), new MotusEffect());
         AspectRegistry.register(AspectsLib.identifier("victus"), new VictusEffect());
     }
 

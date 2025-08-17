@@ -11,6 +11,7 @@ public class ModSounds {
     public static final SoundEvent AER_SPELL_CAST = register("aer_spell_cast");
     public static final SoundEvent ALIENIS_SPELL_CAST = register("alienis_spell_cast");
     public static final SoundEvent GELUM_SPELL_CAST = register("gelum_spell_cast");
+    public static final SoundEvent MOTUS_SPELL_CAST = register("motus_spell_cast");
     public static final SoundEvent POTENTIA_SPELL_CAST = register("potentia_spell_cast");
 
     private static SoundEvent register(String path) {
