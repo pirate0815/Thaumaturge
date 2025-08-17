@@ -14,5 +14,9 @@
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",
-  "item.thaumaturge.aetheric_goggles.tooltip": "Reveals aspects of the world when worn"
+  "item.thaumaturge.aetheric_goggles.tooltip": "Reveals aspects of the world when worn",
+
+  "item.thaumaturge.lesser_focus": "Lesser Focus",
+  "item.thaumaturge.advanced_focus": "Advanced Focus",
+  "item.thaumaturge.greater_focus": "Greater Focus"
 }
