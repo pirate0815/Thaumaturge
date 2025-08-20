@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "thaumaturge:item/perditio_vis_crystal"
-  }
-}

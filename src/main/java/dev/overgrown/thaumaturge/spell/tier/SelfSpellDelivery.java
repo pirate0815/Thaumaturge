@@ -1,38 +1,43 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
-import dev.overgrown.thaumaturge.networking.SpellCastPacket;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Objects;
 
-public class SelfSpellDelivery {
-    private final SpellCastPacket.SpellTier tier;
-    private float powerMultiplier = 1.0f;
-    private final List<Consumer<ServerPlayerEntity>> effects = new ArrayList<>();
+/**
+ * Delivery for self-cast spells.
+ */
+public final class SelfSpellDelivery implements SpellDelivery {
 
-    public SelfSpellDelivery(SpellCastPacket.SpellTier tier) {
-        this.tier = tier;
+    private final ServerPlayerEntity caster;
+    private List<ModifierEffect> modifiers = List.of();
+
+    public SelfSpellDelivery(ServerPlayerEntity caster) {
+        this.caster = Objects.requireNonNull(caster, "caster");
     }
 
-    public SpellCastPacket.SpellTier getTier() {
-        return tier;
+    // Back-compat with old callsites that passed unused context args.
+    @SuppressWarnings("unused")
+    public SelfSpellDelivery(ServerPlayerEntity caster, Object _unused1, Object _unused2) {
+        this(caster);
     }
 
-    public float getPowerMultiplier() {
-        return powerMultiplier;
+    public ServerPlayerEntity getCaster() {
+        return caster;
     }
 
-    public void setPowerMultiplier(float powerMultiplier) {
-        this.powerMultiplier = powerMultiplier;
+    public List<ModifierEffect> getModifiers() {
+        return modifiers;
     }
 
-    public void addEffect(Consumer<ServerPlayerEntity> effect) {
-        effects.add(effect);
-    }
-
-    public void execute(ServerPlayerEntity caster) {
-        effects.forEach(effect -> effect.accept(caster));
+    public void setModifiers(List<ModifierEffect> mods) {
+        if (mods == null || mods.isEmpty()) {
+            this.modifiers = List.of();
+        } else {
+            this.modifiers = List.copyOf(new ArrayList<>(mods));
+        }
     }
 }

@@ -1,0 +1,38 @@
+{
+  "aer_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.aer_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/aer/aer_spell_cast"
+    ]
+  },
+  "alienis_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.alienis_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/alienis/alienis_spell_cast"
+    ]
+  },
+  "gelum_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.gelum_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/gelum/gelum_spell_cast"
+    ]
+  },
+  "motus_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.motus_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/motus/motus_spell_cast"
+    ]
+  },
+  "potentia_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.potentia_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/potentia/potentia_spell_cast"
+    ]
+  },
+  "victus_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.victus_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/victus/victus_spell_cast"
+    ]
+  }
+}

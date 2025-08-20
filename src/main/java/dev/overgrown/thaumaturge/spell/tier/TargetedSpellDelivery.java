@@ -1,110 +1,70 @@
 package dev.overgrown.thaumaturge.spell.tier;
 
-import dev.overgrown.thaumaturge.networking.SpellCastPacket;
+import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Objects;
 
-public class TargetedSpellDelivery {
-    private int projectileCount = 1;
-    private float spread = 0.0f;
-    private double maxDistance = 16.0;
-    private ServerPlayerEntity caster;
-    private boolean swapActorTarget = false;
-    private final SpellCastPacket.SpellTier tier;
-    private float powerMultiplier = 1.0f;
-    private final List<Consumer<Entity>> onHitEffects = new ArrayList<>();
+/**
+ * Delivery for targeted spells: either an entity OR a block face.
+ */
+public final class TargetedSpellDelivery implements SpellDelivery {
 
-    public void setProjectileCount(int count) {
-        this.projectileCount = count;
+    private final ServerPlayerEntity caster;
+    private final ServerWorld world;
 
+    private final Entity targetEntity;
+    private final BlockPos blockPos;
+    private final Direction face;
+
+    private List<ModifierEffect> modifiers = List.of();
+
+    /** Entity-target constructor. */
+    public TargetedSpellDelivery(ServerPlayerEntity caster, Entity targetEntity) {
+        this.caster = Objects.requireNonNull(caster, "caster");
+        this.world = (ServerWorld) caster.getWorld();
+        this.targetEntity = Objects.requireNonNull(targetEntity, "targetEntity");
+        this.blockPos = null;
+        this.face = null;
     }
 
-    public void setSpread(float spread) {
-        this.spread = spread;
+    /** Block-target constructor. */
+    public TargetedSpellDelivery(ServerPlayerEntity caster, BlockPos blockPos, Direction face) {
+        this.caster = Objects.requireNonNull(caster, "caster");
+        this.world = (ServerWorld) caster.getWorld();
+        this.blockPos = Objects.requireNonNull(blockPos, "blockPos");
+        this.face = Objects.requireNonNull(face, "face");
+        this.targetEntity = null;
     }
 
-    public void setMaxDistance(double maxDistance) {
-        this.maxDistance = maxDistance;
+    // Back-compat with old callsites that passed unused context args.
+    @SuppressWarnings("unused")
+    public TargetedSpellDelivery(ServerPlayerEntity caster, Object _unused1, Object _unused2, Entity target) {
+        this(caster, target);
     }
 
-    public ServerPlayerEntity getCaster() {
-        return caster;
-    }
+    public ServerPlayerEntity getCaster() { return caster; }
+    public ServerWorld getWorld() { return world; }
 
-    public void setCaster(ServerPlayerEntity caster) {
-        this.caster = caster;
-    }
+    public boolean isEntityTarget() { return targetEntity != null; }
+    public boolean isBlockTarget()  { return blockPos != null && face != null; }
 
-    public void setSwapActorTarget(boolean swap) {
-        this.swapActorTarget = swap;
-    }
+    public Entity getTargetEntity() { return targetEntity; }
+    public BlockPos getBlockPos()   { return blockPos; }
+    public Direction getFace()      { return face; }
 
-    public void addOnHitEffect(Consumer<Entity> effect) {
-        onHitEffects.add(effect);
-    }
-
-    public TargetedSpellDelivery(SpellCastPacket.SpellTier tier) {
-        this.tier = tier;
-    }
-
-    public SpellCastPacket.SpellTier getTier() {
-        return tier;
-    }
-
-    public float getPowerMultiplier() {
-        return powerMultiplier;
-    }
-
-    public void setPowerMultiplier(float powerMultiplier) {
-        this.powerMultiplier = powerMultiplier;
-    }
-
-    public List<Consumer<Entity>> getOnHitEffects() {
-        return onHitEffects;
-    }
-
-    public void execute(ServerPlayerEntity caster) {
-        this.caster = caster;
-        World world = caster.getWorld();
-        Vec3d eyePos = caster.getEyePos();
-
-        for (int i = 0; i < projectileCount; i++) {
-            // Calculate spread direction
-            float yawOffset = (i - (projectileCount - 1) / 2.0f) * spread;
-            float currentYaw = caster.getYaw() + yawOffset;
-            float currentPitch = caster.getPitch();
-
-            Vec3d direction = Vec3d.fromPolar(currentPitch, currentYaw).normalize();
-            Vec3d endPos = eyePos.add(direction.multiply(maxDistance));
-
-            // Perform ray-cast to find the first entity in the path
-            EntityHitResult hit = ProjectileUtil.raycast(
-                    caster,
-                    eyePos,
-                    endPos,
-                    new Box(eyePos, endPos),
-                    entity -> !entity.isSpectator() && entity.isAlive() && entity != caster,
-                    maxDistance
-            );
-
-            // Apply effects if an entity is hit
-            if (hit != null) {
-                Entity target = hit.getEntity();
-                if (swapActorTarget) {
-                    onHitEffects.forEach(effect -> effect.accept(target));
-                } else {
-                    onHitEffects.forEach(effect -> effect.accept(target));
-                }
-            }
+    public List<ModifierEffect> getModifiers() { return modifiers; }
+    public void setModifiers(List<ModifierEffect> mods) {
+        if (mods == null || mods.isEmpty()) {
+            this.modifiers = List.of();
+        } else {
+            this.modifiers = List.copyOf(new ArrayList<>(mods));
         }
     }
 }

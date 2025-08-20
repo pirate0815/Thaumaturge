@@ -1,75 +1,41 @@
 package dev.overgrown.thaumaturge;
 
+import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
-import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipComponent;
-import dev.overgrown.thaumaturge.client.tooltip.AspectTooltipData;
-import dev.overgrown.thaumaturge.component.GauntletComponent;
-import dev.overgrown.thaumaturge.component.ModComponents;
-import dev.overgrown.thaumaturge.entity.ModEntities;
-import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesRenderer;
-import dev.overgrown.thaumaturge.networking.SpellCastPacket;
-import dev.overgrown.thaumaturge.networking.ThaumaturgeModPacketsS2C;
-import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
+import dev.overgrown.thaumaturge.client.overlay.AethericGogglesOverlay;
+import dev.overgrown.thaumaturge.item.AspectLensItem;
+import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 public class ThaumaturgeClient implements ClientModInitializer {
+    private static final float DEFAULT_AOE_RADIUS = 3.0f;
+
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
+        // Tooltips visible only with lens
+        AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));
 
-        // Register all keybinds used for spell casting
+        // Register spell keybinds (original flow)
         KeybindManager.registerKeybinds();
 
-        // Register client-side packet handlers to receive data from server
-        ThaumaturgeModPacketsS2C.register();
+        // Overlay
+        HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
 
-        TooltipComponentCallback.EVENT.register(data -> {
-            if (data instanceof AspectTooltipData aspectData) {
-                return new AspectTooltipComponent(aspectData);
-            }
-            return null;
-        });
-
-        AethericGogglesRenderer.init();
-
-        // Register end-of-tick event to check for spell keybind presses
+        // Handle presses: Primary=Lesser(self), Secondary=Advanced(targeted), Ternary=Greater(aoe)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            PlayerEntity player = MinecraftClient.getInstance().player;
-            if (player == null) return;
+            if (client.player == null) return;
 
-            if (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.LESSER));
+            while (KeybindManager.PRIMARY_SPELL.wasPressed()) {
+                SpellCastPacket.send(SpellCastPacket.KeyType.PRIMARY);
             }
-            if (KeybindManager.SECONDARY_SPELL.wasPressed()) {
-                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.ADVANCED));
+            while (KeybindManager.SECONDARY_SPELL.wasPressed()) {
+                SpellCastPacket.send(SpellCastPacket.KeyType.SECONDARY);
             }
-            if (KeybindManager.TERNARY_SPELL.wasPressed()) {
-                ClientPlayNetworking.send(new SpellCastPacket(SpellCastPacket.SpellTier.GREATER));
+            while (KeybindManager.TERNARY_SPELL.wasPressed()) {
+                SpellCastPacket.send(SpellCastPacket.KeyType.TERNARY);
             }
         });
-    }
-
-    private boolean hasFoci(PlayerEntity player, Identifier fociId) {
-        for (Hand hand : Hand.values()) {
-            ItemStack stack = player.getStackInHand(hand);
-            if (stack.contains(ModComponents.MAX_FOCI)) {
-                GauntletComponent component = stack.getOrDefault(ModComponents.GAUNTLET_STATE, GauntletComponent.DEFAULT);
-                for (GauntletComponent.FociEntry entry : component.entries()) {
-                    if (entry.aspectId().equals(fociId)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }
