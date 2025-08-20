@@ -19,8 +19,7 @@ public class ItemUseMixin {
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
         ItemStack stack = user.getStackInHand(hand);
-        if (stack.getItem() instanceof FocusItem && user.isSneaking()) {
-            FocusItem focus = (FocusItem) stack.getItem();
+        if (stack.getItem() instanceof FocusItem focus && user.isSneaking()) {
             Identifier modifierId = focus.getModifier(stack);
 
             // Check if the focus has a modifier and it's not the default one

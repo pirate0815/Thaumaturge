@@ -28,12 +28,11 @@ public abstract class SlotClickMixin {
 
         // Handle modifier application
         if (cursorStack.getItem() instanceof ResonanceModifierItem modifierItem &&
-                slotStack.getItem() instanceof FocusItem) {
+                slotStack.getItem() instanceof FocusItem focusItem) {
 
             // Convert string to Identifier
             Identifier modifierId = Thaumaturge.identifier(modifierItem.getModifierType());
 
-            FocusItem focusItem = (FocusItem) slotStack.getItem();
             focusItem.setModifier(slotStack, modifierId);
             cursorStack.decrement(1);
             ci.cancel();
