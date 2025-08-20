@@ -17,6 +17,12 @@
       "thaumaturge:spells/aspects/gelum/gelum_spell_cast"
     ]
   },
+  "motus_spell_cast": {
+    "subtitle": "subtitles.thaumaturge.motus_spell_cast",
+    "sounds": [
+      "thaumaturge:spells/aspects/motus/motus_spell_cast"
+    ]
+  },
   "potentia_spell_cast": {
     "subtitle": "subtitles.thaumaturge.potentia_spell_cast",
     "sounds": [

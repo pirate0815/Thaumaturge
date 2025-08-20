@@ -88,7 +88,8 @@ public class MotusEffect implements AspectEffect {
     private void playSound(World world, double x, double y, double z) {
         if (world instanceof ServerWorld serverWorld) {
             serverWorld.playSound(
-                    null, x, y, z,
+                    null,
+                    x, y, z,
                     ModSounds.MOTUS_SPELL_CAST,
                     SoundCategory.PLAYERS,
                     1.0F, 1.0F,
