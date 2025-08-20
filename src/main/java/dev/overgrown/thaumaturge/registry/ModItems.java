@@ -89,6 +89,15 @@ public class ModItems {
         return Registry.register(Registries.ITEM, Thaumaturge.identifier(name), item);
     }
 
+    public static Item getModifierItem(String modifierType) {
+        return switch (modifierType) {
+            case "power" -> POWER_MODIFIER;
+            case "scatter" -> SCATTER_MODIFIER;
+            case "stable" -> STABLE_MODIFIER;
+            default -> null;
+        };
+    }
+
     public static void initialize() {
         // Initialization handled by static field loading
     }

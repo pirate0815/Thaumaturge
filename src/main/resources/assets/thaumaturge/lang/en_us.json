@@ -16,7 +16,15 @@
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",
   "item.thaumaturge.aetheric_goggles.tooltip": "Reveals aspects of the world when worn",
 
+  "item.thaumaturge.basic_casting_gauntlet": "Basic Casting Gauntlet",
+  "item.thaumaturge.advanced_manipulation_gauntlet": "Advanced Manipulation Gauntlet",
+  "item.thaumaturge.arcane_engineering_gauntlet": "Arcane Engineering Gauntlet",
+
   "item.thaumaturge.lesser_focus": "Lesser Focus",
   "item.thaumaturge.advanced_focus": "Advanced Focus",
-  "item.thaumaturge.greater_focus": "Greater Focus"
+  "item.thaumaturge.greater_focus": "Greater Focus",
+
+  "item.thaumaturge.power_modifier": "Power Modifier",
+  "item.thaumaturge.scatter_modifier": "Scatter Modifier",
+  "item.thaumaturge.stable_modifier": "Stable Modifier"
 }
