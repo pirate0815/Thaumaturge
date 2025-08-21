@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.AspectsLib;
+import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.registry.ModSounds;
 import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
@@ -30,6 +31,9 @@ public class Thaumaturge implements ModInitializer {
     public void onInitialize() {
         // Items
         ModItems.initialize();
+
+        // Blocks
+        ModBlocks.initialize();
 
         // Sounds
         ModSounds.initialize();

@@ -13,6 +13,7 @@ import dev.overgrown.thaumaturge.item.modifier.PowerModifierItem;
 import dev.overgrown.thaumaturge.item.modifier.ScatterModifierItem;
 import dev.overgrown.thaumaturge.item.modifier.StableModifierItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -85,6 +86,8 @@ public class ModItems {
             )
     );
 
+    public static final Item VESSEL = new BlockItem(ModBlocks.VESSEL, new FabricItemSettings());
+
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Thaumaturge.identifier(name), item);
     }
@@ -99,6 +102,6 @@ public class ModItems {
     }
 
     public static void initialize() {
-        // Initialization handled by static field loading
+        Registry.register(Registries.ITEM, Thaumaturge.identifier("vessel"), VESSEL);
     }
 }
