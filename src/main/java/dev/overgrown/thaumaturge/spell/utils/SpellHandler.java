@@ -66,7 +66,7 @@ public final class SpellHandler {
         return ModifierRegistry.get(modifierId);
     }
 
-    private static ItemStack findGauntlet(PlayerEntity player) {
+    public static ItemStack findGauntlet(PlayerEntity player) {
         // Check hands first
         for (Hand hand : Hand.values()) {
             ItemStack stack = player.getStackInHand(hand);

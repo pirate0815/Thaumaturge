@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.entity;
+package dev.overgrown.thaumaturge.registry;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.impl.potentia.entity.SpellBoltEntity;
@@ -8,7 +8,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class ModEntities {
-
     public static final EntityType<SpellBoltEntity> SPELL_BOLT =
             Registry.register(
                     Registries.ENTITY_TYPE,
@@ -17,5 +16,4 @@ public class ModEntities {
                             .setDimensions(0.5f, 0.5f)
                             .build(Thaumaturge.identifier("spell_bolt").toString())
             );
-
 }
