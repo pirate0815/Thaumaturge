@@ -3,10 +3,13 @@ package dev.overgrown.thaumaturge;
 import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
 import dev.overgrown.thaumaturge.client.overlay.AethericGogglesOverlay;
+import dev.overgrown.thaumaturge.entity.ModEntities;
 import dev.overgrown.thaumaturge.item.AspectLensItem;
+import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 public class ThaumaturgeClient implements ClientModInitializer {
@@ -14,6 +17,9 @@ public class ThaumaturgeClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        // Entity Renderers
+        EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
+
         // Tooltips visible only with lens
         AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));
 
