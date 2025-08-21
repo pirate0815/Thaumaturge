@@ -32,9 +32,6 @@ public class ThaumaturgeClient implements ClientModInitializer {
         // Overlay
         HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
 
-        // Render layer for the Vessel block
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.VESSEL, RenderLayer.getCutout());
-
         // Handle presses: Primary=Lesser(self), Secondary=Advanced(targeted), Ternary=Greater(aoe)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;

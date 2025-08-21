@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.AspectsLib;
+import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.registry.ModSounds;
@@ -15,6 +16,8 @@ import dev.overgrown.thaumaturge.spell.modifier.ScatterModifierEffect;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +47,10 @@ public class Thaumaturge implements ModInitializer {
 
         // Networking
         SpellCastPacket.registerServer();
+
+        // Register recipe type and serializer
+        Registry.register(Registries.RECIPE_SERIALIZER, identifier("vessel"), VesselRecipe.Serializer.INSTANCE);
+        Registry.register(Registries.RECIPE_TYPE, identifier("vessel"), VesselRecipe.Type.INSTANCE);
 
         LOGGER.info("Thaumaturge initialized!");
     }
