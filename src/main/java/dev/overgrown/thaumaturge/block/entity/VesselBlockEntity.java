@@ -5,6 +5,7 @@ import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.thaumaturge.block.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -46,164 +47,138 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
                         2, 0.2, 0.0, 0.2, 0.05);
             }
 
-            // Only process items periodically, not crafting
             blockEntity.processTime++;
-            if (blockEntity.processTime >= 100) { // Process every 5 seconds (100 ticks)
+            if (blockEntity.processTime >= 100) {
                 blockEntity.processTime = 0;
-                blockEntity.processItemForAspects(); // Renamed method for clarity
+                blockEntity.processItemForAspects();
             }
         }
     }
 
-    // Method that only processes items for aspects, not crafting
     public void processItemForAspects() {
         if (items.stream().allMatch(ItemStack::isEmpty)) return;
 
         World world = getWorld();
         if (world == null) return;
 
-        // Process items for aspects only (no recipe checking)
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
             if (stack.isEmpty()) continue;
 
             AspectData aspectData = AspectsAPI.getAspectData(stack);
             if (!aspectData.isEmpty()) {
-                // Convert item to aspects
                 for (var entry : aspectData.getMap().object2IntEntrySet()) {
                     String aspectName = AspectsAPI.getAspect(entry.getKey())
                             .map(aspect -> aspect.name())
                             .orElse(entry.getKey().toString());
 
-                    aspects.merge(aspectName, entry.getIntValue(), Integer::sum);
+                    int totalAmount = entry.getIntValue() * stack.getCount();
+                    aspects.merge(aspectName, totalAmount, Integer::sum);
                 }
             } else {
-                // Drop item unchanged
                 ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack.copy());
                 world.spawnEntity(itemEntity);
             }
 
             items.set(i, ItemStack.EMPTY);
             markDirty();
-            break; // Process one item at a time
+            syncToClient();
+            break;
         }
     }
 
     public boolean addItem(ItemStack stack) {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).isEmpty()) {
-                items.set(i, stack.copy());
-                markDirty();
-                // Process the item immediately when added
-                processItem();
+        World world = getWorld();
+        if (world == null) return false;
+        
+        boolean isCatalyst = world.getRecipeManager()
+                .listAllOfType(VesselRecipe.Type.INSTANCE)
+                .stream()
+                .anyMatch(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), stack));
+        
+        if (isCatalyst) {
+            boolean recipeMatched = tryCraftWithCatalystDropped(stack);
+            if (recipeMatched) {
                 return true;
+            }
+        }
+        
+        AspectData aspectData = AspectsAPI.getAspectData(stack);
+        if (!aspectData.isEmpty()) {
+            for (var entry : aspectData.getMap().object2IntEntrySet()) {
+                String aspectName = AspectsAPI.getAspect(entry.getKey())
+                        .map(aspect -> aspect.name())
+                        .orElse(entry.getKey().toString());
+                
+                int totalAmount = entry.getIntValue() * stack.getCount();
+                aspects.merge(aspectName, totalAmount, Integer::sum);
+            }
+            markDirty();
+            syncToClient();
+            return true;
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).isEmpty()) {
+                    items.set(i, stack.copy());
+                    markDirty();
+                    syncToClient();
+                    return true;
+                }
             }
         }
         return false;
     }
 
 
-    public void processItem() {
-        if (items.stream().allMatch(ItemStack::isEmpty)) return;
-
+    public boolean tryCraftWithCatalystDropped(ItemStack catalystStack) {
         World world = getWorld();
-        if (world == null) return;
+        if (world == null) return false;
 
-        // Try to find a recipe match first
+        boolean shouldConsume = tryCraftWithCatalyst(catalystStack);
+        if (!shouldConsume && world.getRecipeManager()
+                .listAllOfType(VesselRecipe.Type.INSTANCE)
+                .stream()
+                .anyMatch(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), catalystStack) &&
+                        recipe.getAspects().entrySet().stream()
+                                .allMatch(entry -> {
+                                    String storedAspectName = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
+                                    return aspects.getOrDefault(storedAspectName, 0) >= entry.getValue();
+                                }))) {
+            ItemEntity catalystEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, catalystStack.copy());
+            world.spawnEntity(catalystEntity);
+            return true;
+        }
+        return shouldConsume;
+    }
+    
+    public boolean tryCraftWithCatalyst(ItemStack catalystStack) {
+        World world = getWorld();
+        if (world == null) return false;
+
         Optional<VesselRecipe> match = world.getRecipeManager()
                 .listAllOfType(VesselRecipe.Type.INSTANCE)
                 .stream()
-                .filter(recipe -> recipe.matches(this))
+                .filter(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), catalystStack))
+                .filter(recipe -> recipe.getAspects().entrySet().stream()
+                        .allMatch(entry -> {
+                            String storedAspectName = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
+                            return aspects.getOrDefault(storedAspectName, 0) >= entry.getValue();
+                        }))
                 .findFirst();
 
         if (match.isPresent()) {
             VesselRecipe recipe = match.get();
-            // Craft the recipe
-            if (craftWithCatalyst(recipe)) {
-                return; // If we crafted successfully, stop processing
-            }
-        }
+            
+            recipe.getAspects().forEach((aspect, amount) -> {
+                String storedAspectName = aspect.substring(0, 1).toUpperCase() + aspect.substring(1);
+                aspects.computeIfPresent(storedAspectName, (k, v) -> v - amount);
+            });
+            aspects.entrySet().removeIf(entry -> entry.getValue() <= 0);
 
-        // If no recipe could be crafted, process items for aspects
-        for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = items.get(i);
-            if (stack.isEmpty()) continue;
-
-            AspectData aspectData = AspectsAPI.getAspectData(stack);
-            if (!aspectData.isEmpty()) {
-                // Convert item to aspects
-                for (var entry : aspectData.getMap().object2IntEntrySet()) {
-                    String aspectName = AspectsAPI.getAspect(entry.getKey())
-                            .map(aspect -> aspect.name())
-                            .orElse(entry.getKey().toString());
-
-                    aspects.merge(aspectName, entry.getIntValue(), Integer::sum);
-                }
-            } else {
-                // Drop item unchanged
-                ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack.copy());
-                world.spawnEntity(itemEntity);
-            }
-
-            items.set(i, ItemStack.EMPTY);
-            markDirty();
-            break; // Process one item at a time
-        }
-    }
-
-    public boolean isCatalyst(ItemStack stack) {
-        // Check if this item can be used as a catalyst
-        World world = getWorld();
-        if (world == null) return false;
-
-        return world.getRecipeManager()
-                .listAllOfType(VesselRecipe.Type.INSTANCE)
-                .stream()
-                .anyMatch(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), stack));
-    }
-
-    public void setCatalyst(ItemStack stack) {
-        this.catalyst = stack;
-        markDirty();
-    }
-
-    public ItemStack getCatalyst() {
-        return catalyst;
-    }
-
-    public boolean craftWithCatalyst(VesselRecipe recipe) {
-        World world = getWorld();
-        if (world == null) return false;
-
-        // Check if we have the correct catalyst (if the recipe requires one)
-        if (!recipe.getCatalyst().isEmpty()) {
-            ItemStack vesselCatalyst = getCatalyst();
-            if (vesselCatalyst.isEmpty() || !ItemStack.areItemsEqual(recipe.getCatalyst(), vesselCatalyst)) {
-                return false;
-            }
-        }
-
-        // Check if we have enough aspects
-        if (recipe.getAspects().entrySet().stream()
-                .allMatch(entry -> aspects.getOrDefault(entry.getKey(), 0) >= entry.getValue())) {
-            // Consume aspects
-            recipe.getAspects().forEach((aspect, amount) ->
-                    aspects.computeIfPresent(aspect, (k, v) -> v >= amount ? v - amount : v));
-
-            // Remove catalyst if consumed
-            if (recipe.consumesCatalyst() && !catalyst.isEmpty()) {
-                catalyst.decrement(1);
-                if (catalyst.isEmpty()) {
-                    catalyst = ItemStack.EMPTY;
-                }
-            }
-
-            // Spawn result
             ItemStack output = recipe.getOutput(world.getRegistryManager()).copy();
             ItemEntity result = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, output);
             world.spawnEntity(result);
 
-            // Random chance to reduce water level (only for successful recipes)
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof VesselBlock && world.random.nextFloat() < 0.3f) {
                 int waterLevel = state.get(VesselBlock.WATER_LEVEL);
@@ -213,13 +188,25 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
             }
 
             markDirty();
-            return true;
+            syncToClient();
+            return recipe.consumesCatalyst();
         }
         return false;
     }
 
+    public ItemStack getCatalyst() {
+        return catalyst;
+    }
+
+
     public Map<String, Integer> getAspects() {
         return aspects;
+    }
+
+    private void syncToClient() {
+        if (world != null && !world.isClient) {
+            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+        }
     }
 
     public void setBoiling(boolean boiling) {
