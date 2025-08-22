@@ -91,12 +91,13 @@ public class VesselBlock extends BlockWithEntity {
             return ActionResult.SUCCESS;
         }
 
-        // Handle catalyst setting only
+        // Handle catalyst setting and immediate processing
         if (!stack.isEmpty()) {
             if (!world.isClient) {
                 if (vessel.isCatalyst(stack)) {
-                    // Set as catalyst
+                    // Set as catalyst and immediately try to craft
                     vessel.setCatalyst(stack.split(1));
+                    vessel.processItem(); // Try to craft immediately
                     return ActionResult.SUCCESS;
                 }
             }

@@ -12,6 +12,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
@@ -119,12 +120,24 @@ public class VesselRecipe implements Recipe<Inventory> {
 
             ItemStack catalyst = ItemStack.EMPTY;
             if (json.has("catalyst")) {
-                catalyst = new ItemStack(JsonHelper.getItem(json, "catalyst"));
+                JsonElement catalystElement = json.get("catalyst");
+                if (catalystElement.isJsonPrimitive()) {
+                    // Handle string format
+                    String catalystId = JsonHelper.asString(catalystElement, "catalyst");
+                    Item item = Registries.ITEM.get(new Identifier(catalystId));
+                    catalyst = new ItemStack(item, 1);
+                } else if (catalystElement.isJsonObject()) {
+                    // Handle object format
+                    JsonObject catalystObj = catalystElement.getAsJsonObject();
+                    Item item = JsonHelper.getItem(catalystObj, "item");
+                    int count = JsonHelper.getInt(catalystObj, "count", 1);
+                    catalyst = new ItemStack(item, count);
+                }
             }
 
             boolean consumesCatalyst = JsonHelper.getBoolean(json, "consumes_catalyst", false);
 
-            // Handle both string and object output formats
+            // Handle output
             ItemStack output;
             JsonElement outputElement = json.get("output");
             if (outputElement.isJsonObject()) {
@@ -133,7 +146,10 @@ public class VesselRecipe implements Recipe<Inventory> {
                 int count = JsonHelper.getInt(outputObj, "count", 1);
                 output = new ItemStack(item, count);
             } else {
-                output = new ItemStack(JsonHelper.getItem(json, "output"));
+                // Handle string format
+                String outputId = JsonHelper.asString(outputElement, "output");
+                Item item = Registries.ITEM.get(new Identifier(outputId));
+                output = new ItemStack(item, 1);
             }
 
             return new VesselRecipe(id, aspects, catalyst, consumesCatalyst, output);

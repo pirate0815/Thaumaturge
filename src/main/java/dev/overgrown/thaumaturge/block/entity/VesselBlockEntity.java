@@ -46,11 +46,46 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
                         2, 0.2, 0.0, 0.2, 0.05);
             }
 
+            // Only process items periodically, not crafting
             blockEntity.processTime++;
             if (blockEntity.processTime >= 100) { // Process every 5 seconds (100 ticks)
                 blockEntity.processTime = 0;
-                blockEntity.processItem();
+                blockEntity.processItemForAspects(); // Renamed method for clarity
             }
+        }
+    }
+
+    // Method that only processes items for aspects, not crafting
+    public void processItemForAspects() {
+        if (items.stream().allMatch(ItemStack::isEmpty)) return;
+
+        World world = getWorld();
+        if (world == null) return;
+
+        // Process items for aspects only (no recipe checking)
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = items.get(i);
+            if (stack.isEmpty()) continue;
+
+            AspectData aspectData = AspectsAPI.getAspectData(stack);
+            if (!aspectData.isEmpty()) {
+                // Convert item to aspects
+                for (var entry : aspectData.getMap().object2IntEntrySet()) {
+                    String aspectName = AspectsAPI.getAspect(entry.getKey())
+                            .map(aspect -> aspect.name())
+                            .orElse(entry.getKey().toString());
+
+                    aspects.merge(aspectName, entry.getIntValue(), Integer::sum);
+                }
+            } else {
+                // Drop item unchanged
+                ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack.copy());
+                world.spawnEntity(itemEntity);
+            }
+
+            items.set(i, ItemStack.EMPTY);
+            markDirty();
+            break; // Process one item at a time
         }
     }
 
@@ -76,17 +111,20 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
 
         // Try to find a recipe match first
         Optional<VesselRecipe> match = world.getRecipeManager()
-                .getFirstMatch(VesselRecipe.Type.INSTANCE, this, world);
+                .listAllOfType(VesselRecipe.Type.INSTANCE)
+                .stream()
+                .filter(recipe -> recipe.matches(this))
+                .findFirst();
 
         if (match.isPresent()) {
             VesselRecipe recipe = match.get();
             // Craft the recipe
             if (craftWithCatalyst(recipe)) {
-                return;
+                return; // If we crafted successfully, stop processing
             }
         }
 
-        // If no recipe, process items for aspects
+        // If no recipe could be crafted, process items for aspects
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
             if (stack.isEmpty()) continue;
@@ -101,7 +139,6 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
 
                     aspects.merge(aspectName, entry.getIntValue(), Integer::sum);
                 }
-                // REMOVED: Water consumption for item processing
             } else {
                 // Drop item unchanged
                 ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack.copy());
