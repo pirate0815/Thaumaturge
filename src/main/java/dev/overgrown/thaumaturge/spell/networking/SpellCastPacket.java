@@ -4,6 +4,7 @@ import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
 import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.spell.utils.SpellCooldownManager;
 import dev.overgrown.thaumaturge.spell.utils.SpellHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -52,6 +53,14 @@ public final class SpellCastPacket {
         KeyType keyType = buf.readEnumConstant(KeyType.class);
         server.execute(() -> {
             if (player.isRemoved() || player.isSpectator()) return;
+
+            // Check if spell is on cooldown
+            if (SpellCooldownManager.isOnCooldown(player, keyType)) {
+                return;
+            }
+
+            // Set cooldown before casting
+            SpellCooldownManager.setCooldown(player, keyType);
 
             switch (keyType) {
                 case PRIMARY -> {
