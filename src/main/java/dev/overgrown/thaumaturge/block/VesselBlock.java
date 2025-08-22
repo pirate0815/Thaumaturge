@@ -63,7 +63,6 @@ public class VesselBlock extends BlockWithEntity {
             return ActionResult.PASS;
         }
 
-        // Handle water filling/emptying
         if (stack.getItem() == Items.WATER_BUCKET && state.get(WATER_LEVEL) < 3) {
             if (!world.isClient) {
                 world.setBlockState(pos, state.with(WATER_LEVEL, 3));
@@ -91,17 +90,26 @@ public class VesselBlock extends BlockWithEntity {
             return ActionResult.SUCCESS;
         }
 
-        // Handle catalyst setting and immediate processing
-        if (!stack.isEmpty()) {
+        if (!stack.isEmpty() && state.get(WATER_LEVEL) > 0) {
             if (!world.isClient) {
-                if (vessel.isCatalyst(stack)) {
-                    // Set as catalyst and immediately try to craft
-                    vessel.setCatalyst(stack.split(1));
-                    vessel.processItem(); // Try to craft immediately
+                boolean shouldConsume = vessel.tryCraftWithCatalyst(stack);
+                if (shouldConsume) {
+                    if (!player.isCreative()) {
+                        stack.decrement(1);
+                    }
                     return ActionResult.SUCCESS;
                 }
+                
+                if (vessel.isBoiling()) {
+                    ItemStack toAdd = stack.split(1);
+                    if (vessel.addItem(toAdd)) {
+                        return ActionResult.SUCCESS;
+                    } else {
+                        stack.increment(1);
+                    }
+                }
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.CONSUME;
         }
 
         return ActionResult.PASS;
@@ -127,7 +135,6 @@ public class VesselBlock extends BlockWithEntity {
 
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-        // Check if we should start/stop boiling based on heat source
         boolean hasWater = state.get(WATER_LEVEL) > 0;
         boolean hasHeat = isHeatSourceBelow(world, pos);
 
