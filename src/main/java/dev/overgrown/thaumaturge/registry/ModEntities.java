@@ -14,6 +14,7 @@ public class ModEntities {
                     Thaumaturge.identifier("spell_bolt"),
                     EntityType.Builder.create(SpellBoltEntity::new, SpawnGroup.MISC)
                             .setDimensions(0.5f, 0.5f)
+                            .disableSaving()
                             .build(Thaumaturge.identifier("spell_bolt").toString())
             );
 }
