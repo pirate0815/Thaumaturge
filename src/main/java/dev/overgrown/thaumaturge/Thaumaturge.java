@@ -54,14 +54,10 @@ public class Thaumaturge implements ModInitializer {
         SpellCastPacket.registerServer();
 
         // Register server tick event for cooldowns
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            SpellCooldownManager.tick();
-        });
+        ServerTickEvents.END_SERVER_TICK.register(server -> SpellCooldownManager.tick());
 
         // Register player disconnect event to clean up cooldowns
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            SpellCooldownManager.removePlayer(handler.player.getUuid());
-        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SpellCooldownManager.removePlayer(handler.player.getUuid()));
 
         // Register recipe type and serializer
         Registry.register(Registries.RECIPE_SERIALIZER, identifier("vessel"), VesselRecipe.Serializer.INSTANCE);

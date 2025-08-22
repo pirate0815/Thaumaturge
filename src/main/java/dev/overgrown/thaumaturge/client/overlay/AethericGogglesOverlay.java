@@ -85,8 +85,7 @@ public class AethericGogglesOverlay implements HudRenderCallback {
         }
 
         // Start position for drawing
-        int startX = centerX - totalWidth / 2;
-        int currentX = startX;
+        int currentX = centerX - totalWidth / 2;
 
         for (var entry : data.getMap().object2IntEntrySet()) {
             Identifier aspectId = entry.getKey();

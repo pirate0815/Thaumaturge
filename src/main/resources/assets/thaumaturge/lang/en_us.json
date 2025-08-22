@@ -11,6 +11,8 @@
   "key.thaumaturge.nonary": "Nonary Spell",
   "key.thaumaturge.denary": "Denary Spell",
 
+  "block.thaumaturge.vessel": "Vessel",
+
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",
