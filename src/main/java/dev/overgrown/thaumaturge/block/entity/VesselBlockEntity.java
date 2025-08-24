@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.block.entity;
 
 import dev.overgrown.aspectslib.api.AspectsAPI;
+import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.thaumaturge.block.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
@@ -43,8 +44,8 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         if (blockEntity.boiling) {
             if (world.getTime() % 10 == 0) {
                 ((ServerWorld) world).spawnParticles(ParticleTypes.BUBBLE_POP,
-                        pos.getX() + 0.5, pos.getY() + 0.3, pos.getZ() + 0.5,
-                        2, 0.2, 0.0, 0.2, 0.05);
+                        pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5,
+                        1, 0.1, 0.0, 0.1, 0.05);
             }
 
             blockEntity.processTime++;
@@ -69,7 +70,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
             if (!aspectData.isEmpty()) {
                 for (var entry : aspectData.getMap().object2IntEntrySet()) {
                     String aspectName = AspectsAPI.getAspect(entry.getKey())
-                            .map(aspect -> aspect.name())
+                            .map(Aspect::name)
                             .orElse(entry.getKey().toString());
 
                     int totalAmount = entry.getIntValue() * stack.getCount();
@@ -107,7 +108,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         if (!aspectData.isEmpty()) {
             for (var entry : aspectData.getMap().object2IntEntrySet()) {
                 String aspectName = AspectsAPI.getAspect(entry.getKey())
-                        .map(aspect -> aspect.name())
+                        .map(Aspect::name)
                         .orElse(entry.getKey().toString());
                 
                 int totalAmount = entry.getIntValue() * stack.getCount();

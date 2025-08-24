@@ -6,7 +6,7 @@
     "auram": 5
   },
   "catalyst": "aspectslib:ordo_aspect_shard",
-  "consumes_catalyst": false,
+  "consumes_catalyst": true,
   "output": {
     "item": "thaumaturge:lesser_focus",
     "count": 1
