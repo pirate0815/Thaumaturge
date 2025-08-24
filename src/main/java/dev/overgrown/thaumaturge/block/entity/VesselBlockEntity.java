@@ -6,6 +6,17 @@ import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.thaumaturge.block.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
+
+import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
+import net.minecraft.block.SculkSpreadable;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.block.Blocks;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -25,12 +36,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map.Entry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class VesselBlockEntity extends BlockEntity implements Inventory {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
+    public static final Identifier VITIUM_ASPECT = new Identifier("aspectslib", "vitium");
     private final Map<String, Integer> aspects = new HashMap<>();
     private ItemStack catalyst = ItemStack.EMPTY;
     private boolean boiling = false;
@@ -53,6 +66,129 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
                 blockEntity.processTime = 0;
                 blockEntity.processItemForAspects();
             }
+        }
+
+        // Check if water level is 0 and there are aspects
+        int waterLevel = state.get(VesselBlock.WATER_LEVEL);
+        if (waterLevel == 0 && !blockEntity.aspects.isEmpty()) {
+            blockEntity.convertAspectsToVitium(world, pos);
+        }
+
+        // Handle biome corruption if vitium is present
+        if (world.getTime() % 200 == 0) { // Check every 10 seconds
+            blockEntity.corruptBiome(world, pos);
+        }
+    }
+
+    private void convertAspectsToVitium(World world, BlockPos pos) {
+        // Calculate total aspects
+        int totalAspects = this.aspects.values().stream().mapToInt(Integer::intValue).sum();
+
+        if (totalAspects == 0) {
+            return;
+        }
+
+        // Get biome ID
+        RegistryEntry<Biome> biomeEntry = world.getBiome(pos);
+        Optional<RegistryKey<Biome>> optionalKey = biomeEntry.getKey();
+        if (optionalKey.isEmpty()) {
+            return;
+        }
+        Identifier biomeId = optionalKey.get().getValue();
+
+        // Add vitium to biome
+        DynamicAetherDensityManager.addModification(biomeId, VITIUM_ASPECT, totalAspects);
+
+        // Clear aspects from vessel
+        this.aspects.clear();
+
+        // Reset boiling state and process time
+        this.boiling = false;
+        this.processTime = 0;
+
+        // Visual and sound effects
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(ParticleTypes.SMOKE,
+                    pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5,
+                    10, 0.2, 0.2, 0.2, 0.0);
+            world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH,
+                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+        }
+
+        markDirty();
+        syncToClient();
+    }
+
+    private void corruptBiome(World world, BlockPos pos) {
+        // Get biome ID
+        RegistryEntry<Biome> biomeEntry = world.getBiome(pos);
+        Optional<RegistryKey<Biome>> optionalKey = biomeEntry.getKey();
+        if (optionalKey.isEmpty()) {
+            return;
+        }
+        Identifier biomeId = optionalKey.get().getValue();
+
+        // Get current modifications
+        Map<Identifier, Double> modifications = DynamicAetherDensityManager.getModifications(biomeId);
+        if (modifications == null) {
+            return;
+        }
+
+        // Check if vitium is dominant
+        Double vitiumAmount = modifications.get(VITIUM_ASPECT);
+        if (vitiumAmount == null || vitiumAmount <= 0) {
+            return;
+        }
+
+        double totalOtherAspects = modifications.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(VITIUM_ASPECT))
+                .mapToDouble(Entry::getValue)
+                .sum();
+
+        // If vitium is dominant, convert other aspects to vitium
+        if (vitiumAmount > totalOtherAspects) {
+            modifications.entrySet().stream()
+                    .filter(entry -> !entry.getKey().equals(VITIUM_ASPECT))
+                    .forEach(entry -> {
+                        double convertedAmount = entry.getValue() * 0.1; // Convert 10% per check
+                        modifications.put(entry.getKey(), entry.getValue() - convertedAmount);
+                        modifications.put(VITIUM_ASPECT, vitiumAmount + convertedAmount);
+                    });
+
+            // If only vitium remains, replace random blocks with sculk
+            if (totalOtherAspects <= 0) {
+                replaceRandomBlockWithSculk(world, pos);
+            }
+
+            markDirty();
+            syncToClient();
+        }
+    }
+
+    private void replaceRandomBlockWithSculk(World world, BlockPos pos) {
+        // Get a random position within 16 blocks
+        BlockPos targetPos = pos.add(
+                world.random.nextInt(32) - 16,
+                world.random.nextInt(8) - 4,
+                world.random.nextInt(32) - 16
+        );
+
+        // Check if the block is replaceable
+        BlockState currentState = world.getBlockState(targetPos);
+        if (currentState.isAir() || currentState.getBlock() instanceof SculkSpreadable) {
+            return;
+        }
+
+        // Replace with sculk block
+        world.setBlockState(targetPos, Blocks.SCULK.getDefaultState());
+
+        // Visual and sound effects
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(ParticleTypes.SOUL,
+                    targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
+                    5, 0.2, 0.2, 0.2, 0.0);
+            world.playSound(null, targetPos, SoundEvents.BLOCK_SCULK_PLACE,
+                    SoundCategory.BLOCKS, 1.0f, 1.0f);
         }
     }
 
