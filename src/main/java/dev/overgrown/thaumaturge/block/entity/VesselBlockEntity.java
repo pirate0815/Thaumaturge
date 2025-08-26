@@ -6,7 +6,6 @@ import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.thaumaturge.block.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
-
 import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
 import dev.overgrown.aspectslib.aether.CorruptionManager;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -186,7 +185,6 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         return false;
     }
 
-
     public boolean tryCraftWithCatalystDropped(ItemStack catalystStack) {
         World world = getWorld();
         if (world == null) return false;
@@ -254,7 +252,6 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
     public ItemStack getCatalyst() {
         return catalyst;
     }
-
 
     public Map<String, Integer> getAspects() {
         return aspects;
