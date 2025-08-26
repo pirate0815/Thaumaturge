@@ -8,15 +8,13 @@ import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 
 import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
-import net.minecraft.block.SculkSpreadable;
+import dev.overgrown.aspectslib.aether.CorruptionManager;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.block.Blocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -36,7 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map.Entry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -73,11 +70,6 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         if (waterLevel == 0 && !blockEntity.aspects.isEmpty()) {
             blockEntity.convertAspectsToVitium(world, pos);
         }
-
-        // Handle biome corruption if vitium is present
-        if (world.getTime() % 200 == 0) { // Check every 10 seconds
-            blockEntity.corruptBiome(world, pos);
-        }
     }
 
     private void convertAspectsToVitium(World world, BlockPos pos) {
@@ -96,8 +88,9 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         }
         Identifier biomeId = optionalKey.get().getValue();
 
-        // Add vitium to biome
+        // Add vitium to biome and register this vessel as a corruption source
         DynamicAetherDensityManager.addModification(biomeId, VITIUM_ASPECT, totalAspects);
+        CorruptionManager.addCorruptionSource(biomeId, pos, totalAspects);
 
         // Clear aspects from vessel
         this.aspects.clear();
@@ -117,79 +110,6 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
 
         markDirty();
         syncToClient();
-    }
-
-    private void corruptBiome(World world, BlockPos pos) {
-        // Get biome ID
-        RegistryEntry<Biome> biomeEntry = world.getBiome(pos);
-        Optional<RegistryKey<Biome>> optionalKey = biomeEntry.getKey();
-        if (optionalKey.isEmpty()) {
-            return;
-        }
-        Identifier biomeId = optionalKey.get().getValue();
-
-        // Get current modifications
-        Map<Identifier, Double> modifications = DynamicAetherDensityManager.getModifications(biomeId);
-        if (modifications == null) {
-            return;
-        }
-
-        // Check if vitium is dominant
-        Double vitiumAmount = modifications.get(VITIUM_ASPECT);
-        if (vitiumAmount == null || vitiumAmount <= 0) {
-            return;
-        }
-
-        double totalOtherAspects = modifications.entrySet().stream()
-                .filter(entry -> !entry.getKey().equals(VITIUM_ASPECT))
-                .mapToDouble(Entry::getValue)
-                .sum();
-
-        // If vitium is dominant, convert other aspects to vitium
-        if (vitiumAmount > totalOtherAspects) {
-            modifications.entrySet().stream()
-                    .filter(entry -> !entry.getKey().equals(VITIUM_ASPECT))
-                    .forEach(entry -> {
-                        double convertedAmount = entry.getValue() * 0.1; // Convert 10% per check
-                        modifications.put(entry.getKey(), entry.getValue() - convertedAmount);
-                        modifications.put(VITIUM_ASPECT, vitiumAmount + convertedAmount);
-                    });
-
-            // If only vitium remains, replace random blocks with sculk
-            if (totalOtherAspects <= 0) {
-                replaceRandomBlockWithSculk(world, pos);
-            }
-
-            markDirty();
-            syncToClient();
-        }
-    }
-
-    private void replaceRandomBlockWithSculk(World world, BlockPos pos) {
-        // Get a random position within 16 blocks
-        BlockPos targetPos = pos.add(
-                world.random.nextInt(32) - 16,
-                world.random.nextInt(8) - 4,
-                world.random.nextInt(32) - 16
-        );
-
-        // Check if the block is replaceable
-        BlockState currentState = world.getBlockState(targetPos);
-        if (currentState.isAir() || currentState.getBlock() instanceof SculkSpreadable) {
-            return;
-        }
-
-        // Replace with sculk block
-        world.setBlockState(targetPos, Blocks.SCULK.getDefaultState());
-
-        // Visual and sound effects
-        if (world instanceof ServerWorld serverWorld) {
-            serverWorld.spawnParticles(ParticleTypes.SOUL,
-                    targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
-                    5, 0.2, 0.2, 0.2, 0.0);
-            world.playSound(null, targetPos, SoundEvents.BLOCK_SCULK_PLACE,
-                    SoundCategory.BLOCKS, 1.0f, 1.0f);
-        }
     }
 
     public void processItemForAspects() {
@@ -227,26 +147,26 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
     public boolean addItem(ItemStack stack) {
         World world = getWorld();
         if (world == null) return false;
-        
+
         boolean isCatalyst = world.getRecipeManager()
                 .listAllOfType(VesselRecipe.Type.INSTANCE)
                 .stream()
                 .anyMatch(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), stack));
-        
+
         if (isCatalyst) {
             boolean recipeMatched = tryCraftWithCatalystDropped(stack);
             if (recipeMatched) {
                 return true;
             }
         }
-        
+
         AspectData aspectData = AspectsAPI.getAspectData(stack);
         if (!aspectData.isEmpty()) {
             for (var entry : aspectData.getMap().object2IntEntrySet()) {
                 String aspectName = AspectsAPI.getAspect(entry.getKey())
                         .map(Aspect::name)
                         .orElse(entry.getKey().toString());
-                
+
                 int totalAmount = entry.getIntValue() * stack.getCount();
                 aspects.merge(aspectName, totalAmount, Integer::sum);
             }
@@ -287,7 +207,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         }
         return shouldConsume;
     }
-    
+
     public boolean tryCraftWithCatalyst(ItemStack catalystStack) {
         World world = getWorld();
         if (world == null) return false;
@@ -305,7 +225,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
 
         if (match.isPresent()) {
             VesselRecipe recipe = match.get();
-            
+
             recipe.getAspects().forEach((aspect, amount) -> {
                 String storedAspectName = aspect.substring(0, 1).toUpperCase() + aspect.substring(1);
                 aspects.computeIfPresent(storedAspectName, (k, v) -> v - amount);
