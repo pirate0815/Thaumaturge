@@ -69,7 +69,7 @@ public class VesselBlock extends BlockWithEntity {
                 if (!player.isCreative()) {
                     player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                 }
-                updateBoilingState(world, pos, state.with(WATER_LEVEL, 3));
+                updateHeatingState(world, pos, state.with(WATER_LEVEL, 3));
             }
             return ActionResult.SUCCESS;
         }
@@ -85,7 +85,7 @@ public class VesselBlock extends BlockWithEntity {
                         player.getInventory().insertStack(new ItemStack(Items.WATER_BUCKET));
                     }
                 }
-                updateBoilingState(world, pos, state.with(WATER_LEVEL, 0));
+                updateHeatingState(world, pos, state.with(WATER_LEVEL, 0));
             }
             return ActionResult.SUCCESS;
         }
@@ -100,7 +100,7 @@ public class VesselBlock extends BlockWithEntity {
                     return ActionResult.SUCCESS;
                 }
                 
-                if (vessel.isBoiling()) {
+                if (vessel.canBreakdownItems()) {
                     ItemStack toAdd = stack.split(1);
                     if (vessel.addItem(toAdd)) {
                         return ActionResult.SUCCESS;
@@ -124,12 +124,12 @@ public class VesselBlock extends BlockWithEntity {
                 belowState.isOf(Blocks.SOUL_CAMPFIRE);
     }
 
-    private void updateBoilingState(World world, BlockPos pos, BlockState state) {
+    private void updateHeatingState(World world, BlockPos pos, BlockState state) {
         boolean hasWater = state.get(WATER_LEVEL) > 0;
         boolean hasHeat = isHeatSourceBelow(world, pos);
 
         if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
-            vessel.setBoiling(hasWater && hasHeat);
+            vessel.setHeating(hasWater && hasHeat);
         }
     }
 
@@ -139,8 +139,25 @@ public class VesselBlock extends BlockWithEntity {
         boolean hasHeat = isHeatSourceBelow(world, pos);
 
         if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
-            vessel.setBoiling(hasWater && hasHeat);
+            vessel.setHeating(hasWater && hasHeat);
         }
         super.neighborUpdate(state, world, pos, block, fromPos, notify);
+    }
+
+    @Override
+    public boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        if (state.get(WATER_LEVEL) == 0) {
+            return 0;
+        }
+        if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
+            // Maps 0…4 to 2-10
+            return (vessel.getTemperatureRange().getValue() + 1) * 2;
+        }
+        return 0;
     }
 }

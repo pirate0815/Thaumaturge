@@ -29,7 +29,7 @@ public abstract class ItemEntityMixin extends Entity {
                 BlockState state = world.getBlockState(pos);
 
                 if (state.getBlock() instanceof VesselBlock && state.get(VesselBlock.WATER_LEVEL) > 0) {
-                    if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel && vessel.isBoiling()) {
+                    if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel && vessel.canBreakdownItems()) {
                         ItemEntity self = (ItemEntity) (Object) this;
                         if (vessel.addItem(self.getStack())) {
                             self.discard();

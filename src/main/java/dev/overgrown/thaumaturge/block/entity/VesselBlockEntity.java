@@ -3,6 +3,7 @@ package dev.overgrown.thaumaturge.block.entity;
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
@@ -42,32 +43,98 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
     public static final Identifier VITIUM_ASPECT = new Identifier("aspectslib", "vitium");
     private final Map<String, Integer> aspects = new HashMap<>();
     private ItemStack catalyst = ItemStack.EMPTY;
-    private boolean boiling = false;
+    private boolean heating = false;
     private int processTime = 0;
+    private static final double AMBIENT_TEMPERATURE = 8.0;
+    private double temperature = AMBIENT_TEMPERATURE;
+
+    public enum TemperatureRange {
+        LUKEWARM(0),
+        WARM(1),
+        HOT(2),
+        SCOLDING(3),
+        BOILING(4);
+
+        private final int value;
+        TemperatureRange(int i) {
+            value = i;
+        }
+
+        public static TemperatureRange fromTemp(double temp) {
+            if (temp < 25.0) {
+                return LUKEWARM;
+            } else if (temp < 50.0) {
+                return WARM;
+            } else  if (temp < 75.0) {
+                return HOT;
+            } else if (temp < 100.0) {
+                return SCOLDING;
+            } else {
+                return BOILING;
+            }
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     public VesselBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.VESSEL_BLOCK_ENTITY, pos, state);
     }
 
     public static void serverTick(World world, BlockPos pos, BlockState state, VesselBlockEntity blockEntity) {
-        if (blockEntity.boiling) {
+        int waterLevel = state.get(VesselBlock.WATER_LEVEL);
+
+        if (waterLevel > 0) {
+            blockEntity.processTime++;
+            if (blockEntity.processTime >= 100) {
+                blockEntity.processTime = 0;
+
+                if (blockEntity.canBreakdownItems()) {
+                    blockEntity.processItemForAspects();
+                }
+
+                if (blockEntity.heating) {
+                    // ΔT = 100° / 2 min
+                    // Heating up to 120°
+                    if (blockEntity.temperature < 120.0) {
+                        blockEntity.temperature +=+ 4.166;
+                        blockEntity.markDirty();
+                    }
+                } else {
+                    // ΔT = ±100° / 5 min
+                    // Cooling / Heating to ambient temperature
+                    if (blockEntity.temperature > AMBIENT_TEMPERATURE) {
+                        blockEntity.temperature -= 1.6667;
+                        blockEntity.markDirty();
+                    } else if (blockEntity.temperature < AMBIENT_TEMPERATURE) {
+                        blockEntity.temperature += 1.6667;
+                        blockEntity.markDirty();
+                    }
+                }
+            }
+        }
+
+        // Check if water level is 0 and there are aspects
+        if (waterLevel == 0 && !blockEntity.aspects.isEmpty()) {
+            blockEntity.convertAspectsToVitium(world, pos);
+        }
+
+        // Add Smoke if the water is at or above 100° or if the vessel is being heated
+        if ((waterLevel > 0) && (blockEntity.temperature >= 100.0)) {
+            if (world.getTime() % 10 == 4) {
+                ((ServerWorld) world).spawnParticles(ParticleTypes.BUBBLE_POP,
+                        pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5,
+                        1, 0.1, 0.0, 0.1, 0.05);
+            }
+        }
+        if (blockEntity.heating) {
             if (world.getTime() % 10 == 0) {
                 ((ServerWorld) world).spawnParticles(ParticleTypes.BUBBLE_POP,
                         pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5,
                         1, 0.1, 0.0, 0.1, 0.05);
             }
-
-            blockEntity.processTime++;
-            if (blockEntity.processTime >= 100) {
-                blockEntity.processTime = 0;
-                blockEntity.processItemForAspects();
-            }
-        }
-
-        // Check if water level is 0 and there are aspects
-        int waterLevel = state.get(VesselBlock.WATER_LEVEL);
-        if (waterLevel == 0 && !blockEntity.aspects.isEmpty()) {
-            blockEntity.convertAspectsToVitium(world, pos);
         }
     }
 
@@ -94,9 +161,10 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         // Clear aspects from vessel
         this.aspects.clear();
 
-        // Reset boiling state and process time
-        this.boiling = false;
+        // Reset boiling state, process time and temperature
+        this.heating = false;
         this.processTime = 0;
+        this.temperature = AMBIENT_TEMPERATURE;
 
         // Visual and sound effects
         if (world instanceof ServerWorld serverWorld) {
@@ -263,13 +331,22 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         }
     }
 
-    public void setBoiling(boolean boiling) {
-        this.boiling = boiling;
+    public void setHeating(boolean heating) {
+        this.heating = heating;
+        this.processTime = 0;
         markDirty();
     }
 
-    public boolean isBoiling() {
-        return boiling;
+    public TemperatureRange getTemperatureRange() {
+        return TemperatureRange.fromTemp(this.temperature);
+    }
+
+    public boolean isHeating() {
+        return heating;
+    }
+
+    public boolean canBreakdownItems() {
+        return temperature >= 60.0;
     }
 
     @Override
@@ -283,8 +360,9 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
             aspectsNbt.putInt(entry.getKey(), entry.getValue());
         }
         nbt.put("Aspects", aspectsNbt);
-        nbt.putBoolean("Boiling", boiling);
+        nbt.putBoolean("Heating", heating);
         nbt.putInt("ProcessTime", processTime);
+        nbt.putDouble("Temperature", temperature);
     }
 
     @Override
@@ -298,8 +376,10 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         for (String key : aspectsNbt.getKeys()) {
             aspects.put(key, aspectsNbt.getInt(key));
         }
-        boiling = nbt.getBoolean("Boiling");
+        heating = nbt.getBoolean("Heating");
         processTime = nbt.getInt("ProcessTime");
+        temperature = nbt.getDouble("Temperature");
+
     }
 
     @Nullable
