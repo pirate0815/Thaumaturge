@@ -1,5 +1,6 @@
 package dev.overgrown.thaumaturge.block.entity;
 
+import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
@@ -39,7 +40,7 @@ import java.util.Optional;
 
 public class VesselBlockEntity extends BlockEntity implements Inventory {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
-    public static final Identifier VITIUM_ASPECT = new Identifier("aspectslib", "vitium");
+    public static final Identifier VITIUM_ASPECT = AspectsLib.identifier("vitium");
     private final Map<String, Integer> aspects = new HashMap<>();
     private ItemStack catalyst = ItemStack.EMPTY;
     private boolean boiling = false;
