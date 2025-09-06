@@ -11,6 +11,10 @@
   "key.thaumaturge.nonary": "Nonary Spell",
   "key.thaumaturge.denary": "Denary Spell",
 
+  "item.thaumaturge.apophenia": "Apophenia",
+  "item.thaumaturge.apophenia.tooltip.open": "§7Open",
+  "item.thaumaturge.apophenia.tooltip.closed": "§7Closed",
+
   "block.thaumaturge.vessel": "Vessel",
 
   "item.thaumaturge.aspect_lens": "Aspect Lens",

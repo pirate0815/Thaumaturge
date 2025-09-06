@@ -1,10 +1,10 @@
-package dev.overgrown.thaumaturge.block.entity;
+package dev.overgrown.thaumaturge.block.vessel.entity;
 
 import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.thaumaturge.block.VesselBlock;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;

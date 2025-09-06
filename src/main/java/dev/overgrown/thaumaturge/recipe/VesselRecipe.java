@@ -2,7 +2,7 @@ package dev.overgrown.thaumaturge.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.overgrown.thaumaturge.block.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

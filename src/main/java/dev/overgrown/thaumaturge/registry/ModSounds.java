@@ -7,6 +7,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class ModSounds {
+    public static final SoundEvent ASPECT_CLUSTER_AMBIENT = register("aspect_cluster_ambient");
     public static final SoundEvent AER_SPELL_CAST = register("aer_spell_cast");
     public static final SoundEvent MOTUS_SPELL_CAST = register("motus_spell_cast");
     public static final SoundEvent VICTUS_SPELL_CAST = register("victus_spell_cast");

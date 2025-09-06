@@ -1,12 +1,12 @@
-package dev.overgrown.thaumaturge.client.overlay;
+package dev.overgrown.thaumaturge.item.aetheric_goggles.overlay;
 
 import dev.overgrown.aspectslib.api.IAspectAffinityEntity;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.ModRegistries;
-import dev.overgrown.thaumaturge.block.VesselBlock;
-import dev.overgrown.thaumaturge.block.entity.VesselBlockEntity;
-import dev.overgrown.thaumaturge.item.AethericGogglesItem;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

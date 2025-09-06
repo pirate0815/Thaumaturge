@@ -1,8 +1,10 @@
 package dev.overgrown.thaumaturge.registry;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
-import dev.overgrown.thaumaturge.item.AethericGogglesItem;
-import dev.overgrown.thaumaturge.item.AspectLensItem;
+import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
+import dev.overgrown.thaumaturge.item.apophenia.ApopheniaItem;
+import dev.overgrown.thaumaturge.item.aspect_lens.AspectLensItem;
+import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDustItem;
 import dev.overgrown.thaumaturge.item.focus.AdvancedFocusItem;
 import dev.overgrown.thaumaturge.item.focus.GreaterFocusItem;
 import dev.overgrown.thaumaturge.item.focus.LesserFocusItem;
@@ -19,6 +21,16 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class ModItems {
+    public static final Item BONEWITS_DUST = registerItem("bonewits_dust",
+            new BonewitsDustItem(new FabricItemSettings()
+                    .maxCount(64)
+            )
+    );
+
+    public static final Item APOPHENIA = registerItem("apophenia",
+            new ApopheniaItem()
+    );
+
     public static final Item ASPECT_LENS = registerItem("aspect_lens",
             new AspectLensItem(new FabricItemSettings()
                     .maxCount(1)

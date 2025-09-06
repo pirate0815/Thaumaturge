@@ -2,9 +2,10 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
-import dev.overgrown.thaumaturge.client.overlay.AethericGogglesOverlay;
+import dev.overgrown.thaumaturge.item.aetheric_goggles.overlay.AethericGogglesOverlay;
+import dev.overgrown.thaumaturge.item.apophenia.predicate.ApopheniaModelProvider;
 import dev.overgrown.thaumaturge.registry.ModEntities;
-import dev.overgrown.thaumaturge.item.AspectLensItem;
+import dev.overgrown.thaumaturge.item.aspect_lens.AspectLensItem;
 import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
@@ -13,10 +14,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 public class ThaumaturgeClient implements ClientModInitializer {
-    private static final float DEFAULT_AOE_RADIUS = 3.0f;
 
     @Override
     public void onInitializeClient() {
+
+        // Registers the Apophenia model predicate
+        ApopheniaModelProvider.register();
+
         // Entity Renderers
         EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
 

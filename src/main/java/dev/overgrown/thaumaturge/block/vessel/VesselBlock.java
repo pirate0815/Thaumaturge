@@ -1,6 +1,6 @@
-package dev.overgrown.thaumaturge.block;
+package dev.overgrown.thaumaturge.block.vessel;
 
-import dev.overgrown.thaumaturge.block.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;

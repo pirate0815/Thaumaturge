@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.item;
+package dev.overgrown.thaumaturge.item.aetheric_goggles;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;

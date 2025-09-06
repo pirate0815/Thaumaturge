@@ -1,4 +1,10 @@
 {
+  "aspect_cluster_ambient": {
+    "subtitle": "subtitles.thaumaturge.block.aspect_cluster_ambient",
+    "sounds": [
+      "thaumaturge:block/aspects/cluster/ambient"
+    ]
+  },
   "aer_spell_cast": {
     "subtitle": "subtitles.thaumaturge.aer_spell_cast",
     "sounds": [

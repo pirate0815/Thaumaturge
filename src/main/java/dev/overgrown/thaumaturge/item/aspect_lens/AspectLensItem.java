@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.item;
+package dev.overgrown.thaumaturge.item.aspect_lens;
 
 import dev.overgrown.aspectslib.aether.AetherDensity;
 import dev.overgrown.aspectslib.aether.AetherDensityManager;

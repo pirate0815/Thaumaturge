@@ -1,0 +1,9 @@
+{
+  "replace":false,
+  "values":[
+    {
+      "id":"thaumaturge:bonewits_dust",
+      "required":false
+    }
+  ]
+}

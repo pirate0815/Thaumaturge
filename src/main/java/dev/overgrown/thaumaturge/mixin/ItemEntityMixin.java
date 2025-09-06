@@ -1,7 +1,7 @@
 package dev.overgrown.thaumaturge.mixin;
 
-import dev.overgrown.thaumaturge.block.VesselBlock;
-import dev.overgrown.thaumaturge.block.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
+import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
