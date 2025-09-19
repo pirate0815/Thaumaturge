@@ -30,9 +30,11 @@ public class SpellBoltEntity extends ThrownEntity {
     private static final TrackedData<Boolean> HIT_TARGET = DataTracker.registerData(SpellBoltEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private List<Consumer<BlockHitResult>> onBlockHitEffects = new ArrayList<>();
     private int despawnTimer = 10;
+    private Vec3d direction; // Store the initial direction
 
     public SpellBoltEntity(EntityType<? extends ThrownEntity> type, World world) {
         super(type, world);
+        this.setNoGravity(true); // Disable gravity
     }
 
     public void setCaster(PlayerEntity caster) {
@@ -106,7 +108,18 @@ public class SpellBoltEntity extends ThrownEntity {
             if (this.despawnTimer <= 0 && !this.getWorld().isClient) {
                 this.discard();
             }
+        } else {
+            // Maintain constant velocity in the initial direction
+            if (this.direction != null) {
+                this.setVelocity(this.direction);
+            }
         }
+    }
+
+    @Override
+    public void setVelocity(double x, double y, double z) {
+        super.setVelocity(x, y, z);
+        this.direction = new Vec3d(x, y, z); // Store the direction whenever velocity is set
     }
 
     @Override
@@ -160,5 +173,10 @@ public class SpellBoltEntity extends ThrownEntity {
     @Override
     public boolean shouldRender(double distance) {
         return true;
+    }
+
+    @Override
+    protected float getGravity() {
+        return 0.0f; // Ensure no gravity is applied
     }
 }
