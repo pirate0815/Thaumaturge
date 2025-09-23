@@ -37,7 +37,7 @@ public class AethericGogglesOverlay implements HudRenderCallback {
     @Override
     public void onHudRender(DrawContext drawContext, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) return;
+        if (client.player == null || client.world == null) return;
 
         // Only render if wearing goggles
         if (!AethericGogglesItem.isWearingGoggles(client.player)) return;
