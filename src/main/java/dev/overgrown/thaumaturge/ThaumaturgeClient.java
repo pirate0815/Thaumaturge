@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
+import dev.overgrown.thaumaturge.client.render.AuraNodeVisibility;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.overlay.AethericGogglesOverlay;
 import dev.overgrown.thaumaturge.item.apophenia.predicate.ApopheniaModelProvider;
 import dev.overgrown.thaumaturge.registry.ModEntities;
@@ -30,8 +31,11 @@ public class ThaumaturgeClient implements ClientModInitializer {
         // Register spell keybinds (original flow)
         KeybindManager.registerKeybinds();
 
-        // Overlay
+        // Aetheric Goggles Overlay
         HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
+
+        // Register Aura Node visibility
+        AuraNodeVisibility.initialize();
 
         // Handle presses: Primary=Lesser(self), Secondary=Advanced(targeted), Ternary=Greater(aoe)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

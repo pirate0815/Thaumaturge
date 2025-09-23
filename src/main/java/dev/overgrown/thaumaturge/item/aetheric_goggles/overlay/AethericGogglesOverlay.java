@@ -4,6 +4,7 @@ import dev.overgrown.aspectslib.api.IAspectAffinityEntity;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.ModRegistries;
+import dev.overgrown.aspectslib.entity.aura_node.AuraNodeEntity;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
@@ -12,16 +13,16 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 import java.util.Map;
@@ -53,7 +54,7 @@ public class AethericGogglesOverlay implements HudRenderCallback {
             BlockHitResult blockHit = (BlockHitResult) hit;
             BlockPos pos = blockHit.getBlockPos();
             BlockState state = client.world.getBlockState(pos);
-            
+
             if (state.getBlock() instanceof VesselBlock) {
                 if (client.world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
                     Map<String, Integer> aspects = vessel.getAspects();
@@ -62,6 +63,15 @@ public class AethericGogglesOverlay implements HudRenderCallback {
                         return;
                     }
                 }
+            }
+        } else if (hit.getType() == HitResult.Type.ENTITY) {
+            EntityHitResult entityHit = (EntityHitResult) hit;
+            Entity entity = entityHit.getEntity();
+
+            // Handle Aura Node entities specifically
+            if (entity instanceof AuraNodeEntity auraNode) {
+                renderAuraNodeAspects(drawContext, auraNode, x, y);
+                return;
             }
         }
 
@@ -88,6 +98,62 @@ public class AethericGogglesOverlay implements HudRenderCallback {
             }
         }
         return null;
+    }
+
+    private void renderAuraNodeAspects(DrawContext context, AuraNodeEntity auraNode, int centerX, int centerY) {
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
+
+        // Get aspects from the aura node
+        var aspects = auraNode.getAspects();
+        if (aspects.isEmpty()) return;
+
+        // Calculate total width for centering
+        int totalWidth = 0;
+        for (var entry : aspects.entrySet()) {
+            Aspect aspect = ModRegistries.ASPECTS.get(entry.getKey());
+            if (aspect == null) continue;
+
+            int currentValue = entry.getValue().current;
+            int textWidth = showNames ?
+                    textRenderer.getWidth(aspect.getTranslatedName()) :
+                    textRenderer.getWidth(currentValue + "/" + entry.getValue().original);
+
+            totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
+        }
+
+        // Start position for drawing
+        int currentX = centerX - totalWidth / 2;
+
+        for (var entry : aspects.entrySet()) {
+            Identifier aspectId = entry.getKey();
+            Aspect aspect = ModRegistries.ASPECTS.get(aspectId);
+            if (aspect == null) continue;
+
+            int currentValue = entry.getValue().current;
+            int originalValue = entry.getValue().original;
+
+            Identifier texture = aspect.textureLocation();
+            context.drawTexture(texture, currentX, centerY, 0, 0,
+                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE,
+                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE);
+
+            if (showNames) {
+                Text aspectText = aspect.getTranslatedName().formatted(Formatting.WHITE);
+                context.drawText(textRenderer, aspectText,
+                        currentX + ASPECT_TEXT_OFFSET,
+                        centerY + TEXT_Y_OFFSET,
+                        0xFFFFFF, false);
+                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
+            } else {
+                String value = currentValue + "/" + originalValue;
+                context.drawText(textRenderer, value,
+                        currentX + ASPECT_TEXT_OFFSET,
+                        centerY + TEXT_Y_OFFSET,
+                        0xFFFFFF, false);
+                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(value) + ASPECT_SPACING;
+            }
+        }
     }
 
     private void renderAspectData(DrawContext context, AspectData data, int centerX, int centerY) {
