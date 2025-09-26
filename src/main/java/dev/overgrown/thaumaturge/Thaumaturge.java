@@ -4,6 +4,7 @@ import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.thaumaturge.registry.*;
 import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
+import dev.overgrown.thaumaturge.spell.impl.alkimia.AlkimiaEffect;
 import dev.overgrown.thaumaturge.spell.impl.gelum.GelumEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
 import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
@@ -68,6 +69,7 @@ public class Thaumaturge implements ModInitializer {
 
     private void registerAspectEffects() {
         AspectRegistry.register(AspectsLib.identifier("aer"), new AerEffect());
+        AspectRegistry.register(AspectsLib.identifier("alkimia"), new AlkimiaEffect());
         AspectRegistry.register(AspectsLib.identifier("gelum"), new GelumEffect());
         AspectRegistry.register(AspectsLib.identifier("ignis"), new IgnisEffect());
         AspectRegistry.register(AspectsLib.identifier("motus"), new MotusEffect());

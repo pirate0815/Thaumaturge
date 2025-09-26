@@ -11,6 +11,8 @@
   "key.thaumaturge.nonary": "Nonary Spell",
   "key.thaumaturge.denary": "Denary Spell",
 
+  "item.thaumaturge.bonewits_dust": "Bonewits Dust",
+
   "item.thaumaturge.apophenia": "Apophenia",
   "item.thaumaturge.apophenia.tooltip.open": "§7Open",
   "item.thaumaturge.apophenia.tooltip.closed": "§7Closed",

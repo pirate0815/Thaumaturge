@@ -26,6 +26,7 @@ public class ThaumaturgeClient implements ClientModInitializer {
         // Entity Renderers
         EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
         EntityRendererRegistry.register(ModEntities.ARCANE_MINE, EmptyEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.ALKIMIA_CLOUD, EmptyEntityRenderer::new);
 
         // Tooltips visible only with lens
         AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));

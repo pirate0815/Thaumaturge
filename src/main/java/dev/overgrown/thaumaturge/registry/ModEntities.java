@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge.registry;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.spell.impl.alkimia.entity.AlkimiaCloudEntity;
 import dev.overgrown.thaumaturge.spell.impl.potentia.entity.SpellBoltEntity;
 import dev.overgrown.thaumaturge.spell.impl.vinculum.entity.ArcaneMineEntity;
 import net.minecraft.entity.EntityType;
@@ -27,5 +28,15 @@ public class ModEntities {
                             .setDimensions(0.5f, 0.1f) // Flat mine shape
                             .disableSaving()
                             .build(Thaumaturge.identifier("arcane_mine").toString())
+            );
+
+    public static final EntityType<AlkimiaCloudEntity> ALKIMIA_CLOUD =
+            Registry.register(
+                    Registries.ENTITY_TYPE,
+                    Thaumaturge.identifier("alkimia_cloud"),
+                    EntityType.Builder.<AlkimiaCloudEntity>create(AlkimiaCloudEntity::new, SpawnGroup.MISC)
+                            .setDimensions(1.0f, 1.0f) // Cloud size
+                            .disableSaving() // Don't save to disk
+                            .build(Thaumaturge.identifier("alkimia_cloud").toString())
             );
 }
