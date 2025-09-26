@@ -2,9 +2,7 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
-import dev.overgrown.thaumaturge.registry.ModBlocks;
-import dev.overgrown.thaumaturge.registry.ModItems;
-import dev.overgrown.thaumaturge.registry.ModSounds;
+import dev.overgrown.thaumaturge.registry.*;
 import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
 import dev.overgrown.thaumaturge.spell.impl.gelum.GelumEffect;
 import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
@@ -12,6 +10,7 @@ import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
 import dev.overgrown.thaumaturge.spell.impl.perditio.PerditioEffect;
 import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
 import dev.overgrown.thaumaturge.spell.impl.victus.VictusEffect;
+import dev.overgrown.thaumaturge.spell.impl.vinculum.VinculumEffect;
 import dev.overgrown.thaumaturge.spell.impl.vitium.VitiumEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
@@ -75,6 +74,7 @@ public class Thaumaturge implements ModInitializer {
         AspectRegistry.register(AspectsLib.identifier("perditio"), new PerditioEffect());
         AspectRegistry.register(AspectsLib.identifier("potentia"), new PotentiaEffect());
         AspectRegistry.register(AspectsLib.identifier("victus"), new VictusEffect());
+        AspectRegistry.register(AspectsLib.identifier("vinculum"), new VinculumEffect());
         AspectRegistry.register(AspectsLib.identifier("vitium"), new VitiumEffect());
     }
 

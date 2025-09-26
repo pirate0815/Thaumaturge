@@ -2,13 +2,13 @@
   "replace":false,
   "values":[
     {
-      "id":"thaumaturge:aspects/secondary/potentia",
+      "id":"#thaumaturge:aspects/secondary/potentia",
       "aspects":{
         "aspectslib:potentia":5
       }
     },
     {
-      "id":"thaumaturge:aspects/tertiary/praecantatio",
+      "id":"#thaumaturge:aspects/tertiary/praecantatio",
       "aspects":{
         "aspectslib:praecantatio":5
       }

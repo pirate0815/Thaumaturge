@@ -13,6 +13,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.render.entity.EmptyEntityRenderer;
 
 public class ThaumaturgeClient implements ClientModInitializer {
 
@@ -24,6 +25,7 @@ public class ThaumaturgeClient implements ClientModInitializer {
 
         // Entity Renderers
         EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
+        EntityRendererRegistry.register(ModEntities.ARCANE_MINE, EmptyEntityRenderer::new);
 
         // Tooltips visible only with lens
         AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));

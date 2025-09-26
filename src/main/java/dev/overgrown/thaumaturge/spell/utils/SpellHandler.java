@@ -24,6 +24,10 @@ public final class SpellHandler {
         SpellPattern pattern = resolvePattern(player, keyType);
         if (pattern == null || pattern.getAspects().isEmpty()) return;
 
+        // Check if this pattern contains Vinculum - if so, handle it specially
+        boolean hasVinculum = pattern.getAspects().keySet().stream()
+                .anyMatch(id -> id.getPath().equals("vinculum"));
+
         for (Map.Entry<Identifier, Identifier> entry : pattern.getAspects().entrySet()) {
             AspectEffect aspect = resolveAspect(entry.getKey());
             ModifierEffect modifier = resolveModifier(entry.getValue());
@@ -31,6 +35,12 @@ public final class SpellHandler {
 
             List<ModifierEffect> mods = modifier != null ?
                     Collections.singletonList(modifier) : Collections.emptyList();
+
+            // If this pattern has Vinculum, only apply Vinculum and skip other aspects
+            // The other aspects will be stored in the mine and triggered later
+            if (hasVinculum && !entry.getKey().getPath().equals("vinculum")) {
+                continue;
+            }
 
             if (delivery instanceof SelfSpellDelivery selfDelivery) {
                 selfDelivery.setModifiers(mods);
