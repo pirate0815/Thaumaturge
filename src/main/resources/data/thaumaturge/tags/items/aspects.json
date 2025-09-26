@@ -2,14 +2,9 @@
   "replace":false,
   "values":[
     {
-      "id":"#thaumaturge:aspects/secondary/potentia",
+      "id":"thaumaturge:bonewits_dust",
       "aspects":{
-        "aspectslib:potentia":5
-      }
-    },
-    {
-      "id":"#thaumaturge:aspects/tertiary/praecantatio",
-      "aspects":{
+        "aspectslib:potentia":5,
         "aspectslib:praecantatio":5
       }
     }
