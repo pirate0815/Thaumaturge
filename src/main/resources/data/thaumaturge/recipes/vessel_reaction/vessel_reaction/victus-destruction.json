@@ -1,0 +1,12 @@
+{
+  "type": "thaumaturge:vessel_reaction",
+  "aspects_in": {
+    "victus": 1
+  },
+  "aspects_out": {
+    "aer": 1,
+    "auqua": 1
+  },
+  "active_at": ["boiling"],
+  "delta_t": -1.0
+}

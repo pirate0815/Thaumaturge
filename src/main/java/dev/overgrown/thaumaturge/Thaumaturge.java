@@ -1,6 +1,7 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.AspectsLib;
+import dev.overgrown.thaumaturge.recipe.VesselReactionRecipe;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.registry.ModItems;
@@ -62,6 +63,8 @@ public class Thaumaturge implements ModInitializer {
         // Register recipe type and serializer
         Registry.register(Registries.RECIPE_SERIALIZER, identifier("vessel"), VesselRecipe.Serializer.INSTANCE);
         Registry.register(Registries.RECIPE_TYPE, identifier("vessel"), VesselRecipe.Type.INSTANCE);
+        Registry.register(Registries.RECIPE_SERIALIZER, identifier("vessel_reaction"), VesselReactionRecipe.Serializer.INSTANCE);
+        Registry.register(Registries.RECIPE_TYPE, identifier("vessel_reaction"), VesselReactionRecipe.Type.INSTANCE);
 
         LOGGER.info("Thaumaturge initialized!");
     }

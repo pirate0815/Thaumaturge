@@ -1,0 +1,12 @@
+{
+  "type": "thaumaturge:vessel_reaction",
+  "aspects_in": {
+    "aer": 1,
+    "ordo": 1
+  },
+  "aspects_out": {
+    "motus": 1
+  },
+  "active_at": ["scolding", "hot", "warm", "lukewarm"],
+  "delta_t": 0.64
+}

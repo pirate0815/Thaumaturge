@@ -1,0 +1,12 @@
+{
+  "type": "thaumaturge:vessel_reaction",
+  "aspects_in": {
+    "ordo": 1,
+    "ignis": 1
+  },
+  "aspects_out": {
+    "gelum": 1
+  },
+  "active_at": ["scolding", "hot", "warm", "lukewarm"],
+  "delta_t": -0.9
+}

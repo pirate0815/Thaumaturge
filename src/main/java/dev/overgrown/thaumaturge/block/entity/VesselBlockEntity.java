@@ -5,6 +5,7 @@ import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.VesselBlock;
+import dev.overgrown.thaumaturge.recipe.VesselReactionRecipe;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
@@ -34,9 +35,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class VesselBlockEntity extends BlockEntity implements Inventory {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
@@ -98,21 +98,24 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
                 if (blockEntity.heating) {
                     // ΔT = 100° / 2 min
                     // Heating up to 120°
+                    // ΔT = -100° / 1min
+                    // Colling over 120°
                     if (blockEntity.temperature < 120.0) {
-                        blockEntity.temperature +=+ 4.166;
-                        blockEntity.markDirty();
+                        blockEntity.temperature += 8.3333;
+                    } else {
+                        blockEntity.temperature -= 1.6667;
                     }
                 } else {
-                    // ΔT = ±100° / 5 min
+                    // ΔT = ±100° / 3 min
                     // Cooling / Heating to ambient temperature
                     if (blockEntity.temperature > AMBIENT_TEMPERATURE) {
-                        blockEntity.temperature -= 1.6667;
-                        blockEntity.markDirty();
+                        blockEntity.temperature -= 2.7777;
                     } else if (blockEntity.temperature < AMBIENT_TEMPERATURE) {
-                        blockEntity.temperature += 1.6667;
-                        blockEntity.markDirty();
+                        blockEntity.temperature += 2.7777;
                     }
                 }
+                blockEntity.markDirty();
+                blockEntity.tryAspectReaction();
             }
         }
 
@@ -121,7 +124,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
             blockEntity.convertAspectsToVitium(world, pos);
         }
 
-        // Add Smoke if the water is at or above 100° or if the vessel is being heated
+        // Add extra visual effects if the water is above 100°
         if ((waterLevel > 0) && (blockEntity.temperature >= 100.0)) {
             if (world.getTime() % 10 == 4) {
                 ((ServerWorld) world).spawnParticles(ParticleTypes.BUBBLE_POP,
@@ -317,6 +320,47 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         return false;
     }
 
+    public void tryAspectReaction() {
+        World world = getWorld();
+        if (world == null) return;
+
+        TemperatureRange range = getTemperatureRange();
+        List<VesselReactionRecipe> recipes = world.getRecipeManager().listAllOfType(VesselReactionRecipe.Type.INSTANCE).stream()
+                .filter(recipe -> recipe.activeAt(range))
+                .filter(recipe -> recipe.getAspectsIn().entrySet().stream()
+                        .allMatch(entry -> {
+                            String storedAspectName = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
+                            return aspects.getOrDefault(storedAspectName, 0) >= entry.getValue();
+                        })).toList();
+
+        if (recipes.isEmpty()) {return;}
+        VesselReactionRecipe recipe = recipes.get(world.getRandom().nextBetweenExclusive(0,recipes.size()));
+
+
+        // Remove input aspects
+        recipe.getAspectsIn().forEach((aspect, amount) -> {
+            String storedAspectName = aspect.substring(0, 1).toUpperCase() + aspect.substring(1);
+            aspects.computeIfPresent(storedAspectName, (k, v) -> v - amount);
+        });
+        aspects.entrySet().removeIf(entry -> entry.getValue() <= 0);
+
+        // Add output aspects
+        recipe.getAspectsOut().forEach((aspect, amount) -> {
+            String storedAspectName = aspect.substring(0, 1).toUpperCase() + aspect.substring(1);
+            if (aspects.containsKey(storedAspectName)) {
+                aspects.computeIfPresent(storedAspectName, (k,v) -> v + amount);
+            } else {
+                aspects.put(storedAspectName, amount);
+            }
+        });
+        // Apply temperature
+        temperature += recipe.getDeltaT();
+
+        markDirty();
+        syncToClient();
+
+    }
+
     public ItemStack getCatalyst() {
         return catalyst;
     }
@@ -346,7 +390,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
     }
 
     public boolean canBreakdownItems() {
-        return temperature >= 60.0;
+        return temperature >= 0;
     }
 
     @Override

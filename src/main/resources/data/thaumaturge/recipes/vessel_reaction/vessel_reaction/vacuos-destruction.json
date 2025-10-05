@@ -1,0 +1,12 @@
+{
+  "type": "thaumaturge:vessel_reaction",
+  "aspects_in": {
+    "gelum": 1
+  },
+  "aspects_out": {
+    "perditio": 1,
+    "aer": 1
+  },
+  "active_at": ["boiling"],
+  "delta_t": 0.9
+}

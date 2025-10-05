@@ -1,0 +1,12 @@
+{
+  "type": "thaumaturge:vessel_reaction",
+  "aspects_in": {
+    "potentia": 1
+  },
+  "aspects_out": {
+    "ordo": 1,
+    "ignis": 1
+  },
+  "active_at": ["boiling"],
+  "delta_t": 0.9
+}
