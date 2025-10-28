@@ -34,9 +34,7 @@ public class ThaumaturgeClient implements ClientModInitializer {
         KeybindManager.registerKeybinds();
 
         // Aetheric Goggles Overlay
-        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            new AethericGogglesOverlay().onHudRender(drawContext, tickDelta);
-        });
+        HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
 
         // Register Aura Node visibility
         AuraNodeVisibility.initialize();
