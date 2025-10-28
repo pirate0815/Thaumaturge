@@ -1,48 +1,48 @@
 {
-	"schemaVersion": 1,
-	"id": "thaumaturge",
-	"version": "${version}",
-	"name": "Thaumaturge",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
+   "schemaVersion":1,
+   "id":"thaumaturge",
+   "version":"${version}",
+   "name":"Thaumaturge",
+   "description":"This is an example description! Tell everyone what your mod is about!",
+   "authors":[
       "Overgrown"
-    ],
-  "contributors":[
-    "thatrobin3001",
-    "leclowndu93150",
-    "electrictaco",
-    "Nitgo",
-    "Eggohito",
-    "Lucas Bandermann"
-  ],
-	"contact": {
-		"homepage": "",
-		"sources": "https://github.com/0vergrown/Thaumaturge"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/thaumaturge/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"dev.overgrown.thaumaturge.Thaumaturge"
-		],
-		"client": [
-			"dev.overgrown.thaumaturge.ThaumaturgeClient"
-		],
-		"fabric-datagen": [
-			"dev.overgrown.thaumaturge.ThaumaturgeDataGenerator"
-		]
-	},
-	"mixins": [
-		"thaumaturge.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": "~1.20.1",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"aspectslib": "1.1.0"
-	}
+   ],
+   "contributors":[
+      "thatrobin3001",
+      "leclowndu93150",
+      "electrictaco",
+      "Nitgo",
+      "Eggohito",
+      "Lucas Bandermann"
+   ],
+   "contact":{
+      "homepage":"",
+      "sources":"https://github.com/0vergrown/Thaumaturge"
+   },
+   "license":"CC0-1.0",
+   "icon":"assets/thaumaturge/icon.png",
+   "environment":"*",
+   "entrypoints":{
+      "main":[
+         "dev.overgrown.thaumaturge.Thaumaturge"
+      ],
+      "client":[
+         "dev.overgrown.thaumaturge.ThaumaturgeClient"
+      ],
+      "fabric-datagen":[
+         "dev.overgrown.thaumaturge.ThaumaturgeDataGenerator"
+      ]
+   },
+   "mixins":[
+      "thaumaturge.mixins.json"
+   ],
+   "depends":{
+      "fabricloader":">=0.17.3",
+      "minecraft":"~1.20.1",
+      "java":">=17",
+      "fabric-api":"*"
+   },
+   "suggests":{
+      "another-mod":"*"
+   }
 }

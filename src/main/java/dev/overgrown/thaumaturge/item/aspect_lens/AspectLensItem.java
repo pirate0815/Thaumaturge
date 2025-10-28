@@ -1,8 +1,9 @@
 package dev.overgrown.thaumaturge.item.aspect_lens;
 
-import dev.overgrown.aspectslib.aether.AetherDensity;
-import dev.overgrown.aspectslib.aether.AetherDensityManager;
-import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
+import dev.overgrown.aspectslib.aether.AetherChunkData;
+import dev.overgrown.aspectslib.aether.AetherManager;
+import dev.overgrown.aspectslib.data.BiomeAspectModifier;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -13,11 +14,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 public class AspectLensItem extends Item {
     private static final Identifier VITIUM_ASPECT = new Identifier("aspectslib", "vitium");
@@ -39,35 +40,54 @@ public class AspectLensItem extends Item {
         if (!world.isClient()) {
             // Get player position and biome information
             BlockPos pos = user.getBlockPos();
+            ChunkPos chunkPos = new ChunkPos(pos); // For chunk-based aether data
 
-            // Get current aether density
-            AetherDensity density = AetherDensityManager.getDensity(world, pos);
+            // Get current aether data from AetherManager
+            AetherChunkData aetherData = AetherManager.getAetherData(world, chunkPos);
 
-            // Get biome ID for dynamic modifications
+            // Get biome ID for modifications
             Identifier biomeId = world.getBiome(pos).getKey().orElseThrow().getValue();
 
-            // Get dynamic modifications
-            Map<Identifier, Double> modifications = DynamicAetherDensityManager.getModifications(biomeId);
+            // Get modified biome aspects instead of dynamic modifications
+            var combinedBiomeAspects = BiomeAspectModifier.getCombinedBiomeAspects(biomeId);
 
-            // Calculate vitium and total aspects
-            double vitium = density.getDensity(VITIUM_ASPECT);
+            // Calculate vitium and total aspects from combined biome data
+            double vitium = combinedBiomeAspects.getLevel(VITIUM_ASPECT);
             double totalOtherAspects = 0.0;
 
-            for (Map.Entry<Identifier, Double> entry : density.getDensities().entrySet()) {
+            for (Object2IntMap.Entry<Identifier> entry : combinedBiomeAspects.getMap().object2IntEntrySet()) {
                 if (!entry.getKey().equals(VITIUM_ASPECT)) {
-                    totalOtherAspects += entry.getValue();
+                    totalOtherAspects += entry.getIntValue(); // Use getIntValue() for primitive int
                 }
             }
 
             // Send information to player
             user.sendMessage(Text.literal("=== Aether Density Report ===").formatted(Formatting.GOLD));
-            user.sendMessage(Text.literal("Biome: " + biomeId.toString()));
+            user.sendMessage(Text.literal("Biome: " + biomeId));
+            user.sendMessage(Text.literal("Chunk: " + chunkPos));
 
-            // Display all aspects
-            for (Map.Entry<Identifier, Double> entry : density.getDensities().entrySet()) {
+            // Display all aspects from combined biome data
+            for (Object2IntMap.Entry<Identifier> entry : combinedBiomeAspects.getMap().object2IntEntrySet()) {
                 Formatting color = entry.getKey().equals(VITIUM_ASPECT) ? Formatting.RED : Formatting.GREEN;
                 user.sendMessage(Text.literal(
-                        String.format("%s: %.2f", entry.getKey().getPath(), entry.getValue())
+                        String.format("%s: %.2f", entry.getKey().getPath(), (double) entry.getIntValue())
+                ).formatted(color));
+            }
+
+            // Display chunk aether information
+            user.sendMessage(Text.literal("---").formatted(Formatting.GRAY));
+            user.sendMessage(Text.literal("Chunk Aether Status:").formatted(Formatting.BLUE));
+
+            for (Identifier aspectId : aetherData.getAspectIds()) {
+                int current = aetherData.getCurrentAether(aspectId);
+                int max = aetherData.getMaxAether(aspectId);
+                double percentage = aetherData.getAetherPercentage(aspectId);
+                Formatting color = percentage > 0.7 ? Formatting.GREEN :
+                        percentage > 0.3 ? Formatting.YELLOW : Formatting.RED;
+
+                user.sendMessage(Text.literal(
+                        String.format("  %s: %d/%d (%.1f%%)",
+                                aspectId.getPath(), current, max, percentage * 100)
                 ).formatted(color));
             }
 
@@ -83,17 +103,11 @@ public class AspectLensItem extends Item {
                 user.sendMessage(Text.literal("Status: PURE").formatted(Formatting.DARK_GREEN));
             }
 
-            // Display dynamic modifications if any
-            if (modifications != null && !modifications.isEmpty()) {
+            // Display dead zone information
+            if (AetherManager.isDeadZone(world, chunkPos)) {
                 user.sendMessage(Text.literal("---").formatted(Formatting.GRAY));
-                user.sendMessage(Text.literal("Dynamic Modifications:").formatted(Formatting.BLUE));
-
-                for (Map.Entry<Identifier, Double> entry : modifications.entrySet()) {
-                    String change = entry.getValue() >= 0 ? "+" : "";
-                    user.sendMessage(Text.literal(
-                            String.format("%s: %s%.2f", entry.getKey().getPath(), change, entry.getValue())
-                    ));
-                }
+                user.sendMessage(Text.literal("⚠ DEAD ZONE DETECTED!").formatted(Formatting.DARK_RED));
+                user.sendMessage(Text.literal("Aether regeneration disabled in this chunk").formatted(Formatting.RED));
             }
         }
 

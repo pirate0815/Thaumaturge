@@ -1,258 +1,72 @@
 package dev.overgrown.thaumaturge.item.aetheric_goggles.overlay;
 
-import dev.overgrown.aspectslib.api.IAspectAffinityEntity;
-import dev.overgrown.aspectslib.data.Aspect;
-import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.aspectslib.data.ModRegistries;
-import dev.overgrown.aspectslib.entity.aura_node.AuraNodeEntity;
-import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
-import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
-import net.minecraft.block.BlockState;
+import dev.overgrown.aspectslib.aether.AetherAPI;
+import dev.overgrown.aspectslib.aether.AetherManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.util.math.ChunkPos;
 
-import java.util.Map;
+public class AethericGogglesOverlay {
 
-public class AethericGogglesOverlay implements HudRenderCallback {
-    private static final int ASPECT_ICON_SIZE = 16;
-    private static final int ASPECT_TEXT_OFFSET = 18;
-    private static final int ASPECT_SPACING = 4;
-    private static final int CROSSHAIR_OFFSET_Y = -30;
-    private static final int TEXT_Y_OFFSET = 5;
-
-    @Override
     public void onHudRender(DrawContext drawContext, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.world == null) return;
+        if (client.player == null) return;
 
-        // Only render if wearing goggles
-        if (!AethericGogglesItem.isWearingGoggles(client.player)) return;
+        // Check if player is wearing aetheric goggles
+        if (!isWearingAethericGoggles(client.player)) return;
 
-        HitResult hit = client.crosshairTarget;
-        if (hit == null || hit.getType() == HitResult.Type.MISS) return;
+        // Get current chunk Aether data
+        ChunkPos chunkPos = new ChunkPos(client.player.getBlockPos());
+        var aetherData = AetherManager.getAetherData(client.player.getWorld(), chunkPos);
 
-        int screenWidth = client.getWindow().getScaledWidth();
-        int screenHeight = client.getWindow().getScaledHeight();
-        int x = screenWidth / 2;
-        int y = screenHeight / 2 + CROSSHAIR_OFFSET_Y;
+        // Render Aether levels
+        renderAetherLevels(drawContext, aetherData, client);
 
-        if (hit.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHit = (BlockHitResult) hit;
-            BlockPos pos = blockHit.getBlockPos();
-            BlockState state = client.world.getBlockState(pos);
+        // Render corruption status if applicable
+        renderCorruptionStatus(drawContext, client);
+    }
 
-            if (state.getBlock() instanceof VesselBlock) {
-                if (client.world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
-                    Map<String, Integer> aspects = vessel.getAspects();
-                    if (!aspects.isEmpty()) {
-                        renderVesselAspects(drawContext, aspects, x, y);
-                        return;
-                    }
-                }
-            }
-        } else if (hit.getType() == HitResult.Type.ENTITY) {
-            EntityHitResult entityHit = (EntityHitResult) hit;
-            Entity entity = entityHit.getEntity();
+    private boolean isWearingAethericGoggles(net.minecraft.entity.player.PlayerEntity player) {
+        // Check if player has aetheric goggles equipped
+        return player.getInventory().armor.get(3).getItem() instanceof dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
+    }
 
-            // Handle Aura Node entities specifically
-            if (entity instanceof AuraNodeEntity auraNode) {
-                renderAuraNodeAspects(drawContext, auraNode, x, y);
-                return;
-            }
-        }
+    private void renderAetherLevels(DrawContext drawContext, dev.overgrown.aspectslib.aether.AetherChunkData aetherData, MinecraftClient client) {
+        int x = 10;
+        int y = 10;
 
-        AspectData aspectData = getAspectDataForTarget(client, hit);
-        if (aspectData != null && !aspectData.isEmpty()) {
-            renderAspectData(drawContext, aspectData, x, y);
+        for (Identifier aspectId : aetherData.getAspectIds()) {
+            double percentage = aetherData.getAetherPercentage(aspectId);
+            int current = aetherData.getCurrentAether(aspectId);
+            int max = aetherData.getMaxAether(aspectId);
+
+            // Render aspect bar
+            renderAspectBar(drawContext, x, y, aspectId, percentage, current, max);
+            y += 20;
         }
     }
 
-    private AspectData getAspectDataForTarget(MinecraftClient client, HitResult hit) {
-        if (hit.getType() == HitResult.Type.ENTITY) {
-            EntityHitResult entityHit = (EntityHitResult) hit;
-            Entity entity = entityHit.getEntity();
+    private void renderCorruptionStatus(DrawContext drawContext, MinecraftClient client) {
+        BlockPos pos = client.player.getBlockPos();
+        ChunkPos chunkPos = new ChunkPos(pos);
 
-            if (entity instanceof LivingEntity livingEntity) {
-                // Handle living entities
-                if (livingEntity instanceof IAspectAffinityEntity aspectAffinity) {
-                    return aspectAffinity.aspectslib$getAspectData();
-                }
-            } else if (entity instanceof ItemEntity itemEntity) {
-                // Handle item entities
-                ItemStack stack = itemEntity.getStack();
-                return ((dev.overgrown.aspectslib.api.IAspectDataProvider) (Object) stack).aspectslib$getAspectData();
-            }
-        }
-        return null;
-    }
-
-    private void renderAuraNodeAspects(DrawContext context, AuraNodeEntity auraNode, int centerX, int centerY) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
-
-        // Get aspects from the aura node
-        var aspects = auraNode.getAspects();
-        if (aspects.isEmpty()) return;
-
-        // Calculate total width for centering
-        int totalWidth = 0;
-        for (var entry : aspects.entrySet()) {
-            Aspect aspect = ModRegistries.ASPECTS.get(entry.getKey());
-            if (aspect == null) continue;
-
-            int currentValue = entry.getValue().current;
-            int textWidth = showNames ?
-                    textRenderer.getWidth(aspect.getTranslatedName()) :
-                    textRenderer.getWidth(currentValue + "/" + entry.getValue().original);
-
-            totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
-        }
-
-        // Start position for drawing
-        int currentX = centerX - totalWidth / 2;
-
-        for (var entry : aspects.entrySet()) {
-            Identifier aspectId = entry.getKey();
-            Aspect aspect = ModRegistries.ASPECTS.get(aspectId);
-            if (aspect == null) continue;
-
-            int currentValue = entry.getValue().current;
-            int originalValue = entry.getValue().original;
-
-            Identifier texture = aspect.textureLocation();
-            context.drawTexture(texture, currentX, centerY, 0, 0,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE);
-
-            if (showNames) {
-                Text aspectText = aspect.getTranslatedName().formatted(Formatting.WHITE);
-                context.drawText(textRenderer, aspectText,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
-            } else {
-                String value = currentValue + "/" + originalValue;
-                context.drawText(textRenderer, value,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(value) + ASPECT_SPACING;
-            }
+        if (AetherAPI.isDeadZone(client.player.getWorld(), chunkPos)) {
+            // Render dead zone warning
+            drawContext.drawText(client.textRenderer, "DEAD ZONE", 10, 100, 0xFF0000, true);
         }
     }
 
-    private void renderAspectData(DrawContext context, AspectData data, int centerX, int centerY) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
+    private void renderAspectBar(DrawContext drawContext, int x, int y, Identifier aspectId, double percentage, int current, int max) {
+        // Implementation for rendering aspect bars
+        String text = String.format("%s: %d/%d", aspectId.getPath(), current, max);
+        drawContext.drawText(MinecraftClient.getInstance().textRenderer, text, x, y, 0xFFFFFF, true);
 
-        // Calculate total width for centering
-        int totalWidth = 0;
-        for (var entry : data.getMap().object2IntEntrySet()) {
-            Aspect aspect = ModRegistries.ASPECTS.get(entry.getKey());
-            if (aspect == null) continue;
-
-            int textWidth = showNames ?
-                    textRenderer.getWidth(aspect.getTranslatedName()) :
-                    textRenderer.getWidth(String.valueOf(entry.getIntValue()));
-
-            totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
-        }
-
-        // Start position for drawing
-        int currentX = centerX - totalWidth / 2;
-
-        for (var entry : data.getMap().object2IntEntrySet()) {
-            Identifier aspectId = entry.getKey();
-            Aspect aspect = ModRegistries.ASPECTS.get(aspectId);
-            if (aspect == null) continue;
-
-            Identifier texture = aspect.textureLocation();
-            context.drawTexture(texture, currentX, centerY, 0, 0,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE);
-
-            if (showNames) {
-                Text aspectText = aspect.getTranslatedName().formatted(Formatting.WHITE);
-                context.drawText(textRenderer, aspectText,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
-            } else {
-                String value = String.valueOf(entry.getIntValue());
-                context.drawText(textRenderer, value,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(value) + ASPECT_SPACING;
-            }
-        }
-    }
-
-    private void renderVesselAspects(DrawContext context, Map<String, Integer> aspects, int centerX, int centerY) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
-
-        // Calculate total width for centering
-        int totalWidth = 0;
-        for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
-            // Convert aspect name to lowercase for identifier
-            String aspectName = entry.getKey().toLowerCase();
-            Aspect aspect = ModRegistries.ASPECTS.get(new Identifier("aspectslib", aspectName));
-            if (aspect == null) continue;
-
-            int textWidth = showNames ?
-                    textRenderer.getWidth(aspect.getTranslatedName()) :
-                    textRenderer.getWidth(String.valueOf(entry.getValue()));
-
-            totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
-        }
-
-        // Start position for drawing
-        int currentX = centerX - totalWidth / 2;
-
-        for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
-            // Convert aspect name to lowercase for identifier
-            String aspectName = entry.getKey().toLowerCase();
-            Identifier aspectId = new Identifier("aspectslib", aspectName);
-            Aspect aspect = ModRegistries.ASPECTS.get(aspectId);
-            if (aspect == null) continue;
-
-            Identifier texture = aspect.textureLocation();
-            context.drawTexture(texture, currentX, centerY, 0, 0,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE,
-                    ASPECT_ICON_SIZE, ASPECT_ICON_SIZE);
-
-            if (showNames) {
-                Text aspectText = aspect.getTranslatedName().formatted(Formatting.WHITE);
-                context.drawText(textRenderer, aspectText,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
-            } else {
-                String value = String.valueOf(entry.getValue());
-                context.drawText(textRenderer, value,
-                        currentX + ASPECT_TEXT_OFFSET,
-                        centerY + TEXT_Y_OFFSET,
-                        0xFFFFFF, false);
-                currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(value) + ASPECT_SPACING;
-            }
-        }
+        // Draw progress bar
+        int barWidth = 100;
+        int filledWidth = (int) (barWidth * percentage);
+        drawContext.fill(x, y + 10, x + barWidth, y + 15, 0xFF555555); // Background
+        drawContext.fill(x, y + 10, x + filledWidth, y + 15, 0xFF00FF00); // Fill
     }
 }

@@ -2,13 +2,13 @@ package dev.overgrown.thaumaturge.block.vessel.entity;
 
 import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.api.AspectsAPI;
+import dev.overgrown.aspectslib.corruption.CorruptionAPI;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.aspectslib.data.BiomeAspectModifier;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
-import dev.overgrown.aspectslib.aether.DynamicAetherDensityManager;
-import dev.overgrown.aspectslib.aether.CorruptionManager;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -31,6 +31,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,9 +89,18 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
         }
         Identifier biomeId = optionalKey.get().getValue();
 
-        // Add vitium to biome and register this vessel as a corruption source
-        DynamicAetherDensityManager.addModification(biomeId, VITIUM_ASPECT, totalAspects);
-        CorruptionManager.addCorruptionSource(biomeId, pos, totalAspects);
+        // Add vitium to biome modifications
+        BiomeAspectModifier.addBiomeModification(biomeId, VITIUM_ASPECT, totalAspects);
+
+        // Use the new CorruptionAPI method signature
+        if (world instanceof ServerWorld serverWorld) {
+            ChunkPos chunkPos = new ChunkPos(pos);
+            // The corruption system automatically handles biome state based on aspect ratios
+            boolean isCorrupted = CorruptionAPI.isChunkCorrupted(serverWorld, chunkPos);
+        }
+
+        // Apply modifications to make them permanent
+        BiomeAspectModifier.applyModificationsToRegistry();
 
         // Clear aspects from vessel
         this.aspects.clear();

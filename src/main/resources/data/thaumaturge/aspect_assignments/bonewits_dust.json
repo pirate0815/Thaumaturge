@@ -1,0 +1,9 @@
+[
+  {
+    "item": "thaumaturge:bonewits_dust",
+    "aspects": {
+      "aspectslib:potentia":5,
+      "aspectslib:praecantatio":5
+    }
+  }
+]

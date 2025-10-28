@@ -19,7 +19,6 @@ public class ThaumaturgeClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         // Registers the Apophenia model predicate
         ApopheniaModelProvider.register();
 
@@ -35,7 +34,9 @@ public class ThaumaturgeClient implements ClientModInitializer {
         KeybindManager.registerKeybinds();
 
         // Aetheric Goggles Overlay
-        HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+            new AethericGogglesOverlay().onHudRender(drawContext, tickDelta);
+        });
 
         // Register Aura Node visibility
         AuraNodeVisibility.initialize();
