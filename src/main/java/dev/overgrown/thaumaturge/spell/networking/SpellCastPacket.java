@@ -59,13 +59,12 @@ public final class SpellCastPacket {
                 return;
             }
 
-            // Set cooldown before casting
-            SpellCooldownManager.setCooldown(player, keyType);
+            boolean spellCast = false;
 
             switch (keyType) {
                 case PRIMARY -> {
                     SelfSpellDelivery delivery = new SelfSpellDelivery(player);
-                    SpellHandler.cast(player, delivery, "primary");
+                    spellCast = SpellHandler.cast(player, delivery, "primary");
                 }
                 case SECONDARY -> {
                     Vec3d start = player.getCameraPosVec(0);
@@ -75,7 +74,7 @@ public final class SpellCastPacket {
                     EntityHitResult entityHit = getEntityHit(player, start, end);
                     if (entityHit != null) {
                         TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, entityHit.getEntity());
-                        SpellHandler.cast(player, delivery, "secondary");
+                        spellCast = SpellHandler.cast(player, delivery, "secondary");
                     }
                     // Then check for blocks if no entity was hit
                     else {
@@ -83,14 +82,19 @@ public final class SpellCastPacket {
                         if (hit.getType() == HitResult.Type.BLOCK) {
                             BlockHitResult bHit = (BlockHitResult) hit;
                             TargetedSpellDelivery delivery = new TargetedSpellDelivery(player, bHit.getBlockPos(), bHit.getSide());
-                            SpellHandler.cast(player, delivery, "secondary");
+                            spellCast = SpellHandler.cast(player, delivery, "secondary");
                         }
                     }
                 }
                 case TERNARY -> {
                     AoeSpellDelivery delivery = new AoeSpellDelivery(player, player.getBlockPos(), 3.0f);
-                    SpellHandler.cast(player, delivery, "ternary");
+                    spellCast = SpellHandler.cast(player, delivery, "ternary");
                 }
+            }
+
+            // Only set cooldown if spell was successfully cast
+            if (spellCast) {
+                SpellCooldownManager.setCooldown(player, keyType);
             }
         });
     }
