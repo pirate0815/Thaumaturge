@@ -65,7 +65,7 @@ public class ResonanceGauntletItem extends Item {
 
                             // Handle Clicking on a Block with a TileEntity implementing AspectContainer
                             if (world.getBlockEntity(targetPos) instanceof AspectContainer) {
-                                if (targetPos.getSquaredDistance(faucetPos) <= 10.0) {
+                                if (targetPos.isWithinDistance(faucetPos, 16)) {
                                     if (!world.isClient) {
                                         faucetBlockEntity.setTarget(targetPos);
                                     } else {

@@ -1,6 +1,8 @@
 package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
+import dev.overgrown.thaumaturge.client.visualisation.FaucetTransferVisualisationHandler;
+import dev.overgrown.thaumaturge.networking.FaucetTransferVisualisation;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
 import dev.overgrown.thaumaturge.client.render.AuraNodeVisibility;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.overlay.AethericGogglesOverlay;
@@ -11,6 +13,7 @@ import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.render.entity.EmptyEntityRenderer;
@@ -53,5 +56,7 @@ public class ThaumaturgeClient implements ClientModInitializer {
                 SpellCastPacket.send(SpellCastPacket.KeyType.TERNARY);
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(FaucetTransferVisualisation.ASPECT_TRANSFER_PAKET, FaucetTransferVisualisationHandler::receive);
     }
 }
