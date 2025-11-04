@@ -28,6 +28,12 @@
 
   "block.thaumaturge.vessel": "Vessel",
 
+  "block.thaumaturge.faucet": "Faucet",
+  "block.thaumaturge.faucet.selection": "Select faucet target",
+  "block.thaumaturge.faucet.success": "Successfully set faucet target",
+  "block.thaumaturge.faucet.failure": "Could not set faucet target",
+  "block.thaumaturge.faucet.unlink": "Unset faucet target",
+
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",

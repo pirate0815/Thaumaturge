@@ -5,8 +5,8 @@ import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.ModRegistries;
 import dev.overgrown.aspectslib.entity.aura_node.AuraNodeEntity;
+import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -56,10 +56,10 @@ public class AethericGogglesOverlay implements HudRenderCallback {
             BlockState state = client.world.getBlockState(pos);
 
             if (state.getBlock() instanceof VesselBlock) {
-                if (client.world.getBlockEntity(pos) instanceof VesselBlockEntity vessel) {
+                if (client.world.getBlockEntity(pos) instanceof AspectContainer vessel) {
                     Map<String, Integer> aspects = vessel.getAspects();
                     if (!aspects.isEmpty()) {
-                        renderVesselAspects(drawContext, aspects, x, y);
+                        renderBlockEntityAspects(drawContext, aspects, x, y);
                         return;
                     }
                 }
@@ -204,7 +204,7 @@ public class AethericGogglesOverlay implements HudRenderCallback {
         }
     }
 
-    private void renderVesselAspects(DrawContext context, Map<String, Integer> aspects, int centerX, int centerY) {
+    private void renderBlockEntityAspects(DrawContext context, Map<String, Integer> aspects, int centerX, int centerY) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
 

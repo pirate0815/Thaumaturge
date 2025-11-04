@@ -6,12 +6,17 @@ import dev.overgrown.aspectslib.corruption.CorruptionAPI;
 import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.BiomeAspectModifier;
+import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.sound.SoundCategory;
@@ -39,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class VesselBlockEntity extends BlockEntity implements Inventory {
+public class VesselBlockEntity extends BlockEntity implements Inventory, AspectContainer {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     public static final Identifier VITIUM_ASPECT = AspectsLib.identifier("vitium");
     private final Map<String, Integer> aspects = new HashMap<>();
@@ -50,6 +55,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
     public VesselBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.VESSEL_BLOCK_ENTITY, pos, state);
     }
+
 
     public static void serverTick(World world, BlockPos pos, BlockState state, VesselBlockEntity blockEntity) {
         if (blockEntity.boiling) {
@@ -266,6 +272,41 @@ public class VesselBlockEntity extends BlockEntity implements Inventory {
 
     public Map<String, Integer> getAspects() {
         return aspects;
+    }
+
+    @Override
+    public int getRemovableAspectCount(String aspect) {
+        if (aspects.containsKey(aspect)) {
+            return aspects.get(aspect);
+        }
+        return 0;
+    }
+
+    @Override
+    public void removeAspect(String aspect, int amount) {
+        if (aspects.containsKey(aspect)) {
+            int stored = aspects.get(aspect);
+            int resultingAmount = stored - amount;
+            if (resultingAmount > 0) {
+                aspects.put(aspect, resultingAmount);
+            } else {
+                aspects.remove(aspect);
+            }
+            markDirty();
+            syncToClient();
+        } else {
+            Thaumaturge.LOGGER.warn("Removed Aspect that already exists");
+        }
+    }
+
+    @Override
+    public int addAditionalAspect(String aspect, int amount) {
+        int resultingAmount = aspects.getOrDefault(aspect, 0) + amount;
+        aspects.put(aspect, resultingAmount);
+        markDirty();
+        syncToClient();
+        return amount;
+
     }
 
     private void syncToClient() {
