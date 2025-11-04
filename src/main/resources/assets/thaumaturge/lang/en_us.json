@@ -14,8 +14,17 @@
   "item.thaumaturge.bonewits_dust": "Bonewits Dust",
 
   "item.thaumaturge.apophenia": "Apophenia",
+  "item.thaumaturge.apophenia.tooltip.modonomicon": "Right-click to open the Thaumaturge compendium",
   "item.thaumaturge.apophenia.tooltip.open": "§7Open",
   "item.thaumaturge.apophenia.tooltip.closed": "§7Closed",
+
+  "book.thaumaturge.apophenia.name": "Apophenia",
+  "book.thaumaturge.apophenia.tooltip": "The Thaumaturge's compendium of knowledge",
+  "category.thaumaturge.apophenia.introduction.name": "Introduction",
+  "category.thaumaturge.apophenia.introduction.description": "Getting started with Thaumaturgy",
+  "entry.thaumaturge.apophenia.introduction.welcome.name": "Welcome",
+  "page.thaumaturge.apophenia.introduction.welcome.title": "Welcome to Thaumaturgy",
+  "page.thaumaturge.apophenia.introduction.welcome.text": "Welcome to the world of Thaumaturgy. This book will guide you through the mysteries of spellcasting and magical theory.",
 
   "block.thaumaturge.vessel": "Vessel",
 

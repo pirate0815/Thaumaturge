@@ -1,0 +1,11 @@
+{
+  "name": "category.thaumaturge.apophenia.introduction.name",
+  "description": "category.thaumaturge.apophenia.introduction.description",
+  "icon": "thaumaturge:apophenia",
+  "sort_number": 0,
+  "entry_textures": "modonomicon:textures/gui/entry_textures.png",
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "background_width": 512,
+  "background_height": 512,
+  "background_texture_zoom_multiplier": 1.0
+}

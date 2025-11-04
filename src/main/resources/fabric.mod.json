@@ -3,7 +3,7 @@
    "id":"thaumaturge",
    "version":"${version}",
    "name":"Thaumaturge",
-   "description":"This is an example description! Tell everyone what your mod is about!",
+   "description":"A magic mod focused on spellcasting and thaumaturgy",
    "authors":[
       "Overgrown"
    ],
@@ -43,6 +43,6 @@
       "fabric-api":"*"
    },
    "suggests":{
-      "another-mod":"*"
+     "modonomicon": ">=1.79.2"
    }
 }

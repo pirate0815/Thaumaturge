@@ -1,0 +1,12 @@
+{
+  "name": "book.thaumaturge.apophenia.name",
+  "tooltip": "book.thaumaturge.apophenia.tooltip",
+  "model": "thaumaturge:apophenia",
+  "book_text_offset": 5,
+  "creative_tab": "thaumaturge:tools_and_utilities",
+  "show_progress": false,
+  "auto_add_books_to_creative": false,
+  "i18n": true,
+  "generate_book_item": false,
+  "custom_book_item": "thaumaturge:apophenia"
+}
