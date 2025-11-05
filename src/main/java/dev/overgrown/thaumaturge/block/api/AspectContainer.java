@@ -1,30 +1,43 @@
 package dev.overgrown.thaumaturge.block.api;
 
-import java.util.Map;
+import net.minecraft.util.Identifier;
+
+import java.util.Set;
 
 public interface AspectContainer {
 
-    Map<String, Integer> getAspects();
 
-    /** Discovers how much of an aspect can be removed from a container
-     * @param aspect the name of the aspect
+    /** Aspects a container either has
+     *  or would like to have present
+     * @return set of aspects identifiers
+     */
+    Set<Identifier> getAspects();
+
+    /** Queries the level of an aspect in a container
+     * @param aspect the identifier of the aspect
+     * @return the amount in it
+     */
+    int getAspectLevel(Identifier aspect);
+
+    /** Queries how much the aspect level in container can be reduced
+     * @param aspect the identifier of the aspect
      * @return amount that can be removed
      */
-    int getRemovableAspectCount(String aspect);
+    int getReducibleAspectLevel(Identifier aspect);
 
     /** Directly removes Aspect from a container,
-     *  {@link #getRemovableAspectCount} must be called first,
+     *  {@link #getReducibleAspectLevel} must be called first,
      *  to determine how much aspect can be removed.
-     * @param aspect name of the aspect to be removed
-     * @param amount amount that should be removed
+     * @param aspect identifier of the aspect level that should be reduced
+     * @param amount amount that is to be reduced in the container
      */
-    void removeAspect(String aspect, int amount);
+    void reduceAspectLevel(Identifier aspect, int amount);
 
-    /** Tries to add more Aspect to a container, return the increased amount
-     * @param aspect name of the aspect to be added
-     * @param amount amount that is intended to be added
-     * @return the actual amount of aspect that was added to the container
+    /** Tries to increase the level of Aspect in a container, returns the increased amount
+     * @param aspect identifier of the aspect to be increased
+     * @param amount amount that is intended to be increased
+     * @return the actual amount of aspect that was increased in the container
      */
-    int addAditionalAspect(String aspect, int amount);
+    int increaseAspectLevel(Identifier aspect, int amount);
 
 }

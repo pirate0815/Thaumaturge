@@ -43,11 +43,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class VesselBlockEntity extends BlockEntity implements Inventory, AspectContainer {
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(6, ItemStack.EMPTY);
     public static final Identifier VITIUM_ASPECT = AspectsLib.identifier("vitium");
-    private final Map<String, Integer> aspects = new HashMap<>();
+    private final Map<Identifier, Integer> aspects = new HashMap<>();
     private ItemStack catalyst = ItemStack.EMPTY;
     private boolean boiling = false;
     private int processTime = 0;
@@ -141,12 +142,8 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
             AspectData aspectData = AspectsAPI.getAspectData(stack);
             if (!aspectData.isEmpty()) {
                 for (var entry : aspectData.getMap().object2IntEntrySet()) {
-                    String aspectName = AspectsAPI.getAspect(entry.getKey())
-                            .map(Aspect::name)
-                            .orElse(entry.getKey().toString());
-
                     int totalAmount = entry.getIntValue() * stack.getCount();
-                    aspects.merge(aspectName, totalAmount, Integer::sum);
+                    aspects.merge(entry.getKey(), totalAmount, Integer::sum);
                 }
             } else {
                 ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack.copy());
@@ -179,12 +176,8 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
         AspectData aspectData = AspectsAPI.getAspectData(stack);
         if (!aspectData.isEmpty()) {
             for (var entry : aspectData.getMap().object2IntEntrySet()) {
-                String aspectName = AspectsAPI.getAspect(entry.getKey())
-                        .map(Aspect::name)
-                        .orElse(entry.getKey().toString());
-
                 int totalAmount = entry.getIntValue() * stack.getCount();
-                aspects.merge(aspectName, totalAmount, Integer::sum);
+                aspects.merge(entry.getKey(), totalAmount, Integer::sum);
             }
             markDirty();
             syncToClient();
@@ -212,10 +205,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
                 .stream()
                 .anyMatch(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), catalystStack) &&
                         recipe.getAspects().entrySet().stream()
-                                .allMatch(entry -> {
-                                    String storedAspectName = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
-                                    return aspects.getOrDefault(storedAspectName, 0) >= entry.getValue();
-                                }))) {
+                                .allMatch(entry -> aspects.getOrDefault(entry.getKey(), 0) >= entry.getValue()))) {
             ItemEntity catalystEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, catalystStack.copy());
             world.spawnEntity(catalystEntity);
             return true;
@@ -232,18 +222,14 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
                 .stream()
                 .filter(recipe -> ItemStack.areItemsEqual(recipe.getCatalyst(), catalystStack))
                 .filter(recipe -> recipe.getAspects().entrySet().stream()
-                        .allMatch(entry -> {
-                            String storedAspectName = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
-                            return aspects.getOrDefault(storedAspectName, 0) >= entry.getValue();
-                        }))
+                        .allMatch(entry -> aspects.getOrDefault(entry.getKey(), 0) >= entry.getValue()))
                 .findFirst();
 
         if (match.isPresent()) {
             VesselRecipe recipe = match.get();
 
             recipe.getAspects().forEach((aspect, amount) -> {
-                String storedAspectName = aspect.substring(0, 1).toUpperCase() + aspect.substring(1);
-                aspects.computeIfPresent(storedAspectName, (k, v) -> v - amount);
+                aspects.computeIfPresent(aspect, (k, v) -> v - amount);
             });
             aspects.entrySet().removeIf(entry -> entry.getValue() <= 0);
 
@@ -270,12 +256,19 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
         return catalyst;
     }
 
-    public Map<String, Integer> getAspects() {
-        return aspects;
+
+    @Override
+    public Set<Identifier> getAspects() {
+        return aspects.keySet();
     }
 
     @Override
-    public int getRemovableAspectCount(String aspect) {
+    public int getAspectLevel(Identifier aspect) {
+        return aspects.getOrDefault(aspect, 0);
+    }
+
+    @Override
+    public int getReducibleAspectLevel(Identifier aspect) {
         if (aspects.containsKey(aspect)) {
             return aspects.get(aspect);
         }
@@ -283,7 +276,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
     }
 
     @Override
-    public void removeAspect(String aspect, int amount) {
+    public void reduceAspectLevel(Identifier aspect, int amount) {
         if (aspects.containsKey(aspect)) {
             int stored = aspects.get(aspect);
             int resultingAmount = stored - amount;
@@ -300,7 +293,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
     }
 
     @Override
-    public int addAditionalAspect(String aspect, int amount) {
+    public int increaseAspectLevel(Identifier aspect, int amount) {
         int resultingAmount = aspects.getOrDefault(aspect, 0) + amount;
         aspects.put(aspect, resultingAmount);
         markDirty();
@@ -331,8 +324,8 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
         nbt.put("Catalyst", catalyst.writeNbt(new NbtCompound()));
 
         NbtCompound aspectsNbt = new NbtCompound();
-        for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
-            aspectsNbt.putInt(entry.getKey(), entry.getValue());
+        for (Map.Entry<Identifier, Integer> entry : aspects.entrySet()) {
+            aspectsNbt.putInt(entry.getKey().toString(), entry.getValue());
         }
         nbt.put("Aspects", aspectsNbt);
         nbt.putBoolean("Boiling", boiling);
@@ -348,7 +341,14 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
         aspects.clear();
         NbtCompound aspectsNbt = nbt.getCompound("Aspects");
         for (String key : aspectsNbt.getKeys()) {
-            aspects.put(key, aspectsNbt.getInt(key));
+            Identifier identifier = Identifier.tryParse(key);
+            if (identifier != null) {
+                aspects.put(identifier, aspectsNbt.getInt(key));
+            } else {
+                // Deal with the older nbt format
+                aspects.put(AspectsLib.identifier(key.toLowerCase()), aspectsNbt.getInt(key));
+            }
+
         }
         boiling = nbt.getBoolean("Boiling");
         processTime = nbt.getInt("ProcessTime");

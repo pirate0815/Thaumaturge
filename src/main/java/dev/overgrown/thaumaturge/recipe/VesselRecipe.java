@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
@@ -23,12 +24,12 @@ import java.util.Map;
 
 public class VesselRecipe implements Recipe<Inventory> {
     private final Identifier id;
-    private final Map<String, Integer> aspects;
+    private final Map<Identifier, Integer> aspects;
     private final ItemStack catalyst;
     private final boolean consumesCatalyst;
     private final ItemStack output;
 
-    public VesselRecipe(Identifier id, Map<String, Integer> aspects, ItemStack catalyst, boolean consumesCatalyst, ItemStack output) {
+    public VesselRecipe(Identifier id, Map<Identifier, Integer> aspects, ItemStack catalyst, boolean consumesCatalyst, ItemStack output) {
         this.id = id;
         this.aspects = aspects;
         this.catalyst = catalyst;
@@ -36,7 +37,7 @@ public class VesselRecipe implements Recipe<Inventory> {
         this.output = output;
     }
 
-    public Map<String, Integer> getAspects() {
+    public Map<Identifier, Integer> getAspects() {
         return aspects;
     }
 
@@ -57,20 +58,6 @@ public class VesselRecipe implements Recipe<Inventory> {
     public DefaultedList<Ingredient> getIngredients() {
         // Return actual ingredients if needed
         return DefaultedList.of();
-    }
-
-    public boolean matches(VesselBlockEntity vessel) {
-        // Check if catalyst matches (if recipe requires one)
-        if (!catalyst.isEmpty()) {
-            ItemStack vesselCatalyst = vessel.getCatalyst();
-            if (vesselCatalyst.isEmpty() || !ItemStack.areItemsEqual(catalyst, vesselCatalyst)) {
-                return false;
-            }
-        }
-
-        // Check if aspects are sufficient
-        return aspects.entrySet().stream()
-                .allMatch(entry -> vessel.getAspects().getOrDefault(entry.getKey(), 0) >= entry.getValue());
     }
 
     @Override
@@ -113,10 +100,13 @@ public class VesselRecipe implements Recipe<Inventory> {
 
         @Override
         public VesselRecipe read(Identifier id, JsonObject json) {
-            Map<String, Integer> aspects = new HashMap<>();
+            Map<Identifier, Integer> aspects = new HashMap<>();
             JsonObject aspectsJson = JsonHelper.getObject(json, "aspects");
-            aspectsJson.entrySet().forEach(entry ->
-                    aspects.put(entry.getKey(), entry.getValue().getAsInt()));
+            aspectsJson.entrySet().forEach(entry -> {
+                    Identifier identifier = Identifier.tryParse(entry.getKey());
+                    if (identifier == null) { throw new IllegalArgumentException(entry.getKey() + " is not an identifier");}
+                    aspects.put(identifier, entry.getValue().getAsInt())
+                    ;});
 
             ItemStack catalyst = ItemStack.EMPTY;
             if (json.has("catalyst")) {
@@ -157,10 +147,10 @@ public class VesselRecipe implements Recipe<Inventory> {
 
         @Override
         public VesselRecipe read(Identifier id, PacketByteBuf buf) {
-            Map<String, Integer> aspects = new HashMap<>();
+            Map<Identifier, Integer> aspects = new HashMap<>();
             int aspectCount = buf.readVarInt();
             for (int i = 0; i < aspectCount; i++) {
-                aspects.put(buf.readString(), buf.readVarInt());
+                aspects.put(new Identifier(buf.readString()), buf.readVarInt());
             }
 
             ItemStack catalyst = buf.readItemStack();
@@ -173,8 +163,8 @@ public class VesselRecipe implements Recipe<Inventory> {
         @Override
         public void write(PacketByteBuf buf, VesselRecipe recipe) {
             buf.writeVarInt(recipe.aspects.size());
-            for (Map.Entry<String, Integer> entry : recipe.aspects.entrySet()) {
-                buf.writeString(entry.getKey());
+            for (Map.Entry<Identifier, Integer> entry : recipe.aspects.entrySet()) {
+                buf.writeString(entry.getKey().toString());
                 buf.writeVarInt(entry.getValue());
             }
 

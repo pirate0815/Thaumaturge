@@ -13,6 +13,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -86,19 +87,19 @@ public class FaucetBlockEntity extends BlockEntity {
                             }
                         }
 
-                        Map<String, Integer> map = source.getAspects();
-                        if (map.isEmpty()) {
+                        Set<Identifier> aspectSet = source.getAspects();
+                        if (aspectSet.isEmpty()) {
                             return;
                         }
 
-                        List<String> aspects = new ArrayList<>(map.keySet());
+                        List<Identifier> aspects = new ArrayList<>(aspectSet);
                         Collections.shuffle(aspects);
 
-                        for (String aspect : aspects) {
-                            int amount = Math.min(source.getRemovableAspectCount(aspect), MAX_TRANSFER_AMOUNT);
-                            amount = target.addAditionalAspect(aspect, amount);
+                        for (Identifier aspect : aspects) {
+                            int amount = Math.min(source.getReducibleAspectLevel(aspect), MAX_TRANSFER_AMOUNT);
+                            amount = target.increaseAspectLevel(aspect, amount);
                             if (amount > 0) {
-                                source.removeAspect(aspect, amount);
+                                source.reduceAspectLevel(aspect, amount);
                                 FaucetTransferVisualisation.sendToPlayer((ServerWorld) world, pos, blockEntity.target);
                                 break;
                             }
