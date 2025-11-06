@@ -3,18 +3,24 @@ package dev.overgrown.thaumaturge.block.faucet;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.faucet.entity.FaucetBlockEntity;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
+import dev.overgrown.thaumaturge.registry.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class FaucetBlock extends BlockWithEntity {
@@ -61,10 +67,41 @@ public class FaucetBlock extends BlockWithEntity {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction horizontalFacing = ctx.getHorizontalPlayerFacing();
-        if (ctx.getWorld().getBlockEntity(ctx.getBlockPos().offset(horizontalFacing)) instanceof AspectContainer) {
-            return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing());
+        for(Direction direction : ctx.getPlacementDirections()) {
+            BlockState blockState = this.getDefaultState();
+            if (direction.getAxis() != Direction.Axis.Y) {
+                if (canPlaceAt(ctx.getWorld(), ctx.getBlockPos(), direction)) {
+                    return blockState.with(FACING, direction);
+                }
+            }
+
         }
         return null;
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+        if (!canPlaceAt(state, world, pos) && (!world.isClient)) {
+            world.breakBlock(pos, true);
+
+        }
+    }
+
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        return canPlaceAt(world, pos, state.get(FACING));
+    }
+
+    public static boolean canPlaceAt(WorldView world, BlockPos pos, Direction direction) {
+        return world.getBlockEntity(pos.offset(direction)) instanceof AspectContainer;
+    }
+
+    public static Vec3d nozzlePos(BlockPos pos, BlockState state) {
+        switch (state.get(FACING)) {
+            case SOUTH -> {return new Vec3d(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.75);}
+            case WEST -> {return new Vec3d(pos.getX() + 0.25, pos.getY() + 0.25, pos.getZ() + 0.5);}
+            case EAST -> {return new Vec3d(pos.getX() + 0.75, pos.getY() + 0.25, pos.getZ() + 0.5);}
+            default -> {return new Vec3d(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.25);}
+        }
     }
 }

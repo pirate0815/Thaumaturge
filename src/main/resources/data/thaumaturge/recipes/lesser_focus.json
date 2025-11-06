@@ -1,9 +1,9 @@
 {
   "type": "thaumaturge:vessel",
   "aspects": {
-    "praecantatio": 10,
-    "vitreus": 20,
-    "auram": 5
+    "aspectslib:praecantatio": 10,
+    "aspectslib:vitreus": 20,
+    "aspectslib:auram": 5
   },
   "catalyst": "aspectslib:ordo_aspect_shard",
   "consumes_catalyst": true,

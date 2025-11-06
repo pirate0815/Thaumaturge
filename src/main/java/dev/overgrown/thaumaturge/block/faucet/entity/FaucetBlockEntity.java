@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.block.faucet.entity;
 
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.faucet.FaucetBlock;
+import dev.overgrown.thaumaturge.networking.FaucetTransferVisualisation;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,6 +12,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -54,47 +57,50 @@ public class FaucetBlockEntity extends BlockEntity {
 
     private static final int MAX_TRANSFER_AMOUNT = 4;
     private BlockPos target;
-    private Long tickOffset;
+    private int updateTick;
 
 
     public FaucetBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.FAUCET_BLOCK_ENTITY, pos, state);
-        tickOffset = null;
+        updateTick = 0;
     }
 
     public static void serverTick(World world, BlockPos pos, BlockState state, FaucetBlockEntity blockEntity) {
-        if (blockEntity.tickOffset == null) {blockEntity.tickOffset = world.getTime() % 20;}
-
-        if (world.getTime() % 20 == blockEntity.tickOffset) {
+        if (world.getTime() % 20 == blockEntity.updateTick) {
+            blockEntity.updateTick = world.getRandom().nextInt(20);
             if (blockEntity.target != null) {
                 BlockEntity targetEntity = world.getBlockEntity(blockEntity.target);
                 if (targetEntity instanceof AspectContainer target) {
                     BlockEntity sourceEntity = world.getBlockEntity(pos.offset(state.get(FaucetBlock.FACING)));
                     if (sourceEntity instanceof AspectContainer source) {
 
-                        RaycastContext context = new RaycastContext(convert(pos), convert(blockEntity.target), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, DummyRaycastEntity.INSTANCE);
+                        RaycastContext context = new RaycastContext(FaucetBlock.nozzlePos(pos, state), convert(blockEntity.target), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, DummyRaycastEntity.INSTANCE);
                         BlockHitResult blockHitResult = world.raycast(context);
 
                         if (blockHitResult.getType() == HitResult.Type.ENTITY) {
                             return;
                         }
+
                         if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                             if (!blockHitResult.getBlockPos().equals(blockEntity.target)) {
                                 return;
                             }
                         }
 
-                        Map<String, Integer> map = source.getAspects();
-                        if (map.isEmpty()) return;
+                        Set<Identifier> aspectSet = source.getAspects();
+                        if (aspectSet.isEmpty()) {
+                            return;
+                        }
 
-                        List<String> aspects = new ArrayList<>(map.keySet());
+                        List<Identifier> aspects = new ArrayList<>(aspectSet);
                         Collections.shuffle(aspects);
 
-                        for (String aspect : aspects) {
-                            int amount = Math.min(source.getRemovableAspectCount(aspect), MAX_TRANSFER_AMOUNT);
-                            amount = target.addAditionalAspect(aspect, amount);
+                        for (Identifier aspect : aspects) {
+                            int amount = Math.min(source.getReducibleAspectLevel(aspect), MAX_TRANSFER_AMOUNT);
+                            amount = target.increaseAspectLevel(aspect, amount);
                             if (amount > 0) {
-                                source.removeAspect(aspect, amount);
+                                source.reduceAspectLevel(aspect, amount);
+                                FaucetTransferVisualisation.sendToPlayer((ServerWorld) world, pos, blockEntity.target);
                                 break;
                             }
                         }
@@ -102,8 +108,9 @@ public class FaucetBlockEntity extends BlockEntity {
                 }
             }
         }
-
     }
+
+
 
     private static Vec3d convert(BlockPos pos) {
         return new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

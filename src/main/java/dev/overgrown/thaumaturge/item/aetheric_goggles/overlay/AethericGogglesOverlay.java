@@ -6,7 +6,6 @@ import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.ModRegistries;
 import dev.overgrown.aspectslib.entity.aura_node.AuraNodeEntity;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
-import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -55,13 +54,10 @@ public class AethericGogglesOverlay implements HudRenderCallback {
             BlockPos pos = blockHit.getBlockPos();
             BlockState state = client.world.getBlockState(pos);
 
-            if (state.getBlock() instanceof VesselBlock) {
-                if (client.world.getBlockEntity(pos) instanceof AspectContainer vessel) {
-                    Map<String, Integer> aspects = vessel.getAspects();
-                    if (!aspects.isEmpty()) {
-                        renderBlockEntityAspects(drawContext, aspects, x, y);
-                        return;
-                    }
+            if (client.world.getBlockEntity(pos) instanceof AspectContainer container) {
+                if (!container.getAspects().isEmpty()) {
+                    renderBlockEntityAspects(drawContext, container, x, y);
+                    return;
                 }
             }
         } else if (hit.getType() == HitResult.Type.ENTITY) {
@@ -204,21 +200,19 @@ public class AethericGogglesOverlay implements HudRenderCallback {
         }
     }
 
-    private void renderBlockEntityAspects(DrawContext context, Map<String, Integer> aspects, int centerX, int centerY) {
+    private void renderBlockEntityAspects(DrawContext context, AspectContainer container, int centerX, int centerY) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         boolean showNames = MinecraftClient.getInstance().options.sneakKey.isPressed();
 
         // Calculate total width for centering
         int totalWidth = 0;
-        for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
-            // Convert aspect name to lowercase for identifier
-            String aspectName = entry.getKey().toLowerCase();
-            Aspect aspect = ModRegistries.ASPECTS.get(new Identifier("aspectslib", aspectName));
+        for (Identifier identifier : container.getAspects()) {
+            Aspect aspect = ModRegistries.ASPECTS.get(identifier);
             if (aspect == null) continue;
 
             int textWidth = showNames ?
                     textRenderer.getWidth(aspect.getTranslatedName()) :
-                    textRenderer.getWidth(String.valueOf(entry.getValue()));
+                    textRenderer.getWidth(String.valueOf(container.getAspectLevel(identifier)));
 
             totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
         }
@@ -226,11 +220,8 @@ public class AethericGogglesOverlay implements HudRenderCallback {
         // Start position for drawing
         int currentX = centerX - totalWidth / 2;
 
-        for (Map.Entry<String, Integer> entry : aspects.entrySet()) {
-            // Convert aspect name to lowercase for identifier
-            String aspectName = entry.getKey().toLowerCase();
-            Identifier aspectId = new Identifier("aspectslib", aspectName);
-            Aspect aspect = ModRegistries.ASPECTS.get(aspectId);
+        for (Identifier identifier : container.getAspects()) {
+            Aspect aspect = ModRegistries.ASPECTS.get(identifier);
             if (aspect == null) continue;
 
             Identifier texture = aspect.textureLocation();
@@ -246,7 +237,7 @@ public class AethericGogglesOverlay implements HudRenderCallback {
                         0xFFFFFF, false);
                 currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
             } else {
-                String value = String.valueOf(entry.getValue());
+                String value = String.valueOf(container.getAspectLevel(identifier));
                 context.drawText(textRenderer, value,
                         currentX + ASPECT_TEXT_OFFSET,
                         centerY + TEXT_Y_OFFSET,
