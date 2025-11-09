@@ -1,7 +1,8 @@
 package dev.overgrown.thaumaturge.block.api;
 
 import net.minecraft.util.Identifier;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public interface AspectContainer {
@@ -17,13 +18,26 @@ public interface AspectContainer {
      * @param aspect the identifier of the aspect
      * @return the amount in it
      */
-    int getAspectLevel(Identifier aspect);
+    int getAspectLevel(@NotNull Identifier aspect);
+
+
+    /** Queries for an aspect what level the container desires
+     * @param aspect the identifier of the aspect
+     * @return returns the level or null no level is desired
+     */
+    @Nullable Integer getDesiredAspectLeve(@NotNull Identifier aspect);
+
+
+    /** Queries the AspectContainer for general support of reducing aspects levels
+     * @return boolean returns true if in principle aspect levels can be reduced
+     */
+    boolean canReduceAspectLevels();
 
     /** Queries how much the aspect level in container can be reduced
      * @param aspect the identifier of the aspect
      * @return amount that can be removed
      */
-    int getReducibleAspectLevel(Identifier aspect);
+    int getReducibleAspectLevel(@NotNull Identifier aspect);
 
     /** Directly removes Aspect from a container,
      *  {@link #getReducibleAspectLevel} must be called first,
@@ -31,13 +45,13 @@ public interface AspectContainer {
      * @param aspect identifier of the aspect level that should be reduced
      * @param amount amount that is to be reduced in the container
      */
-    void reduceAspectLevel(Identifier aspect, int amount);
+    void reduceAspectLevel(@NotNull Identifier aspect, int amount);
 
     /** Tries to increase the level of Aspect in a container, returns the increased amount
      * @param aspect identifier of the aspect to be increased
      * @param amount amount that is intended to be increased
      * @return the actual amount of aspect that was increased in the container
      */
-    int increaseAspectLevel(Identifier aspect, int amount);
+    int increaseAspectLevel(@NotNull Identifier aspect, int amount);
 
 }

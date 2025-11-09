@@ -62,18 +62,19 @@ public class FaucetBlockEntity extends BlockEntity {
 
     public FaucetBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.FAUCET_BLOCK_ENTITY, pos, state);
-        updateTick = 0;
+        updateTick = this.world == null ? 0 : world.getRandom().nextInt(25);
     }
 
     public static void serverTick(World world, BlockPos pos, BlockState state, FaucetBlockEntity blockEntity) {
-        if (world.getTime() % 20 == blockEntity.updateTick) {
-            blockEntity.updateTick = world.getRandom().nextInt(20);
+        if (world.getReceivedRedstonePower(pos) > 0) {return;}
+
+        if (world.getTime() % 25 == blockEntity.updateTick) {
+            blockEntity.updateTick = Math.toIntExact((world.getTime() + world.getRandom().nextInt(25)) % 25);
             if (blockEntity.target != null) {
                 BlockEntity targetEntity = world.getBlockEntity(blockEntity.target);
                 if (targetEntity instanceof AspectContainer target) {
                     BlockEntity sourceEntity = world.getBlockEntity(pos.offset(state.get(FaucetBlock.FACING)));
-                    if (sourceEntity instanceof AspectContainer source) {
-
+                    if (sourceEntity instanceof AspectContainer source && source.canReduceAspectLevels()) {
                         RaycastContext context = new RaycastContext(FaucetBlock.nozzlePos(pos, state), convert(blockEntity.target), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, DummyRaycastEntity.INSTANCE);
                         BlockHitResult blockHitResult = world.raycast(context);
 

@@ -3,14 +3,11 @@ package dev.overgrown.thaumaturge.block.faucet;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.faucet.entity.FaucetBlockEntity;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
-import dev.overgrown.thaumaturge.registry.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +16,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,7 +89,8 @@ public class FaucetBlock extends BlockWithEntity {
     }
 
     public static boolean canPlaceAt(WorldView world, BlockPos pos, Direction direction) {
-        return world.getBlockEntity(pos.offset(direction)) instanceof AspectContainer;
+        BlockEntity entity = world.getBlockEntity(pos.offset(direction));
+        return entity instanceof AspectContainer aspectContainer && aspectContainer.canReduceAspectLevels();
     }
 
     public static Vec3d nozzlePos(BlockPos pos, BlockState state) {

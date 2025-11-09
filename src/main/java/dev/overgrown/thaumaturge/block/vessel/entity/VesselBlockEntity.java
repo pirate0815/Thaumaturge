@@ -3,7 +3,6 @@ package dev.overgrown.thaumaturge.block.vessel.entity;
 import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.aspectslib.corruption.CorruptionAPI;
-import dev.overgrown.aspectslib.data.Aspect;
 import dev.overgrown.aspectslib.data.AspectData;
 import dev.overgrown.aspectslib.data.BiomeAspectModifier;
 import dev.overgrown.thaumaturge.Thaumaturge;
@@ -11,12 +10,9 @@ import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.sound.SoundCategory;
@@ -38,6 +34,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -263,20 +260,27 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
     }
 
     @Override
-    public int getAspectLevel(Identifier aspect) {
+    public int getAspectLevel(@NotNull Identifier aspect) {
         return aspects.getOrDefault(aspect, 0);
     }
 
     @Override
-    public int getReducibleAspectLevel(Identifier aspect) {
-        if (aspects.containsKey(aspect)) {
-            return aspects.get(aspect);
-        }
-        return 0;
+    public @Nullable Integer getDesiredAspectLeve(@NotNull Identifier aspect) {
+        return null;
     }
 
     @Override
-    public void reduceAspectLevel(Identifier aspect, int amount) {
+    public boolean canReduceAspectLevels() {
+        return true;
+    }
+
+    @Override
+    public int getReducibleAspectLevel(@NotNull Identifier aspect) {
+        return getAspectLevel(aspect);
+    }
+
+    @Override
+    public void reduceAspectLevel(@NotNull Identifier aspect, int amount) {
         if (aspects.containsKey(aspect)) {
             int stored = aspects.get(aspect);
             int resultingAmount = stored - amount;
@@ -293,7 +297,7 @@ public class VesselBlockEntity extends BlockEntity implements Inventory, AspectC
     }
 
     @Override
-    public int increaseAspectLevel(Identifier aspect, int amount) {
+    public int increaseAspectLevel(@NotNull Identifier aspect, int amount) {
         int resultingAmount = aspects.getOrDefault(aspect, 0) + amount;
         aspects.put(aspect, resultingAmount);
         markDirty();
