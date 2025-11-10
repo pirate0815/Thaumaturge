@@ -99,8 +99,8 @@ public class ModItems {
     );
 
     public static final Item VESSEL = new BlockItem(ModBlocks.VESSEL, new FabricItemSettings());
-
     public static final Item FAUCET = new BlockItem(ModBlocks.FAUCET, new FabricItemSettings());
+    public static final Item JAR = new BlockItem(ModBlocks.JAR, new FabricItemSettings());
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Thaumaturge.identifier(name), item);
@@ -118,5 +118,6 @@ public class ModItems {
     public static void initialize() {
         Registry.register(Registries.ITEM, Thaumaturge.identifier("vessel"), VESSEL);
         Registry.register(Registries.ITEM, Thaumaturge.identifier("faucet"), FAUCET);
+        Registry.register(Registries.ITEM, Thaumaturge.identifier("jar"), JAR);
     }
 }

@@ -24,7 +24,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
-import java.util.Map;
+import java.util.Set;
 
 public class AethericGogglesOverlay implements HudRenderCallback {
     private static final int ASPECT_ICON_SIZE = 16;
@@ -206,14 +206,22 @@ public class AethericGogglesOverlay implements HudRenderCallback {
 
         // Calculate total width for centering
         int totalWidth = 0;
-        for (Identifier identifier : container.getAspects()) {
+        Set<Identifier> aspects = container.getAspects();
+        String[] displayStrings = new String[aspects.size()];
+
+        for (Identifier identifier : aspects) {
             Aspect aspect = ModRegistries.ASPECTS.get(identifier);
             if (aspect == null) continue;
 
-            int textWidth = showNames ?
-                    textRenderer.getWidth(aspect.getTranslatedName()) :
-                    textRenderer.getWidth(String.valueOf(container.getAspectLevel(identifier)));
 
+            int textWidth;
+            if (showNames) {
+                textWidth = textRenderer.getWidth(aspect.getTranslatedName());
+            } else {
+                int level = container.getAspectLevel(identifier);
+                Integer desiredLevel = container.getDesiredAspectLeve(identifier);
+                textWidth = textRenderer.getWidth(desiredLevel == null ? String.valueOf(level) : level + "/" + desiredLevel);
+            }
             totalWidth += ASPECT_ICON_SIZE + textWidth + ASPECT_SPACING;
         }
 
@@ -237,7 +245,9 @@ public class AethericGogglesOverlay implements HudRenderCallback {
                         0xFFFFFF, false);
                 currentX += ASPECT_ICON_SIZE + textRenderer.getWidth(aspectText) + ASPECT_SPACING;
             } else {
-                String value = String.valueOf(container.getAspectLevel(identifier));
+                int level = container.getAspectLevel(identifier);
+                Integer desiredLevel = container.getDesiredAspectLeve(identifier);
+                String value = desiredLevel == null ? String.valueOf(level) : level + "/" + desiredLevel;
                 context.drawText(textRenderer, value,
                         currentX + ASPECT_TEXT_OFFSET,
                         centerY + TEXT_Y_OFFSET,

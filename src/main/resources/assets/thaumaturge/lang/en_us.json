@@ -34,6 +34,8 @@
   "block.thaumaturge.faucet.failure": "Could not set faucet target",
   "block.thaumaturge.faucet.unlink": "Unset faucet target",
 
+  "block.thaumaturge.jar": "Jar",
+
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",

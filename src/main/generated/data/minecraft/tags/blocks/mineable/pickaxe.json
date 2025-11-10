@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "thaumaturge:faucet",
+    "thaumaturge:jar",
+    "thaumaturge:vessel"
+  ]
+}
