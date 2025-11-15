@@ -47,6 +47,9 @@ public class Thaumaturge implements ModInitializer {
         // Sounds
         ModSounds.initialize();
 
+        // Screens
+        ModScreens.initialise();
+
         // Spell components
         registerAspectEffects();
         registerModifierEffects();

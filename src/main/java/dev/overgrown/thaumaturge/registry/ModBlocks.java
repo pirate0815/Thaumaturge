@@ -1,13 +1,15 @@
 package dev.overgrown.thaumaturge.registry;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
+import dev.overgrown.thaumaturge.block.alchemical_furnace.AlchemicalFurnaceBlock;
+import dev.overgrown.thaumaturge.block.alchemical_furnace.AlchemicalFurnaceBlockEntity;
 import dev.overgrown.thaumaturge.block.aspect_clusters.*;
 import dev.overgrown.thaumaturge.block.faucet.FaucetBlock;
-import dev.overgrown.thaumaturge.block.faucet.entity.FaucetBlockEntity;
+import dev.overgrown.thaumaturge.block.faucet.FaucetBlockEntity;
 import dev.overgrown.thaumaturge.block.jar.JarBlock;
-import dev.overgrown.thaumaturge.block.jar.entity.JarBlockEntity;
+import dev.overgrown.thaumaturge.block.jar.JarBlockEntity;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
@@ -40,6 +42,10 @@ public class ModBlocks {
     public static final Block JAR = new JarBlock(FabricBlockSettings.create().nonOpaque().notSolid().hardness(1f).resistance(1f).pistonBehavior(PistonBehavior.BLOCK).mapColor(MapColor.BROWN).sounds(BlockSoundGroup.GLASS));
     public static final BlockEntityType<JarBlockEntity> JAR_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(JarBlockEntity::new, JAR).build();
 
+    // Alchemical Furnace
+    public static final Block ALCHEMICAL_FURNACE = new AlchemicalFurnaceBlock(FabricBlockSettings.copyOf(Blocks.BLAST_FURNACE));
+    public static final BlockEntityType<AlchemicalFurnaceBlockEntity> ALCHEMICAL_FURNACE_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(AlchemicalFurnaceBlockEntity::new, ALCHEMICAL_FURNACE).build();
+
     public static void initialize() {
         Registry.register(Registries.BLOCK, Thaumaturge.identifier("vessel"), VESSEL);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, Thaumaturge.identifier("vessel"), VESSEL_BLOCK_ENTITY);
@@ -57,5 +63,7 @@ public class ModBlocks {
         Registry.register(Registries.BLOCK_ENTITY_TYPE, Thaumaturge.identifier("faucet"), FAUCET_BLOCK_ENTITY);
         Registry.register(Registries.BLOCK, Thaumaturge.identifier("jar"), JAR);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, Thaumaturge.identifier("jar"), JAR_BLOCK_ENTITY);
+        Registry.register(Registries.BLOCK, Thaumaturge.identifier("alchemical_furnace"), ALCHEMICAL_FURNACE);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, Thaumaturge.identifier("alchemical_furnace"), ALCHEMICAL_FURNACE_BLOCK_ENTITY);
     }
 }

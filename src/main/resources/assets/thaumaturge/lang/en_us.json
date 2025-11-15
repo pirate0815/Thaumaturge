@@ -35,6 +35,7 @@
   "block.thaumaturge.faucet.unlink": "Unset faucet target",
 
   "block.thaumaturge.jar": "Jar",
+  "block.thaumaturge.alchemical_furnace": "Alchemical Furnace",
 
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
@@ -51,5 +52,7 @@
 
   "item.thaumaturge.power_modifier": "Power Modifier",
   "item.thaumaturge.scatter_modifier": "Scatter Modifier",
-  "item.thaumaturge.stable_modifier": "Stable Modifier"
+  "item.thaumaturge.stable_modifier": "Stable Modifier",
+
+  "item.thaumaturge.alchemical_sludge_bottle": "Alchemical Sludge Bottle"
 }

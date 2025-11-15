@@ -11,11 +11,11 @@ import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
+public class ModBlockTags extends FabricTagProvider.BlockTagProvider {
 
     public static final TagKey<Block> BLOOK_TOOL_PICKAXE = TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft", "mineable/pickaxe"));
 
-    public BlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public ModBlockTags(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, registriesFuture);
     }
 
@@ -24,6 +24,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(BLOOK_TOOL_PICKAXE)
                 .add(ModBlocks.FAUCET)
                 .add(ModBlocks.JAR)
-                .add(ModBlocks.VESSEL);
+                .add(ModBlocks.VESSEL)
+                .add(ModBlocks.ALCHEMICAL_FURNACE);
     }
 }

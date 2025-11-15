@@ -1,6 +1,9 @@
 package dev.overgrown.thaumaturge.client.render;
 
-import dev.overgrown.thaumaturge.block.jar.entity.JarBlockEntity;
+import dev.overgrown.aspectslib.api.AspectsAPI;
+import dev.overgrown.aspectslib.data.Aspect;
+import dev.overgrown.aspectslib.data.ModRegistries;
+import dev.overgrown.thaumaturge.block.jar.JarBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -15,6 +18,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
 
+import java.util.Optional;
+
 @Environment(EnvType.CLIENT)
 public class JarBlockEntityRenderer implements BlockEntityRenderer<JarBlockEntity> {
 
@@ -23,14 +28,19 @@ public class JarBlockEntityRenderer implements BlockEntityRenderer<JarBlockEntit
     private static final  float END_XZ = 1f - START_XZ;
     private static final float CONTAINER_HEIGHT = 1 - (4f/16f);
 
+    private static final float TOP_Y = (14f / 16f) + 0.0001f;
+
     private static final int ALPHA = 250;
     private static final int RED = 14;
     private static final int GREEN = 102;
     private static final int BLUE = 204;
 
-    private static final Sprite waterSprite = MinecraftClient.getInstance()
+    private static final Sprite fluidSprite = MinecraftClient.getInstance()
             .getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
-            .apply(new Identifier("thaumaturge", "block/jar-fluid"));
+            .apply(new Identifier("thaumaturge", "block/jar_fluid"));
+    private static final Sprite sealSprite = MinecraftClient.getInstance()
+            .getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
+            .apply(new Identifier("thaumaturge", "block/jar_seal"));
 
 
 
@@ -41,7 +51,6 @@ public class JarBlockEntityRenderer implements BlockEntityRenderer<JarBlockEntit
     public void render(JarBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (entity == null ) {return;}
         int level = entity.getLevel();
-        if (level <= 0) return;
 
         matrices.push();
         float endY = START_Y + (((float) level) / (float) entity.getMaxLevel()) * CONTAINER_HEIGHT;
@@ -52,47 +61,62 @@ public class JarBlockEntityRenderer implements BlockEntityRenderer<JarBlockEntit
 
 
 
-        float minU = waterSprite.getMinU();
-        float maxU = waterSprite.getMaxU();
-        float minV = waterSprite.getMinV();
-        float maxV = waterSprite.getMaxV();
+        float minU;
+        float maxU;
+        float minV;
+        float maxV;
 
-        // Top Surface
-        vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
-        vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+        if (level > 0) {
+            minU = fluidSprite.getMinU();
+            maxU = fluidSprite.getMaxU();
+            minV = fluidSprite.getMinV();
+            maxV = fluidSprite.getMaxV();
+            // Top Surface
+            vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
 
-        // Bottom Surface
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
+            // Bottom Surface
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, -1, 0).next();
 
-        // North Surface
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
-        vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
+            // North Surface
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
+            vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, 1).next();
 
-        // South Surface
-        vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            // South Surface
+            vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
 
-        // West Surface
-        vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            // West Surface
+            vertexConsumer.vertex(matrix, START_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, START_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, START_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
 
-        // East Surface
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-        vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
-
+            // East Surface
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, END_XZ, START_Y, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, START_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+            vertexConsumer.vertex(matrix, END_XZ, endY, END_XZ).color(RED, GREEN, BLUE, ALPHA).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 0, -1).next();
+        }
+        if (entity.isSealed()) {
+            minU = sealSprite.getMinU();
+            maxU = sealSprite.getMaxU();
+            minV = sealSprite.getMinV();
+            maxV = sealSprite.getMaxV();
+            vertexConsumer.vertex(matrix, START_XZ, TOP_Y, END_XZ).color(255, 255, 255, 255).texture(minU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, TOP_Y, END_XZ).color(255, 255, 255, 255).texture(maxU, maxV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, END_XZ, TOP_Y, START_XZ).color(255, 255, 255, 255).texture(maxU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+            vertexConsumer.vertex(matrix, START_XZ, TOP_Y, START_XZ).color(255, 255, 255, 255).texture(minU, minV).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(0, 1, 0).next();
+        }
         matrices.pop();
     }
 
