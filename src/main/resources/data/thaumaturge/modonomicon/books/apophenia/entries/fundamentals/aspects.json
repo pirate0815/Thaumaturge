@@ -1,0 +1,40 @@
+{
+  "category": "thaumaturge:fundamentals",
+  "name": "entry.thaumaturge.apophenia.fundamentals.aspects.name",
+  "description": "entry.thaumaturge.apophenia.fundamentals.aspects.description",
+  "icon": "aspectslib:aqua_aspect_shard",
+  "x": 2,
+  "y": 1,
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/core_principles"
+    }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspects.page0.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspects.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspects.page1.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspects.page2.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspects.page3.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspects.page3.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspects.page4.text"
+    }
+  ]
+}

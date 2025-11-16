@@ -1,0 +1,60 @@
+{
+  "category": "thaumaturge:fundamentals",
+  "name": "entry.thaumaturge.apophenia.fundamentals.aspect_hierarchy.name",
+  "description": "entry.thaumaturge.apophenia.fundamentals.aspect_hierarchy.description",
+  "icon": "aspectslib:ordo_aspect_shard",
+  "x": 4,
+  "y": 2,
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/aspects"
+    }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page0.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page1.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page1.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page2.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page2.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page3.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page4.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page4.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page5.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page6.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page6.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page7.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page8.text"
+    }
+  ]
+}

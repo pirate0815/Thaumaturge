@@ -1,0 +1,40 @@
+{
+  "category": "thaumaturge:fundamentals",
+  "name": "entry.thaumaturge.apophenia.fundamentals.resonance.name",
+  "description": "entry.thaumaturge.apophenia.fundamentals.resonance.description",
+  "icon": "thaumaturge:basic_casting_gauntlet",
+  "x": 0,
+  "y": 2,
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/quintessence_aether",
+      "line_reversed": true
+    },
+    {
+      "entry": "thaumaturge:fundamentals/aspects",
+      "line_reversed": true
+    }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.resonance.page0.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.resonance.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.resonance.page1.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.resonance.page1.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.resonance.page2.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.resonance.page2.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.resonance.page3.text"
+    }
+  ]
+}

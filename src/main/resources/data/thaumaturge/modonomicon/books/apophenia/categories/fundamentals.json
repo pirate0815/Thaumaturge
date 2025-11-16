@@ -1,0 +1,8 @@
+{
+  "name": "category.thaumaturge.apophenia.fundamentals.name",
+  "description": "category.thaumaturge.apophenia.fundamentals.description",
+  "background": "modonomicon:textures/gui/dark_slate_seamless.png",
+  "background_texture_zoom_multiplier": 0.8,
+  "icon": "thaumaturge:bonewits_dust",
+  "sort_number": 0
+}

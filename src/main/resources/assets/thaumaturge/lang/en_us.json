@@ -19,12 +19,120 @@
   "item.thaumaturge.apophenia.tooltip.closed": "§7Closed",
 
   "book.thaumaturge.apophenia.name": "Apophenia",
-  "book.thaumaturge.apophenia.tooltip": "The Thaumaturge's compendium of knowledge",
-  "category.thaumaturge.apophenia.introduction.name": "Introduction",
-  "category.thaumaturge.apophenia.introduction.description": "Getting started with Thaumaturgy",
-  "entry.thaumaturge.apophenia.introduction.welcome.name": "Welcome",
-  "page.thaumaturge.apophenia.introduction.welcome.title": "Welcome to Thaumaturgy",
-  "page.thaumaturge.apophenia.introduction.welcome.text": "Welcome to the world of Thaumaturgy. This book will guide you through the mysteries of spellcasting and magical theory.",
+  "book.thaumaturge.apophenia.tooltip": "The Thaumaturge's compendium of magical theory",
+
+  "category.thaumaturge.apophenia.fundamentals.name": "Fundamentals",
+  "category.thaumaturge.apophenia.fundamentals.description": "Core principles of Resonance magic",
+
+  "entry.thaumaturge.apophenia.fundamentals.core_principles.name": "Core Principles",
+  "entry.thaumaturge.apophenia.fundamentals.core_principles.description": "The foundation of Resonance magic",
+  "entry.thaumaturge.apophenia.fundamentals.quintessence_aether.name": "Quintessence & Aether",
+  "entry.thaumaturge.apophenia.fundamentals.quintessence_aether.description": "The fundamental energies",
+  "entry.thaumaturge.apophenia.fundamentals.aspects.name": "Aspects",
+  "entry.thaumaturge.apophenia.fundamentals.aspects.description": "Properties of matter and energy",
+  "entry.thaumaturge.apophenia.fundamentals.resonance.name": "Resonance",
+  "entry.thaumaturge.apophenia.fundamentals.resonance.description": "Interaction between Aspects",
+  "entry.thaumaturge.apophenia.fundamentals.aspect_hierarchy.name": "Aspect Hierarchy",
+  "entry.thaumaturge.apophenia.fundamentals.aspect_hierarchy.description": "Tiers of complexity",
+  "entry.thaumaturge.apophenia.fundamentals.consequences.name": "Consequences & Limitations",
+  "entry.thaumaturge.apophenia.fundamentals.consequences.description": "The price of magic",
+
+  "page.thaumaturge.apophenia.empty_style.title": "※",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page0.title": "Core Principles",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page0.text": "Resonance magic is built upon fundamental energies that permeate reality. At its core are **Quintessence**, the raw cosmic energy from which all magic derives, and **Aether**, its tangible manifestation within our world.",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page1.text": "**Aether** presence is measured in **Resonance Units (RU)**, with different areas possessing varying densities rich with specific **Aspects**. Magic involves manipulating these energies through their fundamental properties.",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page2.text": "The practice of magic involves manipulating these energies through **Aspects**, the fundamental properties of matter and energy that exist within the Aether.",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page3.title": "Conservation & Affinity",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page3.text": "**Conservation Law**: Aspects cannot be created or destroyed, only transmuted from one form to another. This requires both energy and deep understanding of their underlying properties.",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page4.text": "**Human Affinity**: Humans naturally embody **Humanus** and two additional Aspects, explaining their inherent magical predispositions. This affinity varies between individuals, making some naturally inclined toward certain types of magic.",
+  "page.thaumaturge.apophenia.fundamentals.core_principles.page5.text": "The study of these principles forms the bedrock upon which all practical thaumaturgy is built.",
+
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page0.title": "Quintessence",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page0.text": "**Quintessence** is the primordial, unformed energy underlying all existence. It is the source of all magic, yet beyond direct manipulation. Think of it as the deep ocean of potential, and our magic as the surface waves.",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page1.text": "It is everywhere and in everything, yet remains forever beyond our direct grasp. All magical systems, no matter how different they appear, ultimately draw from this same cosmic wellspring.",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page2.title": "Aether",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page2.text": "**Aether** is Quintessence made manifest within our physical reality. It serves as the medium through which magic is expressed and practiced. Aether exists in varying densities throughout the world, measured in **Resonance Units per cubic meter (RU/m³)**.",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page3.text": "Different environments possess characteristic Aether compositions. A volcano might have an Aether density rich with **Ignis**, while a graveyard might contain concentrations of **Mortuus**. Practitioners tap into this ambient Aether to fuel their spells.",
+  "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page4.text": "Over-harvesting can deplete an area, creating temporary \"Dead Zones\" where magic falters until the Aether naturally replenishes.",
+
+  "page.thaumaturge.apophenia.fundamentals.aspects.page0.title": "The Nature of Aspects",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page0.text": "**Aspects** are not merely elements; they are the fundamental properties that define matter, energy, and even abstract concepts. There are 37 known Aspects, each representing a unique facet of reality.",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page1.text": "Nearly every item, material, and life form exhibits a characteristic combination of these Aspects. A simple torch contains **Ignis** (fire), **Potentia** (energy), and potentially **Herba** (plant materials). Understanding Aspect composition is essential for magical manipulation.",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page2.text": "The practiced eye can discern these properties through careful observation and the use of specialized tools like the Aspect Lens.",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page3.title": "Aspect Manifestation",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page3.text": "Aspects manifest in the physical world as:\n- **Aspect Shards**: Crystalline formations found in environments rich with their corresponding element.\n- **Inherent Properties**: The natural Aspect composition of materials and creatures.",
+  "page.thaumaturge.apophenia.fundamentals.aspects.page4.text": "- **Aetheric Presence**: The ambient Aspect concentrations in an area's Aether.",
+
+  "page.thaumaturge.apophenia.fundamentals.resonance.page0.title": "Resonance Principles",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page0.text": "**Resonance** describes the dynamic interaction between different Aspects. When Aspects meet, they can either amplify or neutralize each other's effects.",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page1.title": "Amplifying Resonance",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page1.text": "**Amplifying Resonance** occurs when compatible Aspects enhance each other:\n- **Aer** + **Motus** = Enhanced movement magic\n- **Ignis** + **Potentia** = More potent fire spells\nThese combinations create synergistic effects greater than their individual parts.",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page2.title": "Opposing Resonance",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page2.text": "**Opposing Resonance** occurs when incompatible Aspects meet, potentially neutralizing each other:\n- **Aqua** + **Ignis** = Mutual cancellation",
+  "page.thaumaturge.apophenia.fundamentals.resonance.page3.text": "Combining opposing Aspects in crafting or spellcasting incurs **Resonance Barriers**, requiring significant energy to overcome. For example, combining Aqua and Ignis might require overcoming substantial magical resistance. The outcome depends on relative quantities and conditions.",
+
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page0.title": "Aspect Tiers",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page0.text": "Aspects are organized into four tiers of complexity, from fundamental building blocks to highly specialized manifestations.",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page1.title": "Primal Aspects",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page1.text": "The most basic elements and forces:\n- **Aer** (Air)\n- **Aqua** (Water)\n- **Terra** (Earth)\n- **Ignis** (Fire)\n- **Ordo** (Order)\n- **Perditio** (Entropy)",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page2.title": "Secondary Aspects",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page2.text": "Formed by combination of primal aspects:\n- **Gelum** (Ice) = Aqua + Ordo\n- **Lux** (Light) = Aer + Ignis\n- **Metallum** (Metal) = Terra + Ordo\n- **Mortuus** (Death) = Perditio + Aqua\n- **Motus** (Motion) = Aer + Ordo\n- **Permutatio** (Change) = Ordo + Perditio",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page3.text": "- **Potentia** (Power) = Ignis + Ordo\n- **Vacuos** (Void) = Aer + Perditio\n- **Victus (Life)** = Aqua + Terra\n- **Vitreus** (Glass) = Terra + Aer",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page4.title": "Tertiary Aspects",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page4.text": "Complex combinations of primal and secondary aspects:\n- **Bestia** (Beast) = Victus + Motus\n- **Exanimis** (Undeath) = Mortuus + Victus\n- **Herba** (Plant) = Victus + Terra\n- **Instrumentum** (Tool) = Ordo + Metallum\n- **Praecantatio** (Magic) = Potentia + Aer",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page5.text": "- **Spiritus** (Spirit) = Victus + Aer\n- **Tenebrae** (Darkness) = Vacuos + Lux\n- **Vinculum** (Binding) = Ordo + Motus\n- **Volatus** (Flight) = Aer + Motus",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page6.title": "Quaternary Aspects",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page6.text": "The most complex and rare manifestations:\n- **Alienis** (The Unknown) = Tenebrae + Vacuos\n- **Alkimia** (Alchemy) = Permutatio + Potentia\n- **Auram** (Aura) = Praecantatio + Lux\n- **Aversio** (Repulsion) = Motus + Perditio\n- **Cognitio** (Knowledge) = Spiritus + Ordo",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page7.text": "- **Desiderium** (Desire) = Spiritus + Ignis\n- **Fabrico** (Construction) = Instrumentum + Ordo\n- **Humanus** (Humanity) = Victus + Spiritus\n- **Machina** (Machine) = Instrumentum + Motus\n- **Praemunio** (Protection) = Spiritus + Terra",
+  "page.thaumaturge.apophenia.fundamentals.aspect_hierarchy.page8.text": "- **Sensus** (Sense) = Spiritus + Aer\n- **Vitium** (Corruption) = Perditio + Mortuus",
+
+
+  "page.thaumaturge.apophenia.fundamentals.consequences.page0.title": "The Price of Power",
+  "page.thaumaturge.apophenia.fundamentals.consequences.page0.text": "All magic carries costs and risks. The reckless use of thaumaturgy can have severe consequences for both practitioner and environment.\n\n**Backlash Mechanics**: Attempting spells that exceed your capabilities can result in magical feedback:\n- **Ignis Overload**: Rapid thermal buildup risking combustion\n- **Vitium Corruption**: Accumulation of magical corruption\n- **Perditio Decay**: Accelerated equipment degradation\n\n**Dead Zones**: Areas where magic is severely diminished:\n- **Temporary**: Caused by overharvesting Aether\n- **Permanent**: Formed by massive Aether expenditure",
+  "page.thaumaturge.apophenia.fundamentals.consequences.page1.title": "Physiological Limits",
+  "page.thaumaturge.apophenia.fundamentals.consequences.page1.text": "The human body has strict limits to magical channeling:\n\n**Aether Burn**: Using excessive magical energy can cause severe cellular damage or organ failure.\n\n**Aspect Accumulation**: Prolonged use of specific Aspects causes them to accumulate within the practitioner:\n- Excessive **Mortuus** may lead to emotional detachment\n- Imbalanced **Vitium** use causes physical degradation\n- Overuse of **Alienis** can result in reality detachment\n\n**Protective Measures**:\n- Proper magical equipment can absorb dangerous energies\n- Regular meditation helps maintain Aspect balance\n- Careful spell preparation reduces backlash risks\n\nRemember: Power without wisdom is a path to self-destruction.",
+
+  "category.thaumaturge.apophenia.alchemy.name": "Alchemy",
+  "category.thaumaturge.apophenia.alchemy.description": "The art of transmutation and aspect manipulation",
+
+  "entry.thaumaturge.apophenia.alchemy.alembic_transmutation.name": "Alembic Transmutation",
+  "entry.thaumaturge.apophenia.alchemy.alembic_transmutation.description": "The Vessel system for aspect extraction and transmutation",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.introduction.title": "Alembic Transmutation",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.introduction.text": "Alembic Transmutation is the foundational practice of extracting and manipulating **Aspects** from materials. At the heart of this system is the **Vessel** - a magical container that serves as your primary tool for aspect extraction and transmutation.\n\nThis system allows you to:\n- Extract aspects from items and materials\n- Store and transfer aspect energies\n- Perform transmutations using catalysts\n- Create complex aspect distribution systems",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_spotlight.title": "The Vessel",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_spotlight.text": "The **Vessel** is your primary alchemical workstation. It functions as:\n\n- **Aspect Extractor**: Boiling water in the vessel extracts aspects from submerged items\n- **Transmutation Chamber**: Combine aspects with catalysts to create new materials\n- **Aspect Storage**: Temporarily holds extracted aspects before they're processed\n\nPlace the vessel above a heat source like fire or lava, then add water using a water bucket to begin operation.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.basic_usage.title": "Basic Operation",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.basic_usage.text": "To use the Vessel:\n\n1. **Place** the vessel above a heat source (fire, lava, campfire)\n2. **Fill** with water using a water bucket\n3. **Add** items to extract their aspects\n4. **Wait** for the boiling process to complete\n5. **Collect** the extracted aspects\n\nThe vessel can hold up to 6 items at once. As items boil, their aspects are released into the water and stored in the vessel's aspect reservoir.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_recipe.title": "Vessel Crafting",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_recipe.text": "Crafting the Vessel requires basic materials that can contain magical energies:\n\n- Copper for its conductive properties\n- Glass for visibility and containment\n- Stone for stability\n\nThe vessel is designed to withstand the rigors of magical transmutation and aspect manipulation.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.aspect_extraction.title": "Aspect Extraction",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.aspect_extraction.text": "When items boil in the vessel, their **inherent aspects** are released into the water. Different materials yield different aspects:\n\n- **Organic materials** often contain Victus, Herba, or Bestia\n- **Metals** contain Metallum and Terra\n- **Magical items** contain Praecantatio or Potentia\n- **Tools** contain Instrumentum\n\nThe extraction process destroys the original item but preserves its essential aspects in pure form.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.catalysts.title": "Catalysts and Transmutation",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.catalysts.text": "**Catalysts** are special items that trigger transmutation when combined with the right aspects in the vessel:\n\n- Some catalysts are **consumed** during transmutation\n- Others act as **reusable** triggers\n- Each catalyst requires specific aspect combinations\n- Successful transmutation produces new items\n\nExperiment with different catalysts and aspect combinations to discover new recipes. The vessel's water level may decrease during successful transmutations.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_spotlight.title": "The Faucet",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_spotlight.text": "The **Faucet** allows you to transfer aspects between containers:\n\n- **Automated Transfer**: Moves aspects from source to target containers\n- **Redstone Control**: Can be disabled with redstone signals\n- **Directional**: Must be placed on the side of an aspect source\n- **Visual Feedback**: Shows aspect transfer with particle effects\n\nThe faucet will automatically transfer small amounts of aspects at regular intervals when properly connected to compatible containers.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_recipe.title": "Faucet Crafting",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_recipe.text": "The faucet requires precise metalworking to create the proper channels for aspect flow:\n\n- Copper for aspect conductivity\n- Mechanical components for control\n- Magical focus for direction\n\nProper placement is crucial - the faucet must connect to a valid aspect source.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_spotlight.title": "The Aspect Jar",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_spotlight.text": "**Aspect Jars** are specialized containers for storing pure aspects:\n\n- **Single Aspect Storage**: Each jar holds only one type of aspect\n- **Large Capacity**: Can store up to 250 units of an aspect\n- **Redstone Output**: Emits comparator signals based on fill level\n- **Pure Containment**: Prevents aspect degradation or contamination\n\nJars are essential for organizing your extracted aspects and creating automated alchemical systems.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_recipe.title": "Jar Crafting",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_recipe.text": "Crafting aspect jars requires materials that can safely contain pure magical energies:\n\n- Glass for transparency and containment\n- Specialized seals to prevent aspect leakage\n- Magical treatments to preserve aspect purity\n\nEach jar is attuned to hold a single aspect type without contamination.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.complete_system.title": "Complete Alchemical System",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.complete_system.text": "A complete alchemical setup might include:\n\n1. **Multiple Vessels** for different extraction processes\n2. **Faucet Networks** connecting vessels to jars\n3. **Specialized Jars** for each aspect type\n4. **Redstone Control** for automation\n\nThis allows you to:\n- Extract aspects from various materials simultaneously\n- Sort and store aspects by type\n- Automate complex transmutation processes\n- Create aspect distribution systems\n\nStart small with a single vessel and expand as you master the basics.",
+
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.warnings.title": "Important Warnings",
+  "page.thaumaturge.apophenia.alchemy.alembic_transmutation.warnings.text": "**CRITICAL SAFETY NOTICE️**\n\nNever allow a vessel containing aspects to run dry of water! If the water completely evaporates while aspects are present:\n\n- The aspects will convert to **Vitium** (magical corruption)\n- This corruption will spread to the surrounding environment\n- The area may become permanently tainted\n- Magical dead zones can form\n\nAlways monitor water levels and never leave aspects in a dry vessel. If corruption occurs, the only solution may be extensive purification rituals or abandoning the area entirely.\n\n[#](ff0000)**Safety first in all alchemical workings!** [#]()",
 
   "block.thaumaturge.vessel": "Vessel",
 

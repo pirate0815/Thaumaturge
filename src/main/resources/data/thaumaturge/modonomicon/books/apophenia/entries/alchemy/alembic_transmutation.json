@@ -1,0 +1,106 @@
+{
+  "category": "thaumaturge:alchemy",
+  "name": "entry.thaumaturge.apophenia.alchemy.alembic_transmutation.name",
+  "description": "entry.thaumaturge.apophenia.alchemy.alembic_transmutation.description",
+  "icon": "thaumaturge:vessel",
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "anchor": "introduction",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.introduction.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.introduction.text"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "vessel_spotlight",
+      "item": {
+        "item": "thaumaturge:vessel"
+      },
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_spotlight.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_spotlight.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "basic_usage",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.basic_usage.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.basic_usage.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "vessel_recipe",
+      "recipe_id_1": "thaumaturge:vessel",
+      "title1": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_recipe.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.vessel_recipe.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "aspect_extraction",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.aspect_extraction.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.aspect_extraction.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "catalysts",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.catalysts.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.catalysts.text"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "faucet_spotlight",
+      "item": {
+        "item": "thaumaturge:faucet"
+      },
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_spotlight.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_spotlight.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "faucet_recipe",
+      "recipe_id_1": "thaumaturge:faucet",
+      "title1": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_recipe.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.faucet_recipe.text"
+    },
+    {
+      "type": "modonomicon:spotlight",
+      "anchor": "jar_spotlight",
+      "item": {
+        "item": "thaumaturge:jar"
+      },
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_spotlight.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_spotlight.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "anchor": "jar_recipe",
+      "recipe_id_1": "thaumaturge:jar",
+      "title1": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_recipe.title",
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.jar_recipe.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "complete_system",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.complete_system.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.complete_system.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "anchor": "warnings",
+      "title": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.warnings.title",
+      "show_title_separator": true,
+      "text": "page.thaumaturge.apophenia.alchemy.alembic_transmutation.warnings.text"
+    }
+  ],
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/aspects"
+    }
+  ]
+}

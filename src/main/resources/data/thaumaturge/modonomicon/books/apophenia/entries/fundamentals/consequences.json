@@ -1,0 +1,25 @@
+{
+  "category": "thaumaturge:fundamentals",
+  "name": "entry.thaumaturge.apophenia.fundamentals.consequences.name",
+  "description": "entry.thaumaturge.apophenia.fundamentals.consequences.description",
+  "icon": "aspectslib:vitium_aspect_shard",
+  "x": 0,
+  "y": 4,
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/resonance"
+    }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.consequences.page0.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.consequences.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.consequences.page1.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.consequences.page1.text"
+    }
+  ]
+}
