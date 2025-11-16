@@ -15,7 +15,7 @@ public class AlchemicalSludgeBottleItem extends Item {
     private static final String ASPECT_NBT_TAG = "Aspects";
 
     public AlchemicalSludgeBottleItem() {
-        super(new FabricItemSettings().maxCount(0));
+        super(new FabricItemSettings().maxCount(1));
     }
 
     @Override

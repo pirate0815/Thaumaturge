@@ -12,8 +12,11 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -24,6 +27,7 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,5 +92,28 @@ public class AlchemicalFurnaceBlock extends BlockWithEntity {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+    }
+
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (state.get(LIT)) {
+            if (world.getRandom().nextDouble() < 0.1) {
+                world.playSound(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1f, 1f, false);
+            }
+            Direction direction = state.get(FACING);
+            double y = (4.5d / 16d) + pos.getY();
+            double x;
+            double z;
+
+            if(direction.getAxis().equals(Direction.Axis.Z)) {
+                x = ((double)pos.getX()) + 0.25 + world.getRandom().nextFloat() * 0.5;
+                z = direction.equals(Direction.NORTH) ? pos.getZ() - 0.05 : pos.getZ() + 1.05;
+            } else {
+                z = ((double)pos.getZ()) + 0.25 + world.getRandom().nextFloat() * 0.5;
+                x = direction.equals(Direction.EAST) ? pos.getX() + 1.05 : pos.getX() - 0.05;
+            }
+            world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0, 0.0, 0.0);
+            world.addParticle(ParticleTypes.FLAME, x, y, z, 0.0, 0.0, 0.0);
+        }
     }
 }

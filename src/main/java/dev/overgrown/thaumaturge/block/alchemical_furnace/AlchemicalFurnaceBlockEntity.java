@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.block.alchemical_furnace;
 
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.item.alchemical_sludge_bottle.AlchemicalSludgeBottleItem;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
@@ -55,7 +56,7 @@ public class AlchemicalFurnaceBlockEntity extends BlockEntity implements AspectC
     int fuelBurnTime = 0;
     private int itemBurnTime = 0;
     private int fuelMaxBurnTime = 0;
-    private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3, ItemStack.EMPTY);
 
     // Cache Burn Process as long as the container is not modified
     private boolean updateCache = true;
@@ -145,13 +146,11 @@ public class AlchemicalFurnaceBlockEntity extends BlockEntity implements AspectC
             ItemStack fuel = inventory.get(FUEL_SLOT);
             Integer burnTime = FuelRegistry.INSTANCE.get(fuel.getItem());
             if (burnTime != null) {
-                fuel.decrement(1);
-                if (fuel.isEmpty()) {
-                    if (fuel.getItem().hasRecipeRemainder()) {
-                        inventory.set(FUEL_SLOT,fuel.getRecipeRemainder());
-                    } else {
-                        inventory.set(FUEL_SLOT,ItemStack.EMPTY);
-                    }
+                if (fuel.getCount() <= 1) {
+                    ItemStack remainder = fuel.getRecipeRemainder();
+                    inventory.set(FUEL_SLOT,remainder);
+                } else {
+                    fuel.decrement(1);
                 }
                 world.setBlockState(pos, getCachedState().with(AlchemicalFurnaceBlock.LIT, true));
                 fuelBurnTime = burnTime;
@@ -159,6 +158,9 @@ public class AlchemicalFurnaceBlockEntity extends BlockEntity implements AspectC
                 markDirty();
                 syncToClient();
             } else if (getCachedState().get(AlchemicalFurnaceBlock.LIT)) {
+                this.itemBurnTime = 0;
+                this.itemMaxBurnTime = 0;
+                markDirty();
                 world.setBlockState(pos, getCachedState().with(AlchemicalFurnaceBlock.LIT, false));
             }
         } else {
@@ -323,6 +325,11 @@ public class AlchemicalFurnaceBlockEntity extends BlockEntity implements AspectC
     @Override
     public void setStack(int slot, ItemStack stack) {
         updateCache = true;
+        ItemStack stackOld = this.inventory.get(slot);
+        if (slot == INPUT_SLOT && !stackOld.getItem().equals(stack.getItem())) {
+            this.itemBurnTime = 0;
+            this.itemMaxBurnTime = 0;
+        }
         this.inventory.set(slot, stack);
         markDirty();
     }

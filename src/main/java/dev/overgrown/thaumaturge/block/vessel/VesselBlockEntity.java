@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class VesselBlockEntity extends BlockEntity implements AspectContainer {
-    public final static int MAX_SLUDGE_AMOUNT = 300;
+    public final static int MAX_SLUDGE_AMOUNT = 96;
     private final AspectMap aspects = new AspectMap();
     private final AspectMap sludgeAspects = new AspectMap();
     private boolean boiling = false;
@@ -154,7 +154,6 @@ public class VesselBlockEntity extends BlockEntity implements AspectContainer {
                 }
             }
         }
-        Thaumaturge.LOGGER.info("Item is not catalyst");
 
         if (ItemStack.canCombine(stack, processItems)) {
             int sizeChange = Math.min(processItems.getMaxCount() - processItems.getCount(), stack.getCount());

@@ -64,11 +64,11 @@ public class AlchemicalFurnaceScreen extends HandledScreen<AlchemicalFurnaceScre
             int fuelMaxBurnTime = handler.getFuelMaxBurnTime();
             int fireX = 63;
             int fireY = 37;
-            int fireHeight = 14;
+            int fireHeight = 13;
             int fireWidth = 14;
             int fullFireX = 176;
             int fullFireY = 30;
-            int fireFillHeight = Math.min(((fuelBurnTime*fireHeight)/fuelMaxBurnTime),fireHeight);
+            int fireFillHeight = Math.min(((fuelBurnTime*fireHeight)/fuelMaxBurnTime+1),fireHeight);
             int fireNotFillHeight = fireHeight - fireFillHeight;
             context.drawTexture(TEXTURE,x+fireX,y+fireY+fireNotFillHeight,fullFireX,fullFireY+fireNotFillHeight,fireWidth,fireFillHeight);
         }

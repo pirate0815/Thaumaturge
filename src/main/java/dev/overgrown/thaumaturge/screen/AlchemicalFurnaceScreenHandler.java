@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.screen;
 
 import dev.overgrown.aspectslib.api.AspectsAPI;
 import dev.overgrown.thaumaturge.block.alchemical_furnace.AlchemicalFurnaceBlockEntity;
+import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.registry.ModScreens;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,13 +48,15 @@ public class AlchemicalFurnaceScreenHandler extends ScreenHandler {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            boolean hasAspects = !AspectsAPI.getItemAspectData(stack.getItem()).isEmpty();
+            boolean hasAspects = !AspectsAPI.getItemAspectData(stack.getItem()).isEmpty() || stack.getItem().equals(ModItems.ALCHEMICAL_SLUDGE_BOTTLE);
             return hasAspects && super.canInsert(stack);
         }
     }
 
     private final Inventory inventory;
     private final PropertyDelegate propertyDelegate;
+    private final Slot inputSlot;
+    private final Slot fuelSlot;
 
 
     // Server Constructor
@@ -68,19 +71,21 @@ public class AlchemicalFurnaceScreenHandler extends ScreenHandler {
 
         // XY Cords are those for the container gui image
 
-        // Add Furnace Slots
-        this.addSlot(new InputSLot(this.inventory, AlchemicalFurnaceBlockEntity.INPUT_SLOT, 62, 17));
-        this.addSlot(new FuelSlot(this.inventory, AlchemicalFurnaceBlockEntity.FUEL_SLOT, 62, 53));
+        // Add Furnace Slots (Index 0-2)
+        this.inputSlot = new InputSLot(this.inventory, AlchemicalFurnaceBlockEntity.INPUT_SLOT, 62, 17);
+        this.addSlot(inputSlot);
+        this.fuelSlot = new FuelSlot(this.inventory, AlchemicalFurnaceBlockEntity.FUEL_SLOT, 62, 53);
+        this.addSlot(fuelSlot);
         this.addSlot(new OutputSlot(this.inventory, AlchemicalFurnaceBlockEntity.OUTPUT_SLOT, 98, 53));
 
-        // Inventory
+        // Inventory (Index 3-26)
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
-        // Hotbar
+        // Hotbar (Index 27-36)
         for (int i = 0; i < 9; i++) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
@@ -93,7 +98,39 @@ public class AlchemicalFurnaceScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {
-        return ItemStack.EMPTY;
+        ItemStack newStack = ItemStack.EMPTY;
+        Slot sourceSlot = this.slots.get(slot);
+        if (sourceSlot.hasStack()) {
+            ItemStack oldStack = sourceSlot.getStack();
+            ItemStack oldStackCopy = oldStack.copy();
+
+            // Case: Shifting items back to player inventory
+            if (sourceSlot.inventory == this.inventory) {
+                // Try to insert the stack into the player inventory
+                if(!this.insertItem(oldStack, 3, 39, true)) {
+                    return ItemStack.EMPTY; // All Items Inserted, direct return
+                }
+                sourceSlot.onQuickTransfer(oldStack, oldStackCopy);
+            }
+            // Case: Shifting Items into the furnace inventory
+            else {
+                if (this.inputSlot.canInsert(oldStack)) {
+                    this.inputSlot.insertStack(oldStack);
+                }
+                if(this.fuelSlot.canInsert(oldStack)) {
+                    this.fuelSlot.insertStack(oldStack);
+                }
+
+            }
+
+            if (oldStack.isEmpty()) {
+                sourceSlot.setStack(ItemStack.EMPTY);
+            } else {
+                sourceSlot.markDirty();
+            }
+        }
+
+        return newStack;
     }
 
     @Override
