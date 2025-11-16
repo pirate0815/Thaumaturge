@@ -1,0 +1,40 @@
+{
+  "category": "thaumaturge:fundamentals",
+  "name": "entry.thaumaturge.apophenia.fundamentals.quintessence_aether.name",
+  "description": "entry.thaumaturge.apophenia.fundamentals.quintessence_aether.description",
+  "icon": "thaumaturge:aspect_lens",
+  "x": -2,
+  "y": 1,
+  "parents": [
+    {
+      "entry": "thaumaturge:fundamentals/core_principles"
+    }
+  ],
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page0.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page0.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page1.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page2.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page2.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page3.text"
+    },
+    {
+      "type": "modonomicon:text",
+      "title": "page.thaumaturge.apophenia.empty_style.title",
+      "text": "page.thaumaturge.apophenia.fundamentals.quintessence_aether.page4.text"
+    }
+  ]
+}

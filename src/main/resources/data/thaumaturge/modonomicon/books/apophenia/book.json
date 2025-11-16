@@ -1,12 +1,13 @@
 {
-  "name": "book.thaumaturge.apophenia.name",
-  "tooltip": "book.thaumaturge.apophenia.tooltip",
+  "auto_add_read_conditions": true,
+  "book_content_texture": "modonomicon:textures/gui/book_content.png",
+  "book_overview_texture": "modonomicon:textures/gui/book_overview.png",
+  "creative_tab": "minecraft:tools_and_utilities",
+  "default_title_color": 0,
+  "display_mode": "node",
+  "frame_texture": "modonomicon:textures/gui/book_frame.png",
+  "generate_book_item": true,
   "model": "thaumaturge:apophenia",
-  "book_text_offset": 5,
-  "creative_tab": "thaumaturge:tools_and_utilities",
-  "show_progress": false,
-  "auto_add_books_to_creative": false,
-  "i18n": true,
-  "generate_book_item": false,
-  "custom_book_item": "thaumaturge:apophenia"
+  "name": "book.thaumaturge.apophenia.name",
+  "tooltip": "book.thaumaturge.apophenia.tooltip"
 }
