@@ -3,10 +3,10 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "thaumaturge:block/jar-frame",
-		"1": "thaumaturge:block/jar-edge",
+		"0": "thaumaturge:block/jar_frame",
+		"1": "thaumaturge:block/jar_edge",
 		"2": "block/dark_oak_planks",
-		"particle": "thaumaturge:block/jar-frame"
+		"particle": "thaumaturge:block/jar_frame"
 	},
 	"elements": [
 		{

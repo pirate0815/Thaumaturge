@@ -2,6 +2,8 @@ package dev.overgrown.thaumaturge;
 
 import dev.overgrown.aspectslib.client.AspectsTooltipConfig;
 import dev.overgrown.thaumaturge.client.render.JarBlockEntityRenderer;
+import dev.overgrown.thaumaturge.client.render.VesselBlockEntityRenderer;
+import dev.overgrown.thaumaturge.client.screen.AlchemicalFurnaceScreen;
 import dev.overgrown.thaumaturge.client.visualisation.FaucetTransferVisualisationHandler;
 import dev.overgrown.thaumaturge.networking.FaucetTransferVisualisation;
 import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
@@ -11,16 +13,17 @@ import dev.overgrown.thaumaturge.item.apophenia.predicate.ApopheniaModelProvider
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import dev.overgrown.thaumaturge.registry.ModEntities;
 import dev.overgrown.thaumaturge.item.aspect_lens.AspectLensItem;
+import dev.overgrown.thaumaturge.registry.ModScreens;
+import dev.overgrown.thaumaturge.screen.AlchemicalFurnaceScreenHandler;
 import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
 import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.EmptyEntityRenderer;
@@ -66,11 +69,13 @@ public class ThaumaturgeClient implements ClientModInitializer {
 
         ClientPlayNetworking.registerGlobalReceiver(FaucetTransferVisualisation.ASPECT_TRANSFER_PAKET, FaucetTransferVisualisationHandler::receive);
 
-        // Color the water in the vessel block
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> (world != null && pos != null) ? BiomeColors.getWaterColor(world, pos) : -1, ModBlocks.VESSEL);
+        BlockEntityRendererFactories.register(ModBlocks.VESSEL_BLOCK_ENTITY, VesselBlockEntityRenderer::new);
 
         // Jar Rendering
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.JAR, RenderLayer.getCutout());
         BlockEntityRendererFactories.register(ModBlocks.JAR_BLOCK_ENTITY, JarBlockEntityRenderer::new);
+
+        // Alchemical Furnace Screen
+        HandledScreens.register(ModScreens.ALCHEMICAL_FURNACE_SCREEN_HANDLER, AlchemicalFurnaceScreen::new);
     }
 }

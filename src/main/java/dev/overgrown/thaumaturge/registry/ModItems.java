@@ -2,6 +2,7 @@ package dev.overgrown.thaumaturge.registry;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.AethericGogglesItem;
+import dev.overgrown.thaumaturge.item.alchemical_sludge_bottle.AlchemicalSludgeBottleItem;
 import dev.overgrown.thaumaturge.item.apophenia.ApopheniaItem;
 import dev.overgrown.thaumaturge.item.aspect_lens.AspectLensItem;
 import dev.overgrown.thaumaturge.item.bonewits_dust.BonewitsDustItem;
@@ -98,9 +99,13 @@ public class ModItems {
             )
     );
 
+    public static final Item ALCHEMICAL_SLUDGE_BOTTLE = registerItem("alchemical_sludge_bottle",
+            new AlchemicalSludgeBottleItem());
+
     public static final Item VESSEL = new BlockItem(ModBlocks.VESSEL, new FabricItemSettings());
     public static final Item FAUCET = new BlockItem(ModBlocks.FAUCET, new FabricItemSettings());
     public static final Item JAR = new BlockItem(ModBlocks.JAR, new FabricItemSettings());
+    public static final Item ALCHEMICAL_FURNACE = new BlockItem(ModBlocks.ALCHEMICAL_FURNACE, new FabricItemSettings());
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Thaumaturge.identifier(name), item);
@@ -119,5 +124,6 @@ public class ModItems {
         Registry.register(Registries.ITEM, Thaumaturge.identifier("vessel"), VESSEL);
         Registry.register(Registries.ITEM, Thaumaturge.identifier("faucet"), FAUCET);
         Registry.register(Registries.ITEM, Thaumaturge.identifier("jar"), JAR);
+        Registry.register(Registries.ITEM, Thaumaturge.identifier("alchemical_furnace"), ALCHEMICAL_FURNACE);
     }
 }

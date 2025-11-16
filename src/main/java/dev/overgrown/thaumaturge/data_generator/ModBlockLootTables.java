@@ -3,9 +3,12 @@ package dev.overgrown.thaumaturge.data_generator;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-    public BlockLootTableProvider(FabricDataOutput dataOutput) {
+public class ModBlockLootTables extends FabricBlockLootTableProvider {
+
+
+
+    public ModBlockLootTables(FabricDataOutput dataOutput) {
         super(dataOutput);
     }
 
@@ -14,5 +17,6 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         addDrop(ModBlocks.FAUCET);
         addDrop(ModBlocks.JAR);
         addDrop(ModBlocks.VESSEL);
+        addDrop(ModBlocks.ALCHEMICAL_FURNACE);
     }
 }

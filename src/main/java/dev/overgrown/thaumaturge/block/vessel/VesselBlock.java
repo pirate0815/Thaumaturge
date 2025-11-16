@@ -1,6 +1,6 @@
 package dev.overgrown.thaumaturge.block.vessel;
 
-import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.item.alchemical_sludge_bottle.AlchemicalSludgeBottleItem;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -9,6 +9,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
@@ -18,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 public class VesselBlock extends BlockWithEntity {
@@ -90,6 +93,21 @@ public class VesselBlock extends BlockWithEntity {
             return ActionResult.SUCCESS;
         }
 
+        if (stack.getItem() == Items.GLASS_BOTTLE && vessel.getSludgeAmount() > 0 && state.get(WATER_LEVEL) > 0) {
+            if (!world.isClient) {
+                world.setBlockState(pos, state.with(WATER_LEVEL, state.get(WATER_LEVEL) - 1));
+                stack.decrement(1);
+
+                ItemStack sludgeBottle = AlchemicalSludgeBottleItem.fromAspectMap(vessel.removeSludge());
+                if (stack.isEmpty())  {
+                    player.setStackInHand(hand, sludgeBottle);
+                } else {
+                    player.getInventory().insertStack(sludgeBottle);
+                }
+            }
+            return ActionResult.SUCCESS;
+        }
+
         if (!stack.isEmpty() && state.get(WATER_LEVEL) > 0) {
             if (!world.isClient) {
                 boolean shouldConsume = vessel.tryCraftWithCatalyst(stack);
@@ -101,15 +119,22 @@ public class VesselBlock extends BlockWithEntity {
                 }
                 
                 if (vessel.isBoiling()) {
-                    ItemStack toAdd = stack.split(1);
-                    if (vessel.addItem(toAdd)) {
+                    ItemStack remainder = vessel.addItem(stack);
+
+                    player.setStackInHand(hand, remainder);
+                    if (stack.isEmpty() || remainder != stack) {
                         return ActionResult.SUCCESS;
-                    } else {
-                        stack.increment(1);
                     }
                 }
             }
             return ActionResult.CONSUME;
+        }
+        if (stack.isEmpty()) {
+            if (!world.isClient) {
+                Optional<ItemStack> itemStack = vessel.removeItemStack();
+                itemStack.ifPresent(value -> player.setStackInHand(hand, value));
+            }
+            return ActionResult.SUCCESS;
         }
 
         return ActionResult.PASS;
@@ -142,5 +167,19 @@ public class VesselBlock extends BlockWithEntity {
             vessel.setBoiling(hasWater && hasHeat);
         }
         super.neighborUpdate(state, world, pos, block, fromPos, notify);
+    }
+
+    // If the block is destroyed add aspects as corruption to the world
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
+            if (world instanceof ServerWorld serverWorld) {
+                BlockEntity blockEntity = world.getBlockEntity(pos);
+                if (blockEntity instanceof VesselBlockEntity vesselBlockEntity) {
+                    vesselBlockEntity.convertAspectsToVitium(serverWorld, pos);
+                }
+            }
+            super.onStateReplaced(state,world,pos,newState,moved);
+        }
     }
 }

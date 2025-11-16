@@ -1,4 +1,4 @@
-package dev.overgrown.thaumaturge.block.jar.entity;
+package dev.overgrown.thaumaturge.block.jar;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.windows.SECURITY_ATTRIBUTES;
 
 import java.util.Set;
 
@@ -23,11 +24,13 @@ public class JarBlockEntity extends BlockEntity implements AspectContainer {
 
     private @Nullable Identifier aspect;
     private int level;
+    private boolean sealed;
 
     public JarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.JAR_BLOCK_ENTITY, pos, state);
         aspect = null;
         level = 0;
+        sealed = false;
     }
 
 
@@ -38,15 +41,15 @@ public class JarBlockEntity extends BlockEntity implements AspectContainer {
             nbt.putString("Aspect", aspect.toString());
         }
         nbt.putInt("Level", level);
+        nbt.putBoolean("Sealed", sealed);
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         aspect = nbt.contains("Aspect") ? Identifier.tryParse(nbt.getString("Aspect")) : null;
-        if (nbt.contains("Level")) {
-            level = nbt.getInt("Level");
-        }
+        level = nbt.getInt("Level");
+        sealed = nbt.getBoolean("Sealed");
     }
 
     private boolean matchesAspect(Identifier aspect) {
@@ -102,10 +105,9 @@ public class JarBlockEntity extends BlockEntity implements AspectContainer {
     public void reduceAspectLevel(@NotNull Identifier aspect, int amount) {
         if (matchesAspect(aspect)) {
             level = level - amount;
-            if (level <= 0) {
+            if (level <= 0 && !sealed) {
                 level = 0;
                 this.aspect = null;
-                Thaumaturge.LOGGER.info("unset jar aspect");
             }
             syncToClient();
             markDirty();
@@ -149,5 +151,36 @@ public class JarBlockEntity extends BlockEntity implements AspectContainer {
 
     public int getMaxLevel() {
         return MAX_ASPECT_LEVEL;
+    }
+
+    public boolean seal() {
+        if (!sealed && aspect != null) {
+            sealed = true;
+            markDirty();
+            syncToClient();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unseal() {
+        if (sealed) {
+            sealed = false;
+            if (level == 0) {
+                aspect = null;
+            }
+            markDirty();
+            syncToClient();
+            return true;
+        }
+        return false;
+    }
+
+    public @Nullable Identifier getAspect() {
+        return aspect;
+    }
+
+    public boolean isSealed() {
+        return sealed;
     }
 }

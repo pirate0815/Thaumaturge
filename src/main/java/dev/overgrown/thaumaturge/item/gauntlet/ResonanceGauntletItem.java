@@ -1,8 +1,7 @@
 package dev.overgrown.thaumaturge.item.gauntlet;
 
-import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
-import dev.overgrown.thaumaturge.block.faucet.entity.FaucetBlockEntity;
+import dev.overgrown.thaumaturge.block.faucet.FaucetBlockEntity;
 import dev.overgrown.thaumaturge.item.focus.FocusItem;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;

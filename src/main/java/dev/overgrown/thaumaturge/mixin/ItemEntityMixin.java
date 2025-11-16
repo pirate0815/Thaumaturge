@@ -1,11 +1,12 @@
 package dev.overgrown.thaumaturge.mixin;
 
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
-import dev.overgrown.thaumaturge.block.vessel.entity.VesselBlockEntity;
+import dev.overgrown.thaumaturge.block.vessel.VesselBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,8 +32,11 @@ public abstract class ItemEntityMixin extends Entity {
                 if (state.getBlock() instanceof VesselBlock && state.get(VesselBlock.WATER_LEVEL) > 0) {
                     if (world.getBlockEntity(pos) instanceof VesselBlockEntity vessel && vessel.isBoiling()) {
                         ItemEntity self = (ItemEntity) (Object) this;
-                        if (vessel.addItem(self.getStack())) {
+                        ItemStack remainder = vessel.addItem(self.getStack());
+                        if (remainder == ItemStack.EMPTY) {
                             self.discard();
+                        } else {
+                            self.setStack(remainder);
                         }
                     }
                 }

@@ -3,6 +3,8 @@ package dev.overgrown.thaumaturge.block.api;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
 import java.util.Set;
 
 public interface AspectContainer {
@@ -12,7 +14,7 @@ public interface AspectContainer {
      *  or would like to have present
      * @return set of aspects identifiers
      */
-    Set<Identifier> getAspects();
+    @Unmodifiable Set<Identifier> getAspects();
 
     /** Queries the level of an aspect in a container
      * @param aspect the identifier of the aspect

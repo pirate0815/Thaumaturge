@@ -22,6 +22,8 @@ import dev.overgrown.thaumaturge.spell.utils.SpellCooldownManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -46,6 +48,9 @@ public class Thaumaturge implements ModInitializer {
 
         // Sounds
         ModSounds.initialize();
+
+        // Screens
+        ModScreens.initialise();
 
         // Spell components
         registerAspectEffects();

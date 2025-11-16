@@ -1,7 +1,6 @@
-package dev.overgrown.thaumaturge.block.faucet.entity;
+package dev.overgrown.thaumaturge.block.faucet;
 
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
-import dev.overgrown.thaumaturge.block.faucet.FaucetBlock;
 import dev.overgrown.thaumaturge.networking.FaucetTransferVisualisation;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
 import net.minecraft.block.BlockState;
