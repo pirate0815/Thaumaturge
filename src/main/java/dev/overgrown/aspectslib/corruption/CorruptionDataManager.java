@@ -1,6 +1,6 @@
 package dev.overgrown.aspectslib.corruption;
 
-import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;

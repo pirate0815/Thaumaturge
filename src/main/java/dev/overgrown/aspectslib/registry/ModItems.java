@@ -1,7 +1,7 @@
 package dev.overgrown.aspectslib.registry;
 
 import dev.overgrown.aspectslib.AspectsLib;
-import dev.overgrown.aspectslib.item.AspectShardItem;
+import dev.overgrown.aspectslib.aspects.item.AspectShardItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;

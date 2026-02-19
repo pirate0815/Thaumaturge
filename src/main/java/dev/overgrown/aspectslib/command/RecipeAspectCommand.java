@@ -3,7 +3,7 @@ package dev.overgrown.aspectslib.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import dev.overgrown.aspectslib.recipe.RecipeAspectManager;
+import dev.overgrown.aspectslib.aspects.recipe.RecipeAspectManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;

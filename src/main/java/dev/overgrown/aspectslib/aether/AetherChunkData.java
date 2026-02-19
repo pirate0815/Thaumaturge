@@ -1,7 +1,7 @@
 package dev.overgrown.aspectslib.aether;
 
-import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.aspectslib.data.BiomeAspectRegistry;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.BiomeAspectRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;

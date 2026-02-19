@@ -1,7 +1,7 @@
 package dev.overgrown.aspectslib.corruption;
 
-import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.aspectslib.data.BiomeAspectRegistry;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.BiomeAspectRegistry;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;

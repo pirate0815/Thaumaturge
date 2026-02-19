@@ -1,9 +1,9 @@
 package dev.overgrown.aspectslib.entity.aura_node;
 
 import dev.overgrown.aspectslib.AspectsLib;
-import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.aspectslib.data.BiomeAspectModifier;
-import dev.overgrown.aspectslib.data.BiomeAspectRegistry;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.BiomeAspectModifier;
+import dev.overgrown.aspectslib.aspects.data.BiomeAspectRegistry;
 import dev.overgrown.aspectslib.resonance.ResonanceCalculator;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;

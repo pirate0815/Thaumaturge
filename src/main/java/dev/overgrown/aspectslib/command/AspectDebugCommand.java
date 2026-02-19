@@ -2,11 +2,11 @@ package dev.overgrown.aspectslib.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import dev.overgrown.aspectslib.api.AspectsAPI;
-import dev.overgrown.aspectslib.data.Aspect;
-import dev.overgrown.aspectslib.data.AspectData;
-import dev.overgrown.aspectslib.data.BiomeAspectModifier;
-import dev.overgrown.aspectslib.data.ModRegistries;
+import dev.overgrown.aspectslib.aspects.api.AspectsAPI;
+import dev.overgrown.aspectslib.aspects.data.Aspect;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.BiomeAspectModifier;
+import dev.overgrown.aspectslib.aspects.data.ModRegistries;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandRegistryAccess;

@@ -8,13 +8,14 @@ import dev.overgrown.aspectslib.command.CorruptionCommand;
 import dev.overgrown.aspectslib.command.RecipeAspectCommand;
 import dev.overgrown.aspectslib.command.TagDumpCommand;
 import dev.overgrown.aspectslib.corruption.CorruptionManager;
-import dev.overgrown.aspectslib.data.AspectManager;
-import dev.overgrown.aspectslib.data.UniversalAspectManager;
-import dev.overgrown.aspectslib.recipe.RecipeAspectManager;
+import dev.overgrown.aspectslib.aspects.data.AspectManager;
+import dev.overgrown.aspectslib.aspects.data.UniversalAspectManager;
+import dev.overgrown.aspectslib.aspects.recipe.RecipeAspectManager;
 import dev.overgrown.aspectslib.registry.ModEntities;
 import dev.overgrown.aspectslib.registry.ModItems;
 import dev.overgrown.aspectslib.resonance.ResonanceManager;
-import dev.overgrown.aspectslib.networking.SyncAspectIdentifierPacket;
+import dev.overgrown.aspectslib.aspects.networking.SyncAspectIdentifierPacket;
+import dev.overgrown.aspectslib.spell.modifier.ModifierRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -38,6 +39,7 @@ public class AspectsLib implements ModInitializer {
 	public void onInitialize() {
         ModItems.initialize();
 		ModEntities.register();
+		ModifierRegistry.init();
 
 		// Register commands
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

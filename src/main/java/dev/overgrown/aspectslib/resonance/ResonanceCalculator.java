@@ -1,6 +1,6 @@
 package dev.overgrown.aspectslib.resonance;
 
-import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
 import net.minecraft.util.Identifier;
 
 import java.util.Collections;

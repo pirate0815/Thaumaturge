@@ -1,6 +1,6 @@
 package dev.overgrown.aspectslib.aether;
 
-import dev.overgrown.aspectslib.data.AspectData;
+import dev.overgrown.aspectslib.aspects.data.AspectData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
