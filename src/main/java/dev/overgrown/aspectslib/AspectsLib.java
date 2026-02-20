@@ -16,6 +16,7 @@ import dev.overgrown.aspectslib.registry.ModItems;
 import dev.overgrown.aspectslib.resonance.ResonanceManager;
 import dev.overgrown.aspectslib.aspects.networking.SyncAspectIdentifierPacket;
 import dev.overgrown.aspectslib.spell.modifier.ModifierRegistry;
+import dev.overgrown.aspectslib.spell.networking.SpellNetworking;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -40,6 +41,7 @@ public class AspectsLib implements ModInitializer {
         ModItems.initialize();
 		ModEntities.register();
 		ModifierRegistry.init();
+		SpellNetworking.init();
 
 		// Register commands
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

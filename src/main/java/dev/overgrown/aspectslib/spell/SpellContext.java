@@ -25,11 +25,6 @@ import java.util.*;
  *   <li><b>Spell parameters</b> – the mutable {@link SpellMetadata} that reflects the final stats after all modifiers have been applied.</li>
  * </ul>
  *
- * <p>In the current system, the context works alongside the existing delivery objects
- * ({@link SelfSpellDelivery}, {@link TargetedSpellDelivery}, {@link AoeSpellDelivery}).
- * Those deliveries contain the caster, world, and concrete target information; the
- * context adds the spell‑specific data and a flexible data map for temporary storage.
- *
  * <p>Modifiers can read from and write to the context's data map to pass
  * information between the pre‑ and post‑execute phases, or to alter the
  * behavior of the spell's execution.
