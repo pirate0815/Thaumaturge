@@ -1,0 +1,15 @@
+{
+  "type": "thaumaturge:aspect_cluster",
+  "config": {
+    "state": {
+      "Name": "thaumaturge:ordo_cluster",
+      "Properties": {
+        "facing": "up",
+        "waterlogged": "false"
+      }
+    },
+    "tries": 12,
+    "spread_xz": 6,
+    "spread_y": 3
+  }
+}

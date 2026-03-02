@@ -1,0 +1,15 @@
+{
+  "type": "thaumaturge:aspect_cluster",
+  "config": {
+    "state": {
+      "Name": "thaumaturge:terra_cluster",
+      "Properties": {
+        "facing": "up",
+        "waterlogged": "false"
+      }
+    },
+    "tries": 24,
+    "spread_xz": 8,
+    "spread_y": 4
+  }
+}
