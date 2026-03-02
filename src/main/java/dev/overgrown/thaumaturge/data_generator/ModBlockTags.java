@@ -25,6 +25,12 @@ public class ModBlockTags extends FabricTagProvider.BlockTagProvider {
                 .add(ModBlocks.FAUCET)
                 .add(ModBlocks.JAR)
                 .add(ModBlocks.VESSEL)
-                .add(ModBlocks.ALCHEMICAL_FURNACE);
+                .add(ModBlocks.ALCHEMICAL_FURNACE)
+                .add(ModBlocks.AER_CLUSTER)
+                .add(ModBlocks.AQUA_CLUSTER)
+                .add(ModBlocks.IGNIS_CLUSTER)
+                .add(ModBlocks.TERRA_CLUSTER)
+                .add(ModBlocks.ORDO_CLUSTER)
+                .add(ModBlocks.PERDITIO_CLUSTER);
     }
 }
