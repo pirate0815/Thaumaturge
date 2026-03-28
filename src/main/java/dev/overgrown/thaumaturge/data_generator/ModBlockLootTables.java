@@ -18,5 +18,13 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider {
         addDrop(ModBlocks.JAR);
         addDrop(ModBlocks.VESSEL);
         addDrop(ModBlocks.ALCHEMICAL_FURNACE);
+
+        // Aspect Clusters
+        addDrop(ModBlocks.AER_CLUSTER);
+        addDrop(ModBlocks.AQUA_CLUSTER);
+        addDrop(ModBlocks.IGNIS_CLUSTER);
+        addDrop(ModBlocks.TERRA_CLUSTER);
+        addDrop(ModBlocks.ORDO_CLUSTER);
+        addDrop(ModBlocks.PERDITIO_CLUSTER);
     }
 }
