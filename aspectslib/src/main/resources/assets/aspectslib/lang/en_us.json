@@ -1,0 +1,46 @@
+{
+  "itemGroup.aspectslib.aspect_shards": "AspectsLib: Aspect Shards",
+
+  "item.aspectslib.aer_aspect_shard": "Aer Aspect Shard",
+  "item.aspectslib.aqua_aspect_shard": "Aqua Aspect Shard",
+  "item.aspectslib.ignis_aspect_shard": "Ignis Aspect Shard",
+  "item.aspectslib.ordo_aspect_shard": "Ordo Aspect Shard",
+  "item.aspectslib.perditio_aspect_shard": "Perditio Aspect Shard",
+  "item.aspectslib.terra_aspect_shard": "Terra Aspect Shard",
+
+  "item.aspectslib.gelum_aspect_shard": "Gelum Aspect Shard",
+  "item.aspectslib.lux_aspect_shard": "Lux Aspect Shard",
+  "item.aspectslib.metallum_aspect_shard": "Metallum Aspect Shard",
+  "item.aspectslib.mortuus_aspect_shard": "Mortuus Aspect Shard",
+  "item.aspectslib.motus_aspect_shard": "Motus Aspect Shard",
+  "item.aspectslib.permutatio_aspect_shard": "Permutatio Aspect Shard",
+  "item.aspectslib.potentia_aspect_shard": "Potentia Aspect Shard",
+  "item.aspectslib.vacuos_aspect_shard": "Vacuos Aspect Shard",
+  "item.aspectslib.victus_aspect_shard": "Victus Aspect Shard",
+  "item.aspectslib.vitreus_aspect_shard": "Vitreus Aspect Shard",
+
+  "item.aspectslib.bestia_aspect_shard": "Bestia Aspect Shard",
+  "item.aspectslib.exanimis_aspect_shard": "Exanimis Aspect Shard",
+  "item.aspectslib.herba_aspect_shard": "Herba Aspect Shard",
+  "item.aspectslib.instrumentum_aspect_shard": "Instrumentum Aspect Shard",
+  "item.aspectslib.praecantatio_aspect_shard": "Praecantatio Aspect Shard",
+  "item.aspectslib.spiritus_aspect_shard": "Spiritus Aspect Shard",
+  "item.aspectslib.tenebrae_aspect_shard": "Tenebrae Aspect Shard",
+  "item.aspectslib.vinculum_aspect_shard": "Vinculum Aspect Shard",
+  "item.aspectslib.volatus_aspect_shard": "Volatus Aspect Shard",
+
+  "item.aspectslib.alienis_aspect_shard": "Alienis Aspect Shard",
+  "item.aspectslib.alkimia_aspect_shard": "Alkimia Aspect Shard",
+  "item.aspectslib.auram_aspect_shard": "Auram Aspect Shard",
+  "item.aspectslib.aversio_aspect_shard": "Aversio Aspect Shard",
+  "item.aspectslib.cognitio_aspect_shard": "Cognitio Aspect Shard",
+  "item.aspectslib.desiderium_aspect_shard": "Desiderium Aspect Shard",
+  "item.aspectslib.fabrico_aspect_shard": "Fabrico Aspect Shard",
+  "item.aspectslib.humanus_aspect_shard": "Humanus Aspect Shard",
+  "item.aspectslib.machina_aspect_shard": "Machina Aspect Shard",
+  "item.aspectslib.praemunio_aspect_shard": "Praemunio Aspect Shard",
+  "item.aspectslib.sensus_aspect_shard": "Sensus Aspect Shard",
+  "item.aspectslib.vitium_aspect_shard": "Vitium Aspect Shard",
+
+  "item.aspectslib.fames_aspect_shard": "Fames Aspect Shard"
+}

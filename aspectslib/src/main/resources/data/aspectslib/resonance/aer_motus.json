@@ -1,0 +1,6 @@
+{
+  "aspect1": "aspectslib:aer",
+  "aspect2": "aspectslib:motus",
+  "type": "amplifying",
+  "factor": 1.5
+}

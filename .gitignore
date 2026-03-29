@@ -4,9 +4,15 @@
 build/
 out/
 classes/
+<<<<<<< HEAD
 src/main/generated
 # eclipse
 
+=======
+
+# eclipse
+.claude
+>>>>>>> aspectslib/master
 *.launch
 
 # idea

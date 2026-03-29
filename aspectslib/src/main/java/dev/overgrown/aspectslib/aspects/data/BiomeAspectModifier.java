@@ -1,0 +1,123 @@
+package dev.overgrown.aspectslib.aspects.data;
+
+import dev.overgrown.aspectslib.AspectsLib;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.util.Identifier;
+import java.util.HashMap;
+import java.util.Map;
+
+public class BiomeAspectModifier {
+    private static final Map<Identifier, AspectData> biomeModifications = new HashMap<>();
+
+    public static void addBiomeModification(Identifier biomeId, Identifier aspectId, int amount) {
+        if (amount == 0) {
+            return;
+        }
+
+        AspectData current = biomeModifications.get(biomeId);
+        Object2IntOpenHashMap<Identifier> updatedMap = current != null
+                ? new Object2IntOpenHashMap<>(current.getMap())
+                : new Object2IntOpenHashMap<>();
+
+        int newAmount = updatedMap.getOrDefault(aspectId, 0) + amount;
+        if (newAmount == 0) {
+            updatedMap.removeInt(aspectId);
+        } else {
+            updatedMap.put(aspectId, newAmount);
+        }
+
+        if (updatedMap.isEmpty()) {
+            biomeModifications.remove(biomeId);
+        } else {
+            biomeModifications.put(biomeId, new AspectData(new Object2IntOpenHashMap<>(updatedMap)));
+        }
+    }
+
+    public static void drainAllAspects(Identifier biomeId, int amount) {
+        // Get current biome aspects from registry
+        AspectData currentBiomeAspects = BiomeAspectRegistry.get(biomeId);
+        if (!currentBiomeAspects.isEmpty()) {
+            AspectData.Builder builder = new AspectData.Builder(currentBiomeAspects);
+            // Reduce all aspects by specified amount
+            for (Identifier aspectId : currentBiomeAspects.getAspectIds()) {
+                int currentAmount = currentBiomeAspects.getLevel(aspectId);
+                if (currentAmount > 0) {
+                    builder.set(aspectId, Math.max(0, currentAmount - amount));
+                }
+            }
+            // Update the registry - you'll need public update methods for this
+            BiomeAspectRegistry.update(biomeId, builder.build());
+        }
+    }
+
+    public static AspectData getModifiedBiomeAspects(Identifier biomeId, AspectData original) {
+        AspectData modification = biomeModifications.get(biomeId);
+        if (modification != null && !modification.isEmpty()) {
+            AspectData.Builder builder = new AspectData.Builder(original);
+            for (Identifier aspectId : modification.getAspectIds()) {
+                builder.add(aspectId, modification.getLevel(aspectId));
+            }
+            return builder.build();
+        }
+        return original;
+    }
+
+    public static void clearModifications() {
+        biomeModifications.clear();
+    }
+
+    // Helper method to get combined aspects (original + modifications)
+    public static AspectData getCombinedBiomeAspects(Identifier biomeId) {
+        // Get the ORIGINAL biome aspects from the registry first
+        AspectData original = BiomeAspectRegistry.get(biomeId);
+
+        // Then get any modifications
+        AspectData modification = biomeModifications.get(biomeId);
+
+        // If there are no modifications, just return the original
+        if (modification == null || modification.isEmpty()) {
+            return original;
+        }
+
+        // Otherwise, combine them
+        AspectData.Builder builder = new AspectData.Builder(original);
+        for (Identifier aspectId : modification.getAspectIds()) {
+            int modAmount = modification.getLevel(aspectId);
+            if (modAmount != 0) {
+                builder.add(aspectId, modAmount);
+            }
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Applies all current modifications to the actual registry
+     * This makes sure modifications persist across reloads
+     */
+    public static void applyModificationsToRegistry() {
+        for (Map.Entry<Identifier, AspectData> entry : biomeModifications.entrySet()) {
+            Identifier biomeId = entry.getKey();
+            AspectData modification = entry.getValue();
+
+            // Get the original aspects and apply modifications
+            AspectData original = BiomeAspectRegistry.get(biomeId);
+            AspectData.Builder builder = new AspectData.Builder(original);
+
+            for (Identifier aspectId : modification.getAspectIds()) {
+                int modAmount = modification.getLevel(aspectId);
+                if (modAmount != 0) {
+                    builder.add(aspectId, modAmount);
+                }
+            }
+
+            // Update the registry with the modified aspects
+            BiomeAspectRegistry.update(biomeId, builder.build());
+        }
+
+        // Clear modifications after applying to avoid double-counting
+        clearModifications();
+
+        AspectsLib.LOGGER.info("Applied biome aspect modifications to registry");
+    }
+}
