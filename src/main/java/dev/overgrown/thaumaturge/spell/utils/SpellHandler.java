@@ -13,6 +13,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -32,20 +33,20 @@ public final class SpellHandler {
 
         // NEW: Check if we can cast the spell (enough TOTAL Aether, not aspect-specific)
         BlockPos castPos = player.getBlockPos();
-        if (!hasSufficientAether(player.getWorld(), castPos, spellCost)) {
+        if (!hasSufficientAether(player.getServerWorld(), castPos, spellCost)) {
             // Failed cast - chance to create dead zone
             handleFailedCast(player, castPos, spellCost);
             return false;
         }
 
         // NEW: Consume Aether for the spell (total RU consumption)
-        if (!consumeAetherForSpell(player.getWorld(), castPos, spellCost)) {
+        if (!consumeAetherForSpell(player.getServerWorld(), castPos, spellCost)) {
             handleFailedCast(player, castPos, spellCost);
             return false;
         }
 
         // NEW: Calculate environmental resonance effects
-        EnvironmentalResonance resonance = calculateEnvironmentalResonance(player.getWorld(), castPos, pattern);
+        EnvironmentalResonance resonance = calculateEnvironmentalResonance(player.getServerWorld(), castPos, pattern);
 
         // Apply spell effects with resonance modifications
         return applySpellEffects(player, delivery, pattern, resonance);
@@ -54,7 +55,7 @@ public final class SpellHandler {
     /**
      * NEW: Check if there's sufficient total Aether (not aspect-specific)
      */
-    private static boolean hasSufficientAether(net.minecraft.world.World world, BlockPos pos, AspectData cost) {
+    private static boolean hasSufficientAether(ServerWorld world, BlockPos pos, AspectData cost) {
         // Calculate total RU needed
         double totalCost = cost.calculateTotalRU();
 
@@ -67,7 +68,7 @@ public final class SpellHandler {
     /**
      * NEW: Calculate total available Aether from all aspects in the environment
      */
-    private static double calculateTotalAvailableAether(net.minecraft.world.World world, BlockPos pos) {
+    private static double calculateTotalAvailableAether(ServerWorld world, BlockPos pos) {
         if (AetherAPI.isDeadZone(world, pos)) {
             return 0;
         }
@@ -87,7 +88,7 @@ public final class SpellHandler {
     /**
      * NEW: Consume Aether proportionally from all available aspects
      */
-    private static boolean consumeAetherForSpell(net.minecraft.world.World world, BlockPos pos, AspectData cost) {
+    private static boolean consumeAetherForSpell(ServerWorld world, BlockPos pos, AspectData cost) {
         if (AetherAPI.isDeadZone(world, pos)) {
             return false;
         }
@@ -128,7 +129,7 @@ public final class SpellHandler {
     /**
      * NEW: Consume Aether sequentially when proportional fails
      */
-    private static boolean consumeAetherSequentially(net.minecraft.world.World world, BlockPos pos, int totalCost) {
+    private static boolean consumeAetherSequentially(ServerWorld world, BlockPos pos, int totalCost) {
         net.minecraft.util.math.ChunkPos chunkPos = new net.minecraft.util.math.ChunkPos(pos);
         var aetherData = dev.overgrown.aspectslib.aether.AetherManager.getAetherData(world, chunkPos);
 
@@ -154,7 +155,7 @@ public final class SpellHandler {
     /**
      * NEW: Calculate environmental resonance effects
      */
-    private static EnvironmentalResonance calculateEnvironmentalResonance(net.minecraft.world.World world, BlockPos pos, SpellPattern pattern) {
+    private static EnvironmentalResonance calculateEnvironmentalResonance(ServerWorld world, BlockPos pos, SpellPattern pattern) {
         EnvironmentalResonance resonance = new EnvironmentalResonance();
         net.minecraft.util.math.ChunkPos chunkPos = new net.minecraft.util.math.ChunkPos(pos);
         var aetherData = dev.overgrown.aspectslib.aether.AetherManager.getAetherData(world, chunkPos);

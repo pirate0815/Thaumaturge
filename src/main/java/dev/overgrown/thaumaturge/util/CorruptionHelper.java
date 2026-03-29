@@ -1,7 +1,7 @@
 package dev.overgrown.thaumaturge.util;
 
 import dev.overgrown.aspectslib.AspectsLib;
-import dev.overgrown.aspectslib.corruption.CorruptionDataManager;
+import dev.overgrown.aspectslib.corruption.CorruptionAPI;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
@@ -14,7 +14,8 @@ import java.util.Optional;
 
 public class CorruptionHelper {
 
-    public static final Identifier VITIUM_ASPECT = AspectsLib.identifier("vitium");
+    private static final float SCALE = 0.5f;
+
 
     public static void addCorruption(ServerWorld world, BlockPos pos, int amount) {
 
@@ -24,6 +25,6 @@ public class CorruptionHelper {
             return;
         }
 
-        CorruptionDataManager.modifyChunkAspect(world, new ChunkPos(pos), optionalKey.get().getValue(), VITIUM_ASPECT, amount);
+        CorruptionAPI.forceCorruption(world, new ChunkPos(pos), (int) (amount * SCALE));
     }
 }
