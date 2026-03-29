@@ -1,0 +1,19 @@
+{
+  "required":true,
+  "package":"dev.overgrown.aspectslib.mixin",
+  "compatibilityLevel":"JAVA_17",
+  "mixins":[
+    "aspects.ItemStackMixin",
+    "aspects.LivingEntityMixin",
+    "aspects.client.ItemStackClientMixin"
+  ],
+  "injectors":{
+    "defaultRequire":1
+  },
+  "overwrites":{
+    "requireAnnotations":true
+  },
+  "client":[
+    "aspects.client.TooltipComponentFactoryMixin"
+  ]
+}
