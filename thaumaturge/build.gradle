@@ -47,7 +47,6 @@ repositories {
 		}
 	}
 
-	mavenLocal()
 }
 
 fabricApi {
@@ -67,7 +66,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// AspectsLib Dependency (Required)
-	modImplementation "dev.overgrown.aspectslib:aspectslib:${project.aspectslib_version}"
+	implementation project(path: ":aspectslib", configuration: "namedElements")
 
 	// Modonomicon Dependency (Optional)
 	modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
@@ -126,8 +125,4 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
-}
-
-configurations.configureEach {
-	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
