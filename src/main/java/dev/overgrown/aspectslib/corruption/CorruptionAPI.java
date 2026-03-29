@@ -1,6 +1,9 @@
 package dev.overgrown.aspectslib.corruption;
 
 import dev.overgrown.aspectslib.AspectsLib;
+import dev.overgrown.aspectslib.aether.AetherChunkData;
+import dev.overgrown.aspectslib.aether.AetherManager;
+import dev.overgrown.aspectslib.aether.AetherWorldState;
 import dev.overgrown.aspectslib.aspects.data.AspectData;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -41,99 +44,24 @@ public class CorruptionAPI {
      * @param vitiumAmount The amount of Vitium to add
      */
     public static void forceCorruption(ServerWorld world, ChunkPos chunkPos, int vitiumAmount) {
-        // Get the biome for this chunk
-        BlockPos centerPos = chunkPos.getStartPos().add(8, 64, 8);
-        Biome biome = world.getBiome(centerPos).value();
-        Identifier biomeId = world.getRegistryManager()
-                .get(net.minecraft.registry.RegistryKeys.BIOME)
-                .getId(biome);
-
-        if (biomeId == null) {
-            AspectsLib.LOGGER.warn("Could not determine biome for chunk {}", chunkPos);
-            return;
-        }
-
-        // Find the connected region
-        Set<ChunkPos> region = BiomeRegionDetector.findConnectedBiomeChunks(world, chunkPos, biomeId, 32);
-
-        Identifier vitiumId = AspectsLib.identifier("vitium");
-        CorruptionDataManager.modifyRegionAspects(world, region, biomeId, vitiumId, vitiumAmount);
-
-        AspectsLib.LOGGER.info("Forced corruption on chunk region {} (biome {}) by adding {} Vitium", chunkPos, biomeId, vitiumAmount);
+        AetherChunkData data = AetherManager.getAetherData(world, chunkPos);
+        data.increaseVitiumMaximum(vitiumAmount);
+        //data.increaseVitium(vitiumAmount);
     }
 
     /**
      * Purifies a chunk region by removing all Vitium
-     * @param world The server world
+     * @param world The server wintorld
      * @param chunkPos The chunk position
      */
     public static void purifyChunk(ServerWorld world, ChunkPos chunkPos) {
-        // Get the biome for this chunk
-        BlockPos centerPos = chunkPos.getStartPos().add(8, 64, 8);
-        Biome biome = world.getBiome(centerPos).value();
-        Identifier biomeId = world.getRegistryManager()
-                .get(net.minecraft.registry.RegistryKeys.BIOME)
-                .getId(biome);
-
-        if (biomeId == null) {
-            AspectsLib.LOGGER.warn("Could not determine biome for chunk {}", chunkPos);
-            return;
-        }
-
-        // Find the connected region
-        Set<ChunkPos> region = BiomeRegionDetector.findConnectedBiomeChunks(world, chunkPos, biomeId, 32);
-
-        Identifier vitiumId = AspectsLib.identifier("vitium");
-
-        // Get current Vitium amount for the region
-        AspectData currentAspects = CorruptionDataManager.getChunkAspects(world, chunkPos, biomeId);
-        int vitiumAmount = currentAspects.getLevel(vitiumId);
-
-        if (vitiumAmount > 0) {
-            // Remove all Vitium from the region
-            CorruptionDataManager.modifyRegionAspects(world, region, biomeId, vitiumId, -vitiumAmount);
-            AspectsLib.LOGGER.info("Purified chunk region {} (biome {}) by removing {} Vitium", chunkPos, biomeId, vitiumAmount);
-        } else {
-            AspectsLib.LOGGER.info("Chunk region {} (biome {}) has no Vitium to purify", chunkPos, biomeId);
-        }
+        AetherManager.getAetherData(world, chunkPos).clearVitium();
     }
 
     /**
-     * Gets the amount of Vitium in a chunk's region
+     * Gets the amount of Vitium in a chunk
      */
     public static int getVitiumAmount(ServerWorld world, ChunkPos chunkPos) {
-        // Get the biome for this chunk
-        BlockPos centerPos = chunkPos.getStartPos().add(8, 64, 8);
-        Biome biome = world.getBiome(centerPos).value();
-        Identifier biomeId = world.getRegistryManager()
-                .get(net.minecraft.registry.RegistryKeys.BIOME)
-                .getId(biome);
-
-        if (biomeId == null) {
-            return 0;
-        }
-
-        Identifier vitiumId = AspectsLib.identifier("vitium");
-        AspectData aspects = CorruptionDataManager.getChunkAspects(world, chunkPos, biomeId);
-        return aspects.getLevel(vitiumId);
-    }
-
-    /**
-     * Gets stored corruption tracking data for a chunk, if any has been recorded.
-     * @param world The server world the chunk belongs to
-     * @param chunkPos The chunk position
-     * @return The saved corruption data for the chunk, or {@code null} if none exists yet
-     */
-    public static CorruptionChunkData getChunkData(ServerWorld world, ChunkPos chunkPos) {
-        return CorruptionDataManager.getChunkData(world, chunkPos);
-    }
-
-    /**
-     * Gets a read-only view of all tracked corruption chunks for a world.
-     * @param world The server world to query
-     * @return Collection of chunk data entries; empty if nothing has been tracked yet
-     */
-    public static Collection<CorruptionChunkData> getTrackedChunks(ServerWorld world) {
-        return CorruptionDataManager.getAll(world);
+        return AetherManager.getAetherData(world, chunkPos).getMaxAether(CorruptionManager.VITIUM_ID);
     }
 }

@@ -2,6 +2,7 @@ package dev.overgrown.aspectslib.aether;
 
 import dev.overgrown.aspectslib.aspects.data.AspectData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -12,14 +13,14 @@ public class AetherAPI {
     /**
      * Checks if a spell can be cast at the given position with the specified aspect costs
      */
-    public static boolean canCastSpell(World world, BlockPos pos, AspectData cost) {
+    public static boolean canCastSpell(ServerWorld world, BlockPos pos, AspectData cost) {
         return canCastSpell(world, new ChunkPos(pos), cost);
     }
 
     /**
      * Checks if a spell can be cast in the given chunk with the specified aspect costs
      */
-    public static boolean canCastSpell(World world, ChunkPos chunkPos, AspectData cost) {
+    public static boolean canCastSpell(ServerWorld world, ChunkPos chunkPos, AspectData cost) {
         if (AetherManager.isDeadZone(world, chunkPos)) {
             return false;
         }
@@ -36,14 +37,14 @@ public class AetherAPI {
     /**
      * Harvests Aether for spell casting. Returns true if successful.
      */
-    public static boolean castSpell(World world, BlockPos pos, AspectData cost) {
+    public static boolean castSpell(ServerWorld world, BlockPos pos, AspectData cost) {
         return castSpell(world, new ChunkPos(pos), cost);
     }
 
     /**
      * Harvests Aether for spell casting. Returns true if successful.
      */
-    public static boolean castSpell(World world, ChunkPos chunkPos, AspectData cost) {
+    public static boolean castSpell(ServerWorld world, ChunkPos chunkPos, AspectData cost) {
         if (AetherManager.isDeadZone(world, chunkPos)) {
             return false;
         }
@@ -69,7 +70,7 @@ public class AetherAPI {
         return allHarvested;
     }
 
-    public static boolean hasTotalAether(World world, BlockPos pos, double requiredRU) {
+    public static boolean hasTotalAether(ServerWorld world, BlockPos pos, double requiredRU) {
         if (isDeadZone(world, pos)) {
             return false;
         }
@@ -88,14 +89,14 @@ public class AetherAPI {
     /**
      * Gets the current Aether level for a specific aspect at a position
      */
-    public static int getAetherLevel(World world, BlockPos pos, Identifier aspectId) {
+    public static int getAetherLevel(ServerWorld world, BlockPos pos, Identifier aspectId) {
         return getAetherLevel(world, new ChunkPos(pos), aspectId);
     }
 
     /**
      * Gets the current Aether level for a specific aspect in a chunk
      */
-    public static int getAetherLevel(World world, ChunkPos chunkPos, Identifier aspectId) {
+    public static int getAetherLevel(ServerWorld world, ChunkPos chunkPos, Identifier aspectId) {
         if (AetherManager.isDeadZone(world, chunkPos)) {
             return 0;
         }
@@ -107,14 +108,14 @@ public class AetherAPI {
     /**
      * Gets the maximum Aether capacity for a specific aspect at a position
      */
-    public static int getAetherCapacity(World world, BlockPos pos, Identifier aspectId) {
+    public static int getAetherCapacity(ServerWorld world, BlockPos pos, Identifier aspectId) {
         return getAetherCapacity(world, new ChunkPos(pos), aspectId);
     }
 
     /**
      * Gets the maximum Aether capacity for a specific aspect in a chunk
      */
-    public static int getAetherCapacity(World world, ChunkPos chunkPos, Identifier aspectId) {
+    public static int getAetherCapacity(ServerWorld world, ChunkPos chunkPos, Identifier aspectId) {
         if (AetherManager.isDeadZone(world, chunkPos)) {
             return 0;
         }
@@ -126,14 +127,14 @@ public class AetherAPI {
     /**
      * Gets the Aether percentage (0.0 to 1.0) for a specific aspect at a position
      */
-    public static double getAetherPercentage(World world, BlockPos pos, Identifier aspectId) {
+    public static double getAetherPercentage(ServerWorld world, BlockPos pos, Identifier aspectId) {
         return getAetherPercentage(world, new ChunkPos(pos), aspectId);
     }
 
     /**
      * Gets the Aether percentage (0.0 to 1.0) for a specific aspect in a chunk
      */
-    public static double getAetherPercentage(World world, ChunkPos chunkPos, Identifier aspectId) {
+    public static double getAetherPercentage(ServerWorld world, ChunkPos chunkPos, Identifier aspectId) {
         if (AetherManager.isDeadZone(world, chunkPos)) {
             return 0.0;
         }
@@ -174,14 +175,14 @@ public class AetherAPI {
     /**
      * Forces recovery of Aether at a position (useful for debugging or admin commands)
      */
-    public static void forceRecovery(World world, BlockPos pos) {
+    public static void forceRecovery(ServerWorld world, BlockPos pos) {
         forceRecovery(world, new ChunkPos(pos));
     }
 
     /**
      * Forces recovery of Aether in a chunk (useful for debugging or admin commands)
      */
-    public static void forceRecovery(World world, ChunkPos chunkPos) {
+    public static void forceRecovery(ServerWorld world, ChunkPos chunkPos) {
         if (!AetherManager.isDeadZone(world, chunkPos)) {
             AetherChunkData aetherData = AetherManager.getAetherData(world, chunkPos);
             aetherData.recoverAether();

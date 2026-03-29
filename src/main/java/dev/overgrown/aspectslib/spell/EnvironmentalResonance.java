@@ -2,6 +2,7 @@ package dev.overgrown.aspectslib.spell;
 
 import dev.overgrown.aspectslib.resonance.Resonance;
 import dev.overgrown.aspectslib.resonance.ResonanceManager;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -47,7 +48,7 @@ public final class EnvironmentalResonance {
      * @param chunkPos     the chunk containing the cast origin
      * @param spellAspects the set of aspect identifiers used in the spell
      */
-    public EnvironmentalResonance(World world, ChunkPos chunkPos, Collection<Identifier> spellAspects) {
+    public EnvironmentalResonance(ServerWorld world, ChunkPos chunkPos, Collection<Identifier> spellAspects) {
         this();
         if (world.isClient()) return; // only meaningful on server
 

@@ -48,13 +48,8 @@ public class AetherManager extends JsonDataLoader implements IdentifiableResourc
         AetherManager.server = server;
     }
 
-    public static AetherChunkData getAetherData(World world, ChunkPos chunkPos) {
-        if (world.isClient()) {
-            return CHUNK_CACHE.computeIfAbsent(chunkPos, pos -> new AetherChunkData(world, pos));
-        }
-
-        ServerWorld serverWorld = (ServerWorld) world;
-        AetherWorldState worldState = getWorldState(serverWorld);
+    public static AetherChunkData getAetherData(ServerWorld world, ChunkPos chunkPos) {
+        AetherWorldState worldState = getWorldState(world);
         return worldState.getOrCreateChunkData(chunkPos, world);
     }
 
