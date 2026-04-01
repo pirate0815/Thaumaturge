@@ -33,12 +33,12 @@ public class ModBlocks {
             FabricBlockEntityTypeBuilder.create(VesselBlockEntity::new, VESSEL).build();
 
     // Aspect Clusters
-    public static final Block AER_CLUSTER = new AerClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block AQUA_CLUSTER = new AquaClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block IGNIS_CLUSTER = new IgnisClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block TERRA_CLUSTER = new TerraClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block ORDO_CLUSTER = new OrdoClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block PERDITIO_CLUSTER = new PerditioClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
+    public static final Block AER_CLUSTER = new AerClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block AQUA_CLUSTER = new AquaClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block IGNIS_CLUSTER = new IgnisClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block TERRA_CLUSTER = new TerraClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block ORDO_CLUSTER = new OrdoClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block PERDITIO_CLUSTER = new PerditioClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
     
     // Faucet
     public static final Block FAUCET = new FaucetBlock(FabricBlockSettings.create().nonOpaque().notSolid().hardness(1f).resistance(1f).mapColor(MapColor.BLACK).pistonBehavior(PistonBehavior.BLOCK));

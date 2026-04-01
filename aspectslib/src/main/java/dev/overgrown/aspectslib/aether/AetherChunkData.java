@@ -1,5 +1,6 @@
 package dev.overgrown.aspectslib.aether;
 
+import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.aspects.data.AspectData;
 import dev.overgrown.aspectslib.aspects.data.BiomeAspectRegistry;
 import net.minecraft.nbt.NbtCompound;
@@ -18,8 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static dev.overgrown.aspectslib.corruption.CorruptionManager.VITIUM_ID;
-
 public class AetherChunkData {
     public static final int AETHER_SCALE = 100;
 
@@ -31,8 +30,6 @@ public class AetherChunkData {
     private double totalExpendedThisHour;
     private long hourStartTime;
     private boolean initialized = false;
-    private boolean isCorruptedCache;
-    private boolean isCorruptedCacheValid = false;
 
     public AetherChunkData(World world, ChunkPos chunkPos) {
         this.world = world;
@@ -44,7 +41,6 @@ public class AetherChunkData {
         this.totalExpendedThisHour = 0;
 
         initializeFromBiome();
-        isCorrupted();
     }
 
     private AetherChunkData(World world, ChunkPos chunkPos, Map<Identifier, Integer> currentAether,
@@ -58,8 +54,6 @@ public class AetherChunkData {
         this.totalExpendedThisHour = totalExpendedThisHour;
         this.hourStartTime = hourStartTime;
         this.initialized = true;
-
-        isCorrupted();
     }
 
     protected void setWorld(@NotNull World world) {
@@ -102,7 +96,6 @@ public class AetherChunkData {
         }
 
         initialized = true;
-        isCorruptedCacheValid = false;
     }
 
     public boolean canHarvest(Identifier aspectId, int amount) {
@@ -172,30 +165,16 @@ public class AetherChunkData {
 
         // Recover based on configured rate
         double recoveryRate = AetherManager.getRecoveryRate(world);
-        if (timeSinceLastRecovery > 2400f) {
-            float recoveryCycles = (timeSinceLastRecovery / 2400f);
+        if (timeSinceLastRecovery > 2400f) { // Every 120 Seconds
+            float recoveryCycles = (timeSinceLastRecovery / 24000f); // 100 Units = 1.00 RU/M^2 per Minecraft Day
 
-            // If a chunk is corrupted, only regenerate vitium
-            if (isCorrupted()) {
-
-                int max = maxAether.get(VITIUM_ID);
-                int current = currentAether.getOrDefault(VITIUM_ID, 0);
-
+            for (Map.Entry<Identifier, Integer> entry : maxAether.entrySet()) {
+                Identifier aspectId = entry.getKey();
+                int max = entry.getValue();
+                int current = currentAether.getOrDefault(aspectId, 0);
                 if (current < max) {
-                    int recoveryAmount = (int) (recoveryRate * recoveryCycles * AETHER_SCALE);
-                    currentAether.put(VITIUM_ID, Math.min(max, Math.min(current + recoveryAmount, max)));
-                }
-            } else {
-                for (Map.Entry<Identifier, Integer> entry : maxAether.entrySet()) {
-                    Identifier aspectId = entry.getKey();
-                    int max = entry.getValue();
-                    int current = currentAether.getOrDefault(aspectId, 0);
-
-                    if (current < max) {
-
-                        int recoveryAmount = (int) (recoveryRate * recoveryCycles) * AETHER_SCALE;
-                        currentAether.put(aspectId, Math.min(max, Math.min(current + recoveryAmount, max)));
-                    }
+                    int recoveryAmount = (int) (recoveryRate * recoveryCycles) * AETHER_SCALE;
+                    currentAether.put(aspectId, Math.min(current + recoveryAmount, max));
                 }
             }
             lastRecoveryTime = currentTime;
@@ -259,48 +238,13 @@ public class AetherChunkData {
         return Collections.unmodifiableSet(currentAether.keySet());
     }
 
-    public boolean canHarvestVitium() {
-        if (AetherManager.isDeadZone(world, chunkPos)) {
-            return false;
-        }
-        return getCurrentAether(VITIUM_ID) > 0;
-    }
-
-    public boolean harvestVitium(int amount) {
-        return harvestAether(VITIUM_ID, amount);
-    }
-
-    public void increaseVitiumMaximum(int amount) {
-        if (maxAether.containsKey(VITIUM_ID)) {
-            maxAether.put(VITIUM_ID, maxAether.get(VITIUM_ID) + amount);
+    public void modifyAspect(Identifier aspect, int amount) {
+        int level = maxAether.getOrDefault(aspect, 0) + amount;
+        if (level > 0) {
+            maxAether.put(aspect, level);
         } else {
-            maxAether.put(VITIUM_ID, amount);
+            maxAether.remove(aspect);
         }
-        isCorruptedCacheValid = false;
-    }
-
-    public void increaseVitium(int amount) {
-        if (currentAether.containsKey(VITIUM_ID)) {
-            currentAether.put(VITIUM_ID, currentAether.get(VITIUM_ID) + amount);
-        } else {
-            currentAether.put(VITIUM_ID, amount);
-        }
-    }
-
-    public void clearVitium() {
-        currentAether.remove(VITIUM_ID);
-        maxAether.remove(VITIUM_ID);
-        isCorruptedCacheValid = false;
-    }
-
-    public boolean isCorrupted() {
-        if (!isCorruptedCacheValid) {
-            int vitiumMax = maxAether.getOrDefault(VITIUM_ID, 0);
-            int totalMax = maxAether.values().stream().reduce(0, Integer::sum);
-            isCorruptedCache =  vitiumMax * 2 > totalMax;
-            isCorruptedCacheValid = true;
-        }
-        return isCorruptedCache;
     }
 
     public boolean isEmpty() {
