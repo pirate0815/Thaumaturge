@@ -1,6 +1,6 @@
 package dev.overgrown.thaumaturge.block.jar;
 
-import dev.overgrown.thaumaturge.util.CorruptionHelper;
+import dev.overgrown.thaumaturge.util.Corruption;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -10,8 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -70,7 +68,7 @@ public class JarBlock extends BlockWithEntity {
             if (world instanceof ServerWorld serverWorld) {
                 BlockEntity entity = world.getBlockEntity(pos);
                 if (entity instanceof JarBlockEntity jarBlockEntity) {
-                    CorruptionHelper.addCorruption(serverWorld, pos, jarBlockEntity.getLevel());
+                    Corruption.addCorruption(serverWorld, pos, jarBlockEntity.getLevel());
                 }
             }
             super.onStateReplaced(state,world,pos,newState,moved);

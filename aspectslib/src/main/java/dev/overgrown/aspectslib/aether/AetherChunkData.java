@@ -1,6 +1,5 @@
 package dev.overgrown.aspectslib.aether;
 
-import dev.overgrown.aspectslib.AspectsLib;
 import dev.overgrown.aspectslib.aspects.data.AspectData;
 import dev.overgrown.aspectslib.aspects.data.BiomeAspectRegistry;
 import net.minecraft.nbt.NbtCompound;
@@ -14,10 +13,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AetherChunkData {
     public static final int AETHER_SCALE = 100;
@@ -167,15 +163,22 @@ public class AetherChunkData {
         double recoveryRate = AetherManager.getRecoveryRate(world);
         if (timeSinceLastRecovery > 2400f) { // Every 120 Seconds
             float recoveryCycles = (timeSinceLastRecovery / 24000f); // 100 Units = 1.00 RU/M^2 per Minecraft Day
+            int recoveryAmount = (int) (recoveryRate * recoveryCycles * AETHER_SCALE);
 
             for (Map.Entry<Identifier, Integer> entry : maxAether.entrySet()) {
                 Identifier aspectId = entry.getKey();
                 int max = entry.getValue();
                 int current = currentAether.getOrDefault(aspectId, 0);
                 if (current < max) {
-                    int recoveryAmount = (int) (recoveryRate * recoveryCycles) * AETHER_SCALE;
                     currentAether.put(aspectId, Math.min(current + recoveryAmount, max));
                 }
+            }
+            Set<Identifier> uniqueCurrentAspects = new HashSet<Identifier>(currentAether.keySet());
+            uniqueCurrentAspects.removeAll(maxAether.keySet());
+
+            for (Identifier aspect : uniqueCurrentAspects) {
+                this.modifyAspectLevel(aspect, - (int) (recoveryCycles * recoveryRate * AETHER_SCALE));
+
             }
             lastRecoveryTime = currentTime;
         }
@@ -192,7 +195,7 @@ public class AetherChunkData {
 
         if (timeSinceLastRecovery >= 24000) {
             int recoveryCycles = (int) (timeSinceLastRecovery / 24000);
-            double recoveryAmount = AetherManager.getRecoveryRate(world) * recoveryCycles;
+            double recoveryAmount = AetherManager.getRecoveryRate(world) * recoveryCycles  * AETHER_SCALE;
 
             boolean sufficientlyRecovered = true;
 
@@ -238,12 +241,20 @@ public class AetherChunkData {
         return Collections.unmodifiableSet(currentAether.keySet());
     }
 
-    public void modifyAspect(Identifier aspect, int amount) {
-        int level = maxAether.getOrDefault(aspect, 0) + amount;
+    public void modifyAspectLevel(Identifier aspect, int amount) {
+        int level = currentAether.getOrDefault(aspect, 0) + amount;
         if (level > 0) {
-            maxAether.put(aspect, level);
+            currentAether.put(aspect, level);
+        } else if (!maxAether.containsKey(aspect)){
+            currentAether.remove(aspect);
+        }
+    }
+
+    public void setAspectLevel(Identifier aspect, int level) {
+        if (level > 0 || maxAether.containsKey(aspect)) {
+            currentAether.put(aspect, level);
         } else {
-            maxAether.remove(aspect);
+            currentAether.remove(aspect);
         }
     }
 

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": [
+      {"model": "thaumaturge:block/rubico_sand"},
+      {"model": "thaumaturge:block/rubico_sand", "y":  90, "x": 90},
+      {"model": "thaumaturge:block/rubico_sand", "y": 180, "x": 180},
+      {"model": "thaumaturge:block/rubico_sand", "y": 270, "x": 270}
+      ]
+  }
+}

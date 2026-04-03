@@ -3,7 +3,7 @@ package dev.overgrown.thaumaturge.block.vessel;
 import dev.overgrown.aspectslib.aspects.api.AspectsAPI;
 import dev.overgrown.aspectslib.aspects.data.AspectData;
 import dev.overgrown.thaumaturge.util.AspectMap;
-import dev.overgrown.thaumaturge.util.CorruptionHelper;
+import dev.overgrown.thaumaturge.util.Corruption;
 import dev.overgrown.thaumaturge.block.api.AspectContainer;
 import dev.overgrown.thaumaturge.data_generator.ModItemTags;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
@@ -75,7 +75,7 @@ public class VesselBlockEntity extends BlockEntity implements AspectContainer {
             return;
         }
 
-        CorruptionHelper.addCorruption(world, pos, totalAspects);
+        Corruption.addCorruption(world, pos, totalAspects);
 
         // Clear aspects from vessel
         this.aspects.clear();
