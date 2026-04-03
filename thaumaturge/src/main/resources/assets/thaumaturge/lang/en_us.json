@@ -145,6 +145,9 @@
   "block.thaumaturge.jar": "Jar",
   "block.thaumaturge.alchemical_furnace": "Alchemical Furnace",
 
+  "block.thaumaturge.rubico_sand": "Rubico Sand",
+  "block.thaumaturge.rubico_rock": "Rubico Rock",
+
   "item.thaumaturge.aspect_lens": "Aspect Lens",
   "item.thaumaturge.aspect_lens.tooltip": "Reveals the hidden aspects of items",
   "item.thaumaturge.aetheric_goggles": "Aetheric Goggles",

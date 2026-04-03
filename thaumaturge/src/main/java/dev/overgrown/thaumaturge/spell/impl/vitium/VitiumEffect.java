@@ -1,17 +1,16 @@
 package dev.overgrown.thaumaturge.spell.impl.vitium;
 
-import dev.overgrown.aspectslib.corruption.CorruptionAPI;
 import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
 import dev.overgrown.thaumaturge.spell.modifier.ModifierEffect;
 import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
 import dev.overgrown.thaumaturge.spell.tier.*;
+import dev.overgrown.thaumaturge.util.Corruption;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
@@ -104,8 +103,7 @@ public class VitiumEffect implements AspectEffect {
 
         // Add Vitium corruption to the chunk
         if (caster.getWorld() instanceof net.minecraft.server.world.ServerWorld serverWorld) {
-            ChunkPos chunkPos = new ChunkPos(pos);
-            CorruptionAPI.forceCorruption(serverWorld, chunkPos, corruptionAmount);
+            Corruption.addCorruption(serverWorld, pos, corruptionAmount);
         }
     }
 }

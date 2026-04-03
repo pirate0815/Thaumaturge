@@ -13,6 +13,7 @@ import dev.overgrown.thaumaturge.block.focal_manipulator.FocalManipulatorBlock;
 import dev.overgrown.thaumaturge.block.focal_manipulator.FocalManipulatorBlockEntity;
 import dev.overgrown.thaumaturge.block.jar.JarBlock;
 import dev.overgrown.thaumaturge.block.jar.JarBlockEntity;
+import dev.overgrown.thaumaturge.block.rubico.RubicoBlock;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlock;
 import dev.overgrown.thaumaturge.block.vessel.VesselBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -26,6 +27,7 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.DyeColor;
 
 public class ModBlocks {
     public static final Block VESSEL = new VesselBlock(FabricBlockSettings.copyOf(Blocks.CAULDRON));
@@ -33,12 +35,12 @@ public class ModBlocks {
             FabricBlockEntityTypeBuilder.create(VesselBlockEntity::new, VESSEL).build();
 
     // Aspect Clusters
-    public static final Block AER_CLUSTER = new AerClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block AQUA_CLUSTER = new AquaClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block IGNIS_CLUSTER = new IgnisClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block TERRA_CLUSTER = new TerraClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block ORDO_CLUSTER = new OrdoClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
-    public static final Block PERDITIO_CLUSTER = new PerditioClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER));
+    public static final Block AER_CLUSTER = new AerClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block AQUA_CLUSTER = new AquaClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block IGNIS_CLUSTER = new IgnisClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block TERRA_CLUSTER = new TerraClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block ORDO_CLUSTER = new OrdoClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
+    public static final Block PERDITIO_CLUSTER = new PerditioClusterBlock(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(4));
     
     // Faucet
     public static final Block FAUCET = new FaucetBlock(FabricBlockSettings.create().nonOpaque().notSolid().hardness(1f).resistance(1f).mapColor(MapColor.BLACK).pistonBehavior(PistonBehavior.BLOCK));
@@ -62,6 +64,10 @@ public class ModBlocks {
     public static final BlockEntityType<FocalManipulatorBlockEntity> FOCAL_MANIPULATOR_BLOCK_ENTITY =
             FabricBlockEntityTypeBuilder.create(FocalManipulatorBlockEntity::new, FOCAL_MANIPULATOR).build();
 
+    // Rubico
+    public static final Block RUBICO_ROCK = new RubicoBlock(FabricBlockSettings.copyOf(Blocks.NETHERRACK).mapColor(DyeColor.PURPLE));
+    public static final Block RUBICO_SAND = new RubicoBlock(FabricBlockSettings.copyOf(Blocks.SOUL_SAND).mapColor(DyeColor.PURPLE).sounds(BlockSoundGroup.SAND));
+
     public static void initialize() {
         Registry.register(Registries.BLOCK, Thaumaturge.identifier("vessel"), VESSEL);
         Registry.register(Registries.BLOCK_ENTITY_TYPE, Thaumaturge.identifier("vessel"), VESSEL_BLOCK_ENTITY);
@@ -84,6 +90,10 @@ public class ModBlocks {
         Registry.register(Registries.BLOCK,Thaumaturge.identifier("matrix"),MATRIX);
         Registry.register(Registries.BLOCK,Thaumaturge.identifier("pedestal"),PEDESTAL);
         Registry.register(Registries.BLOCK_ENTITY_TYPE,Thaumaturge.identifier("pedestal"),PEDESTAL_BE);
+
+        // Rubico
+        Registry.register(Registries.BLOCK, Thaumaturge.identifier("rubico_rock"), RUBICO_ROCK);
+        Registry.register(Registries.BLOCK, Thaumaturge.identifier("rubico_sand"), RUBICO_SAND);
 
 
         Registry.register(Registries.BLOCK, Thaumaturge.identifier("focal_manipulator"), FOCAL_MANIPULATOR);

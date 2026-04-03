@@ -8,7 +8,7 @@
         "waterlogged": "false"
       }
     },
-    "tries": 32,
+    "tries": 10,
     "spread_xz": 8,
     "spread_y": 6
   }

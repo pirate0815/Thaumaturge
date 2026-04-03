@@ -2,7 +2,6 @@ package dev.overgrown.thaumaturge.item.aspect_lens;
 
 import dev.overgrown.aspectslib.aether.AetherChunkData;
 import dev.overgrown.aspectslib.aether.AetherManager;
-import dev.overgrown.aspectslib.corruption.CorruptionAPI;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -22,7 +21,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class AspectLensItem extends Item {
-    private static final Identifier VITIUM_ASPECT = new Identifier("aspectslib", "vitium");
     private static final DecimalFormat DF = new DecimalFormat();
 
     static {
@@ -73,18 +71,6 @@ public class AspectLensItem extends Item {
                         String.format("  %s: %s/%s (%.1f%%)",
                                 aspectId.getPath(), DF.format(current), DF.format(max), percentage * 100)
                 ).formatted(color));
-            }
-
-            // Display corruption status
-            user.sendMessage(Text.literal("---").formatted(Formatting.GRAY));
-//            user.sendMessage(Text.literal(String.format("Vitium (Corruption): %.2f", vitium)).formatted(Formatting.RED));
-//            user.sendMessage(Text.literal(String.format("Total Other Aspects: %.2f", totalOtherAspects)).formatted(Formatting.GREEN));
-
-            // Display corruption dominance
-            if (CorruptionAPI.isChunkCorrupted((ServerWorld) world, chunkPos)) {
-                user.sendMessage(Text.literal("Status: CORRUPTED").formatted(Formatting.DARK_RED));
-            } else {
-                user.sendMessage(Text.literal("Status: PURE").formatted(Formatting.DARK_GREEN));
             }
 
             // Display dead zone information

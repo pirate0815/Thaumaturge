@@ -2,7 +2,7 @@ package dev.overgrown.thaumaturge.block.alchemical_furnace;
 
 import dev.overgrown.thaumaturge.Thaumaturge;
 import dev.overgrown.thaumaturge.registry.ModBlocks;
-import dev.overgrown.thaumaturge.util.CorruptionHelper;
+import dev.overgrown.thaumaturge.util.Corruption;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -68,7 +68,7 @@ public class AlchemicalFurnaceBlock extends BlockWithEntity {
             if (world instanceof ServerWorld serverWorld) {
                 BlockEntity entity = world.getBlockEntity(pos);
                 if (entity instanceof AlchemicalFurnaceBlockEntity alchemicalFurnaceBlockEntity) {
-                    CorruptionHelper.addCorruption(serverWorld, pos, alchemicalFurnaceBlockEntity.getTotalAspectAmount());
+                    Corruption.addCorruption(serverWorld, pos, alchemicalFurnaceBlockEntity.getTotalAspectAmount());
                     ItemScatterer.spawn(world, pos, alchemicalFurnaceBlockEntity);
                 }
             }

@@ -2,7 +2,7 @@ package dev.overgrown.thaumaturge.item.alchemical_sludge_bottle;
 
 import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.util.AspectMap;
-import dev.overgrown.thaumaturge.util.CorruptionHelper;
+import dev.overgrown.thaumaturge.util.Corruption;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
@@ -25,7 +25,7 @@ public class AlchemicalSludgeBottleItem extends Item {
         if (!map.isEmpty()) {
             int sum = map.getTotalAspectLevel();
             if (entity.getWorld() instanceof ServerWorld serverWorld) {
-                CorruptionHelper.addCorruption(serverWorld, entity.getBlockPos(), sum);
+                Corruption.addCorruption(serverWorld, entity.getBlockPos(), sum);
             }
         }
     }

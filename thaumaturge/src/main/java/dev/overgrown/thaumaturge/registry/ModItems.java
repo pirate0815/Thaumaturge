@@ -113,6 +113,8 @@ public class ModItems {
     public static final Item ALCHEMICAL_FURNACE = new BlockItem(ModBlocks.ALCHEMICAL_FURNACE, new FabricItemSettings());
     public static final Item MATRIX = new BlockItem(ModBlocks.MATRIX,new Item.Settings());
     public static final Item PEDESTAL = new BlockItem(ModBlocks.PEDESTAL,new Item.Settings());
+    public static final Item RUBICO_ROCK = new BlockItem(ModBlocks.RUBICO_ROCK,new Item.Settings());
+    public static final Item RUBICO_SAND = new BlockItem(ModBlocks.RUBICO_SAND,new Item.Settings());
 
     public static final Item FOCAL_MANIPULATOR = new BlockItem(ModBlocks.FOCAL_MANIPULATOR, new FabricItemSettings());
 
@@ -173,5 +175,9 @@ public class ModItems {
         Registry.register(Registries.ITEM, Thaumaturge.identifier("terra_cluster"), TERRA_CLUSTER);
         Registry.register(Registries.ITEM, Thaumaturge.identifier("ordo_cluster"), ORDO_CLUSTER);
         Registry.register(Registries.ITEM, Thaumaturge.identifier("perditio_cluster"), PERDITIO_CLUSTER);
+
+        // Register Rubico block items
+        Registry.register(Registries.ITEM, Thaumaturge.identifier("rubico_rock"), RUBICO_ROCK);
+        Registry.register(Registries.ITEM, Thaumaturge.identifier("rubico_sand"), RUBICO_SAND);
     }
 }
