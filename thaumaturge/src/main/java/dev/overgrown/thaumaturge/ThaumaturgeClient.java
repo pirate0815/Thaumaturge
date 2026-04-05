@@ -8,7 +8,6 @@ import dev.overgrown.thaumaturge.client.render.VesselBlockEntityRenderer;
 import dev.overgrown.thaumaturge.client.screen.AlchemicalFurnaceScreen;
 import dev.overgrown.thaumaturge.client.visualisation.FaucetTransferVisualisationHandler;
 import dev.overgrown.thaumaturge.networking.FaucetTransferVisualisation;
-import dev.overgrown.thaumaturge.client.keybind.KeybindManager;
 import dev.overgrown.thaumaturge.client.render.AuraNodeVisibility;
 import dev.overgrown.thaumaturge.item.aetheric_goggles.overlay.AethericGogglesOverlay;
 import dev.overgrown.thaumaturge.item.apophenia.predicate.ApopheniaModelProvider;
@@ -18,10 +17,8 @@ import dev.overgrown.thaumaturge.item.aspect_lens.AspectLensItem;
 import dev.overgrown.thaumaturge.registry.ModItems;
 import dev.overgrown.thaumaturge.registry.ModScreens;
 import dev.overgrown.thaumaturge.spell.impl.potentia.render.SpellBoltRenderer;
-import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -51,36 +48,16 @@ public class ThaumaturgeClient implements ClientModInitializer {
         // Entity Renderers
         EntityRendererRegistry.register(ModEntities.SPELL_BOLT, SpellBoltRenderer::new);
         EntityRendererRegistry.register(ModEntities.ARCANE_MINE, EmptyEntityRenderer::new);
-        EntityRendererRegistry.register(ModEntities.ALKIMIA_CLOUD, EmptyEntityRenderer::new);
         BlockEntityRendererFactories.register(ModBlocks.PEDESTAL_BE, PedestalBlockEntityRenderer::new);
-
 
         // Tooltips visible only with lens
         AspectsTooltipConfig.addVisibilityCondition((stack, player) -> AspectLensItem.hasLens(player));
-
-        // Register spell keybinds (original flow)
-        KeybindManager.registerKeybinds();
 
         // Aetheric Goggles Overlay
         HudRenderCallback.EVENT.register(new AethericGogglesOverlay());
 
         // Register Aura Node visibility
         AuraNodeVisibility.initialize();
-
-        // Handle presses: Primary=Lesser(self), Secondary=Advanced(targeted), Ternary=Greater(aoe)
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
-
-            while (KeybindManager.PRIMARY_SPELL.wasPressed()) {
-                SpellCastPacket.send(SpellCastPacket.KeyType.PRIMARY);
-            }
-            while (KeybindManager.SECONDARY_SPELL.wasPressed()) {
-                SpellCastPacket.send(SpellCastPacket.KeyType.SECONDARY);
-            }
-            while (KeybindManager.TERNARY_SPELL.wasPressed()) {
-                SpellCastPacket.send(SpellCastPacket.KeyType.TERNARY);
-            }
-        });
 
         ClientPlayNetworking.registerGlobalReceiver(FaucetTransferVisualisation.ASPECT_TRANSFER_PAKET, FaucetTransferVisualisationHandler::receive);
 

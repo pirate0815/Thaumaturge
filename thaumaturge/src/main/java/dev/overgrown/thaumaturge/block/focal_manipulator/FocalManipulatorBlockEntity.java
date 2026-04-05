@@ -21,8 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class FocalManipulatorBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, Inventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);// Focus slot only
-    // TODO: Add fields for spell tree (list of nodes), selected node, etc.
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
 
     public FocalManipulatorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.FOCAL_MANIPULATOR_BLOCK_ENTITY, pos, state);
@@ -43,14 +42,12 @@ public class FocalManipulatorBlockEntity extends BlockEntity implements NamedScr
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         Inventories.writeNbt(nbt, inventory);
-        // TODO: Save spell tree
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         Inventories.readNbt(nbt, inventory);
-        // TODO: Load spell tree
     }
 
     @Nullable
@@ -64,7 +61,6 @@ public class FocalManipulatorBlockEntity extends BlockEntity implements NamedScr
         return createNbt();
     }
 
-    // Inventory methods
     @Override
     public int size() {
         return inventory.size();
@@ -92,7 +88,8 @@ public class FocalManipulatorBlockEntity extends BlockEntity implements NamedScr
 
     @Override
     public void setStack(int slot, ItemStack stack) {
-        inventory.set(slot, stack); markDirty();
+        inventory.set(slot, stack);
+        markDirty();
     }
 
     @Override

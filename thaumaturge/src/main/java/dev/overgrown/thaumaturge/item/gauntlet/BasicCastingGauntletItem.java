@@ -12,32 +12,36 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Basic Casting Gauntlet: 1 focus slot, combo R-L-L.
+ * Supports dyeable color (leather-like appearance).
+ */
 public class BasicCastingGauntletItem extends ResonanceGauntletItem implements DyeableItem {
 
     public BasicCastingGauntletItem(Settings settings) {
-        super(settings, 1);
+        super(settings);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+    public int getFocusSlots() {
+        return 1;
+    }
 
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world,
+                              List<Text> tooltip, TooltipContext context) {
+        super.appendTooltip(stack, world, tooltip, context);
         if (world != null) {
-            ArmorTrim.getTrim(world.getRegistryManager(), stack).ifPresent(trim ->
-                    ArmorTrim.appendTooltip(stack, world.getRegistryManager(), tooltip)
-            );
+            ArmorTrim.getTrim(world.getRegistryManager(), stack)
+                    .ifPresent(trim -> ArmorTrim.appendTooltip(stack, world.getRegistryManager(), tooltip));
         }
     }
 
     @Override
     public int getColor(ItemStack stack) {
-        NbtCompound nbtCompound = stack.getSubNbt("display");
-        return nbtCompound != null && nbtCompound.contains("color", NbtElement.NUMBER_TYPE)
-                ? nbtCompound.getInt("color")
-                : getDefaultColor(); // Use a method for default color
-    }
-
-    private int getDefaultColor() {
-        return 0xA06540; // Default leather color
+        NbtCompound nbt = stack.getSubNbt("display");
+        return (nbt != null && nbt.contains("color", NbtElement.NUMBER_TYPE))
+                ? nbt.getInt("color")
+                : 0xA06540;
     }
 }

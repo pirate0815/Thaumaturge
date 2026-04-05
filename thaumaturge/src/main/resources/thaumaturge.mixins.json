@@ -16,6 +16,7 @@
   },
   "client": [
     "AbstractContainerScreenMixin",
+    "GauntletComboMixin",
     "ItemRendererMixin",
     "ModelLoaderMixin",
     "modonomicon.ApopheniaModonomiconScreenMixin"

@@ -1,19 +1,22 @@
 {
-  "required":true,
-  "package":"dev.overgrown.aspectslib.mixin",
-  "compatibilityLevel":"JAVA_17",
-  "mixins":[
+  "required": true,
+  "package": "dev.overgrown.aspectslib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
     "aspects.ItemStackMixin",
     "aspects.LivingEntityMixin",
-    "aspects.client.ItemStackClientMixin"
+    "aspects.client.ItemStackClientMixin",
+    "spell.LivingEntityAetherMixin",
+    "spell.LivingEntitySightMixin",
+    "spell.LivingEntityUnravelingMixin"
   ],
-  "injectors":{
-    "defaultRequire":1
+  "injectors": {
+    "defaultRequire": 1
   },
-  "overwrites":{
-    "requireAnnotations":true
+  "overwrites": {
+    "requireAnnotations": true
   },
-  "client":[
+  "client": [
     "aspects.client.TooltipComponentFactoryMixin"
   ]
 }
