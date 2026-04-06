@@ -1,12 +1,9 @@
 package dev.overgrown.thaumaturge.spell.impl.vinculum.entity;
 
-import dev.overgrown.thaumaturge.spell.pattern.AspectEffect;
-import dev.overgrown.thaumaturge.spell.tier.AoeSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.SelfSpellDelivery;
-import dev.overgrown.thaumaturge.spell.tier.TargetedSpellDelivery;
+import dev.overgrown.thaumaturge.spell.component.GauntletSpellEffect;
+import dev.overgrown.thaumaturge.spell.component.GauntletSpellEffectRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -14,6 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
@@ -21,31 +19,53 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
+/**
+ * Proximity-triggered arcane mine that stores a focus's spell payload and
+ * fires it when any entity steps within the detection box.
+ *
+ * <h3>Stored data</h3>
+ * <ul>
+ *   <li>{@code storedAspects} — maps Aspect ID to Modifier ID (mirrors what
+ *       the gauntlet's focus holds at deploy time).</li>
+ *   <li>{@code spellTier} — the focus tier used at deploy time.</li>
+ * </ul>
+ *
+ * <p>When triggered, {@link #applyStoredEffects} looks up each aspect in
+ * {@link GauntletSpellEffectRegistry} and calls
+ * {@link GauntletSpellEffect#apply} with a context targeting the trigger entity.
+ */
 public class ArcaneMineEntity extends Entity {
-    private static final TrackedData<Integer> ARMING_TIME = DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Boolean> ARMED = DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-    private static final TrackedData<Boolean> TRIGGERED = DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+
+    private static final TrackedData<Integer> ARMING_TIME =
+            DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Boolean> ARMED =
+            DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> TRIGGERED =
+            DataTracker.registerData(ArcaneMineEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     private UUID casterUuid;
-    private final Map<Identifier, Identifier> storedAspects;
+    private final Map<Identifier, Identifier> storedAspects; // aspect → modifier
     private String spellTier;
     private int triggerCooldown = 0;
+
+    // ── Constructors ──────────────────────────────────────────────────────────
 
     public ArcaneMineEntity(EntityType<?> type, World world) {
         super(type, world);
         this.storedAspects = new LinkedHashMap<>();
-        this.spellTier = "advanced"; // Default to advanced for mine deployment
+        this.spellTier     = "advanced";
         this.setInvulnerable(true);
         this.setNoGravity(true);
     }
 
-    public ArcaneMineEntity(World world, ServerPlayerEntity caster, Map<Identifier, Identifier> aspects, String tier) {
+    public ArcaneMineEntity(World world, ServerPlayerEntity caster,
+                            Map<Identifier, Identifier> aspects, String tier) {
         this(dev.overgrown.thaumaturge.registry.ModEntities.ARCANE_MINE, world);
         this.casterUuid = caster.getUuid();
         this.storedAspects.putAll(aspects);
-        this.spellTier = tier; // Make sure to set the tier
+        this.spellTier = tier;
         this.setPosition(caster.getX(), caster.getY(), caster.getZ());
-        this.dataTracker.set(ARMING_TIME, 40); // 2 seconds at 20 ticks/second
+        this.dataTracker.set(ARMING_TIME, 40);
         this.dataTracker.set(ARMED, false);
         this.dataTracker.set(TRIGGERED, false);
     }
@@ -62,51 +82,40 @@ public class ArcaneMineEntity extends Entity {
         super.tick();
 
         if (this.getWorld().isClient) {
-            // Client-side particle effects
             if (!this.isArmed() && !this.isTriggered()) {
-                // Arming particles - purple swirling effect
                 for (int i = 0; i < 2; i++) {
-                    double offsetX = (this.random.nextDouble() - 0.5) * 0.5;
-                    double offsetZ = (this.random.nextDouble() - 0.5) * 0.5;
+                    double ox = (this.random.nextDouble() - 0.5) * 0.5;
+                    double oz = (this.random.nextDouble() - 0.5) * 0.5;
                     this.getWorld().addParticle(ParticleTypes.REVERSE_PORTAL,
-                            this.getX() + offsetX, this.getY() + 0.1, this.getZ() + offsetZ,
+                            this.getX() + ox, this.getY() + 0.1, this.getZ() + oz,
                             0, 0.1, 0);
                 }
             }
             return;
         }
 
-        // Server-side logic
         if (this.isTriggered()) {
-            this.triggerCooldown--;
-            if (this.triggerCooldown <= 0) {
-                this.discard();
-            }
+            if (--triggerCooldown <= 0) this.discard();
             return;
         }
 
         if (!this.isArmed()) {
-            int armingTime = this.dataTracker.get(ARMING_TIME);
-            if (armingTime > 0) {
-                this.dataTracker.set(ARMING_TIME, armingTime - 1);
+            int t = this.dataTracker.get(ARMING_TIME);
+            if (t > 0) {
+                this.dataTracker.set(ARMING_TIME, t - 1);
             } else {
                 this.dataTracker.set(ARMED, true);
-                // Play arming complete sound
-                this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN,
+                this.getWorld().playSound(null, this.getBlockPos(),
+                        SoundEvents.BLOCK_RESPAWN_ANCHOR_SET_SPAWN,
                         getSoundCategory(), 0.5f, 1.0f);
             }
         } else {
-            // Check for entities above the mine
-            Box detectionBox = new Box(
-                    this.getX() - 0.5, this.getY(), this.getZ() - 0.5,
-                    this.getX() + 0.5, this.getY() + 0.5, this.getZ() + 0.5
-            );
-
-            List<Entity> entities = this.getWorld().getOtherEntities(this, detectionBox,
-                    entity -> entity.isAlive() && !entity.isSpectator());
-
-            if (!entities.isEmpty()) {
-                this.trigger(entities.get(0));
+            Box det = new Box(getX() - 0.5, getY(), getZ() - 0.5,
+                    getX() + 0.5, getY() + 0.5, getZ() + 0.5);
+            List<Entity> candidates = this.getWorld().getOtherEntities(this, det,
+                    e -> e.isAlive() && !e.isSpectator());
+            if (!candidates.isEmpty()) {
+                trigger(candidates.get(0));
             }
         }
     }
@@ -115,163 +124,128 @@ public class ArcaneMineEntity extends Entity {
         if (this.isTriggered() || !this.isArmed()) return;
 
         this.dataTracker.set(TRIGGERED, true);
-        this.triggerCooldown = 10; // Half second before removal
+        this.triggerCooldown = 10;
 
-        // Play activation effects
-        this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_GENERIC_EXPLODE,
-                getSoundCategory(), 0.7f, 1.2f);
+        this.getWorld().playSound(null, this.getBlockPos(),
+                SoundEvents.ENTITY_GENERIC_EXPLODE, getSoundCategory(), 0.7f, 1.2f);
 
-        // Explosion particles
-        if (this.getWorld() instanceof net.minecraft.server.world.ServerWorld serverWorld) {
-            serverWorld.spawnParticles(ParticleTypes.EXPLOSION,
-                    this.getX(), this.getY() + 0.5, this.getZ(),
-                    5, 0.5, 0.5, 0.5, 0.1);
+        if (this.getWorld() instanceof ServerWorld sw) {
+            sw.spawnParticles(ParticleTypes.EXPLOSION,
+                    getX(), getY() + 0.5, getZ(), 5, 0.5, 0.5, 0.5, 0.1);
         }
 
-        // Apply stored spell effects
-        ServerPlayerEntity caster = this.getCaster();
+        ServerPlayerEntity caster = getCaster();
         if (caster != null && !storedAspects.isEmpty()) {
-            this.applyStoredEffects(caster, triggerEntity);
+            applyStoredEffects(caster, triggerEntity);
         }
     }
 
+    /**
+     * Applies each stored aspect's effect to the trigger entity using the {@link GauntletSpellEffectRegistry}.
+     */
     private void applyStoredEffects(ServerPlayerEntity caster, Entity triggerEntity) {
-        if (storedAspects.isEmpty()) return;
+        if (!(getWorld() instanceof ServerWorld serverWorld)) return;
 
-        // Apply each stored aspect effect based on focus tier
-        for (Map.Entry<Identifier, Identifier> entry : this.storedAspects.entrySet()) {
-            var aspectOpt = dev.overgrown.thaumaturge.spell.pattern.AspectRegistry.get(entry.getKey());
-            if (!aspectOpt.isPresent()) continue;
+        for (Map.Entry<Identifier, Identifier> entry : storedAspects.entrySet()) {
+            Identifier aspectId   = entry.getKey();
+            Identifier modifierId = entry.getValue();
 
-            AspectEffect aspect = aspectOpt.get();
-            dev.overgrown.thaumaturge.spell.modifier.ModifierEffect modifier =
-                    dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry.get(entry.getValue());
-
-            List<dev.overgrown.thaumaturge.spell.modifier.ModifierEffect> modifiers = modifier != null ?
-                    Collections.singletonList(modifier) : Collections.emptyList();
-
-            // Apply effects based on focus tier
-            switch (this.spellTier) {
-                case "lesser" -> {
-                    // Lesser focus: apply self effects on the original caster
-                    if (caster != null && caster.isAlive()) {
-                        SelfSpellDelivery delivery = new SelfSpellDelivery(caster);
-                        delivery.setModifiers(modifiers);
-                        aspect.applySelf(delivery);
+            GauntletSpellEffectRegistry.get(aspectId).ifPresent(effect -> {
+                List<Entity> targets = switch (spellTier) {
+                    case "lesser"  -> caster.isAlive() ? List.of(caster) : List.of();
+                    case "greater" -> {
+                        // AoE around the mine
+                        Box aoeBox = new Box(getX() - 3, getY() - 1, getZ() - 3,
+                                getX() + 3, getY() + 2, getZ() + 3);
+                        yield getWorld().getOtherEntities(caster, aoeBox,
+                                e -> e.isAlive() && !e.isSpectator());
                     }
-                }
-                case "advanced" -> {
-                    // Advanced focus: apply targeted effects on the trigger entity
-                    if (triggerEntity instanceof ServerPlayerEntity playerTrigger) {
-                        // For player triggers, use targeted delivery
-                        TargetedSpellDelivery delivery = new TargetedSpellDelivery(caster, triggerEntity);
-                        delivery.setModifiers(modifiers);
-                        aspect.applyTargeted(delivery);
-                    } else if (triggerEntity instanceof LivingEntity livingTrigger) {
-                        // For living entity triggers
-                        TargetedSpellDelivery delivery = new TargetedSpellDelivery(caster, triggerEntity);
-                        delivery.setModifiers(modifiers);
-                        aspect.applyTargeted(delivery);
-                    } else {
-                        // For other entities or block triggers, use AOE around the mine
-                        AoeSpellDelivery delivery = new AoeSpellDelivery(caster, this.getBlockPos(), 2.0f);
-                        delivery.setModifiers(modifiers);
-                        aspect.applyAoe(delivery);
-                    }
-                }
-                case "greater" -> {
-                    // Greater focus: apply AOE effects around the mine
-                    AoeSpellDelivery delivery = new AoeSpellDelivery(caster, this.getBlockPos(), 3.0f);
-                    delivery.setModifiers(modifiers);
-                    aspect.applyAoe(delivery);
+                    default        -> triggerEntity.isAlive() ? List.of(triggerEntity) : List.of();
+                };
 
-                    // 10% chance to also affect the caster
-                    if (caster != null && caster.isAlive() && this.getWorld().random.nextFloat() < 0.1f) {
-                        SelfSpellDelivery selfDelivery = new SelfSpellDelivery(caster);
-                        selfDelivery.setModifiers(modifiers);
-                        aspect.applySelf(selfDelivery);
-                    }
-                }
-            }
+                List<Identifier> mods = modifierId != null ? List.of(modifierId) : List.of();
+
+                GauntletSpellEffect.GauntletCastContext ctx =
+                        new GauntletSpellEffect.GauntletCastContext(
+                                caster,
+                                serverWorld,
+                                getPos(),
+                                targets,
+                                List.of(),
+                                spellTier,
+                                mods,
+                                1.0,
+                                false
+                        );
+
+                effect.apply(ctx);
+            });
         }
-    }
-
-    private ServerPlayerEntity getCaster() {
-        if (this.casterUuid != null && this.getWorld() instanceof net.minecraft.server.world.ServerWorld) {
-            return ((net.minecraft.server.world.ServerWorld) this.getWorld()).getServer().getPlayerManager().getPlayer(this.casterUuid);
-        }
-        return null;
     }
 
     public boolean isArmed() {
         return this.dataTracker.get(ARMED);
     }
 
-    public boolean isTriggered() {
+    public boolean isTriggered(){
         return this.dataTracker.get(TRIGGERED);
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {
-        // Only read if we're not disabled
-        if (!this.getType().isSaveable()) return;
+    public boolean isInvisible() {
+        return true;
+    }
 
+    @Override
+    public boolean isInvulnerable() {
+        return true;
+    }
+
+    public boolean collides() {
+        return !this.isTriggered();
+    }
+
+    private ServerPlayerEntity getCaster() {
+        if (casterUuid != null && getWorld() instanceof ServerWorld sw) {
+            return sw.getServer().getPlayerManager().getPlayer(casterUuid);
+        }
+        return null;
+    }
+
+    @Override
+    protected void readCustomDataFromNbt(NbtCompound nbt) {
+        if (!getType().isSaveable()) return;
         this.dataTracker.set(ARMING_TIME, nbt.getInt("ArmingTime"));
         this.dataTracker.set(ARMED, nbt.getBoolean("Armed"));
         this.dataTracker.set(TRIGGERED, nbt.getBoolean("Triggered"));
         this.spellTier = nbt.getString("SpellTier");
+        if (nbt.containsUuid("CasterUUID")) this.casterUuid = nbt.getUuid("CasterUUID");
 
-        if (nbt.containsUuid("CasterUUID")) {
-            this.casterUuid = nbt.getUuid("CasterUUID");
-        }
-
-        // Load stored aspects
         this.storedAspects.clear();
-        NbtList aspectsList = nbt.getList("StoredAspects", 10);
-        for (int i = 0; i < aspectsList.size(); i++) {
-            NbtCompound aspectCompound = aspectsList.getCompound(i);
-            Identifier aspectId = new Identifier(aspectCompound.getString("Aspect"));
-            Identifier modifierId = new Identifier(aspectCompound.getString("Modifier"));
-            this.storedAspects.put(aspectId, modifierId);
+        NbtList list = nbt.getList("StoredAspects", 10);
+        for (int i = 0; i < list.size(); i++) {
+            NbtCompound c = list.getCompound(i);
+            this.storedAspects.put(new Identifier(c.getString("Aspect")),
+                    new Identifier(c.getString("Modifier")));
         }
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        // Only write if we're not disabled
-        if (!this.getType().isSaveable()) return;
+        if (!getType().isSaveable()) return;
+        nbt.putInt    ("ArmingTime", this.dataTracker.get(ARMING_TIME));
+        nbt.putBoolean("Armed",      this.dataTracker.get(ARMED));
+        nbt.putBoolean("Triggered",  this.dataTracker.get(TRIGGERED));
+        nbt.putString ("SpellTier",  this.spellTier);
+        if (this.casterUuid != null) nbt.putUuid("CasterUUID", this.casterUuid);
 
-        nbt.putInt("ArmingTime", this.dataTracker.get(ARMING_TIME));
-        nbt.putBoolean("Armed", this.dataTracker.get(ARMED));
-        nbt.putBoolean("Triggered", this.dataTracker.get(TRIGGERED));
-        nbt.putString("SpellTier", this.spellTier);
-
-        if (this.casterUuid != null) {
-            nbt.putUuid("CasterUUID", this.casterUuid);
+        NbtList list = new NbtList();
+        for (Map.Entry<Identifier, Identifier> e : storedAspects.entrySet()) {
+            NbtCompound c = new NbtCompound();
+            c.putString("Aspect",   e.getKey().toString());
+            c.putString("Modifier", e.getValue().toString());
+            list.add(c);
         }
-
-        // Save stored aspects
-        NbtList aspectsList = new NbtList();
-        for (Map.Entry<Identifier, Identifier> entry : this.storedAspects.entrySet()) {
-            NbtCompound aspectCompound = new NbtCompound();
-            aspectCompound.putString("Aspect", entry.getKey().toString());
-            aspectCompound.putString("Modifier", entry.getValue().toString());
-            aspectsList.add(aspectCompound);
-        }
-        nbt.put("StoredAspects", aspectsList);
-    }
-
-    @Override
-    public boolean isInvisible() {
-        return true; // Mine is invisible
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return true; // Invulnerable to prevent accidental triggers
-    }
-
-    public boolean collides() {
-        return !this.isTriggered(); // Only collide when not triggered
+        nbt.put("StoredAspects", list);
     }
 }

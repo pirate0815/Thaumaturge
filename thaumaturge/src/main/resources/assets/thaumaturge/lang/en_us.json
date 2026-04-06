@@ -165,5 +165,22 @@
   "item.thaumaturge.scatter_modifier": "Scatter Modifier",
   "item.thaumaturge.stable_modifier": "Stable Modifier",
 
-  "item.thaumaturge.alchemical_sludge_bottle": "Alchemical Sludge Bottle"
+  "item.thaumaturge.alchemical_sludge_bottle": "Alchemical Sludge Bottle",
+
+  "gauntlet.thaumaturge.slots": "Focus Slots: %s",
+  "gauntlet.thaumaturge.empty_slot": "Empty",
+  "gauntlet.thaumaturge.no_focus": "No focus in slot %s",
+  "gauntlet.thaumaturge.invalid_focus": "Invalid focus in slot",
+  "gauntlet.thaumaturge.no_aspect": "Focus has no aspect configured",
+  "gauntlet.thaumaturge.no_effect": "No spell effect for %s",
+  "gauntlet.thaumaturge.unraveling_blocked": "Cannot cast — unraveling in progress",
+
+  "focal.thaumaturge.no_focus": "Place a focus in the slot first",
+  "focal.thaumaturge.empty_spell": "Spell tree is empty",
+  "focal.thaumaturge.too_complex": "Too complex (%s/%s)",
+  "focal.thaumaturge.missing_shard": "Missing %s shard",
+  "focal.thaumaturge.crafted": "Spell crafted: %s",
+
+  "spell.aspectslib.fail.dead_zone": "Cannot cast in a dead zone",
+  "spell.aspectslib.fail.no_aether": "Not enough aether"
 }

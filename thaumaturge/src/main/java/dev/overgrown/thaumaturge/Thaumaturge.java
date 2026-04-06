@@ -1,34 +1,21 @@
 package dev.overgrown.thaumaturge;
 
-import dev.overgrown.aspectslib.AspectsLib;
+import dev.overgrown.thaumaturge.networking.FocalManipulatorPackets;
+import dev.overgrown.thaumaturge.networking.GauntletCastPackets;
 import dev.overgrown.thaumaturge.recipe.VesselRecipe;
 import dev.overgrown.thaumaturge.registry.*;
-import dev.overgrown.thaumaturge.spell.impl.aer.AerEffect;
-import dev.overgrown.thaumaturge.spell.impl.alkimia.AlkimiaEffect;
-import dev.overgrown.thaumaturge.spell.impl.gelum.GelumEffect;
-import dev.overgrown.thaumaturge.spell.impl.ignis.IgnisEffect;
-import dev.overgrown.thaumaturge.spell.impl.motus.MotusEffect;
-import dev.overgrown.thaumaturge.spell.impl.perditio.PerditioEffect;
-import dev.overgrown.thaumaturge.spell.impl.potentia.PotentiaEffect;
-import dev.overgrown.thaumaturge.spell.impl.victus.VictusEffect;
-import dev.overgrown.thaumaturge.spell.impl.vinculum.VinculumEffect;
-import dev.overgrown.thaumaturge.spell.impl.vitium.VitiumEffect;
-import dev.overgrown.thaumaturge.spell.modifier.ModifierRegistry;
-import dev.overgrown.thaumaturge.spell.modifier.PowerModifierEffect;
-import dev.overgrown.thaumaturge.spell.modifier.ScatterModifierEffect;
-import dev.overgrown.thaumaturge.spell.networking.SpellCastPacket;
-import dev.overgrown.thaumaturge.spell.pattern.AspectRegistry;
-import dev.overgrown.thaumaturge.spell.utils.SpellCooldownManager;
+import dev.overgrown.thaumaturge.spell.component.GauntletSpellEffectRegistry;
+import dev.overgrown.thaumaturge.spell.focal.FocalComponentRegistry;
+import dev.overgrown.thaumaturge.spell.impl.effects.*;
+import dev.overgrown.thaumaturge.spell.input.GauntletInputTracker;
+import dev.overgrown.thaumaturge.spell.input.GauntletInteractionBlocklist;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class Thaumaturge implements ModInitializer {
     public static final String MOD_ID = "thaumaturge";
@@ -52,47 +39,51 @@ public class Thaumaturge implements ModInitializer {
         // Screens
         ModScreens.initialise();
 
-        // Spell components
-        registerAspectEffects();
-        registerModifierEffects();
-
-        //Creative Tabs
+        // Creative Tabs
         ModCreativeTabs.initialize();
 
         // World Generation
         ModWorldGen.initialize();
 
-        // Networking
-        SpellCastPacket.registerServer();
-
-        // Register server tick event for cooldowns
-        ServerTickEvents.END_SERVER_TICK.register(server -> SpellCooldownManager.tick());
-
-        // Register player disconnect event to clean up cooldowns
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SpellCooldownManager.removePlayer(handler.player.getUuid()));
-
-        // Register recipe type and serializer
+        // Register vessel recipe type and serializer
         Registry.register(Registries.RECIPE_SERIALIZER, identifier("vessel"), VesselRecipe.Serializer.INSTANCE);
         Registry.register(Registries.RECIPE_TYPE, identifier("vessel"), VesselRecipe.Type.INSTANCE);
 
+        // Focal Manipulator spell components
+        FocalComponentRegistry.init();
+        FocalManipulatorPackets.registerServerReceivers();
+
+        // Spell Effects
+        GauntletSpellEffectRegistry.register(new IgnisEffect());
+        GauntletSpellEffectRegistry.register(new AerEffect());
+        GauntletSpellEffectRegistry.register(new GelumEffect());
+        GauntletSpellEffectRegistry.register(new TerraEffect());
+        GauntletSpellEffectRegistry.register(new VitiumEffect());
+        GauntletSpellEffectRegistry.register(new MortuusEffect());
+        GauntletSpellEffectRegistry.register(new VictusEffect());
+        GauntletSpellEffectRegistry.register(new PerditioEffect());
+        GauntletSpellEffectRegistry.register(new PermutatioEffect());
+        GauntletSpellEffectRegistry.register(new AlienisEffect());
+        GauntletSpellEffectRegistry.register(new MotusEffect());
+        GauntletSpellEffectRegistry.register(new AquaEffect());
+
+        // Combo casting system:
+
+        // Client-side combo detection sends C2S packet → server receiver fires spell
+        GauntletCastPackets.registerServerReceiver();
+
+        // Server-tick cleanup for the combo tracker (legacy, kept for cleanup)
+        GauntletInputTracker.initialize();
+
+        // Block interaction suppression
+        // These blocks have onUse() that consumes right-click; we must not also
+        // count that click as a gauntlet RIGHT input.
+        GauntletInteractionBlocklist.register(ModBlocks.VESSEL);
+        GauntletInteractionBlocklist.register(ModBlocks.FAUCET);
+        GauntletInteractionBlocklist.register(ModBlocks.JAR);
+        GauntletInteractionBlocklist.register(ModBlocks.ALCHEMICAL_FURNACE);
+        GauntletInteractionBlocklist.register(ModBlocks.FOCAL_MANIPULATOR);
+
         LOGGER.info("Thaumaturge initialized!");
-    }
-
-    private void registerAspectEffects() {
-        AspectRegistry.register(AspectsLib.identifier("aer"), new AerEffect());
-        AspectRegistry.register(AspectsLib.identifier("alkimia"), new AlkimiaEffect());
-        AspectRegistry.register(AspectsLib.identifier("gelum"), new GelumEffect());
-        AspectRegistry.register(AspectsLib.identifier("ignis"), new IgnisEffect());
-        AspectRegistry.register(AspectsLib.identifier("motus"), new MotusEffect());
-        AspectRegistry.register(AspectsLib.identifier("perditio"), new PerditioEffect());
-        AspectRegistry.register(AspectsLib.identifier("potentia"), new PotentiaEffect());
-        AspectRegistry.register(AspectsLib.identifier("victus"), new VictusEffect());
-        AspectRegistry.register(AspectsLib.identifier("vinculum"), new VinculumEffect());
-        AspectRegistry.register(AspectsLib.identifier("vitium"), new VitiumEffect());
-    }
-
-    private void registerModifierEffects() {
-        ModifierRegistry.register(identifier("power"), new PowerModifierEffect());
-        ModifierRegistry.register(identifier("scatter"), new ScatterModifierEffect());
     }
 }
