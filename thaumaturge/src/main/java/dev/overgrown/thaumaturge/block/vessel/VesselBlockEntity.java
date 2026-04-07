@@ -31,6 +31,8 @@ import java.util.*;
 
 public class VesselBlockEntity extends BlockEntity implements AspectContainer {
     public final static int MAX_SLUDGE_AMOUNT = 96;
+    private final static float SLUDGE_CHANCE = 0.05f;
+
     private final AspectMap aspects = new AspectMap();
     private final AspectMap sludgeAspects = new AspectMap();
     private boolean boiling = false;
@@ -108,16 +110,14 @@ public class VesselBlockEntity extends BlockEntity implements AspectContainer {
                 if (noSludge) {
                     aspects.modifyAspectLevel(entry.getKey(), totalAmount);
                 } else {
-                    int part_a = totalAmount / 2;
-                    int part_b = totalAmount - part_a;
-
-                    if (world.getRandom().nextBoolean()) {
-                        aspects.modifyAspectLevel(entry.getKey(), part_a);
-                        sludgeAspects.modifyAspectLevel(entry.getKey(), part_b);
-                    } else {
-                        aspects.modifyAspectLevel(entry.getKey(), part_b);
-                        sludgeAspects.modifyAspectLevel(entry.getKey(), part_a);
+                    float sludgeAmountFloat = totalAmount * SLUDGE_CHANCE;
+                    int sludgeAmountInteger = (int) sludgeAmountFloat;
+                    if (world.getRandom().nextFloat() < (sludgeAmountFloat - (float) sludgeAmountInteger)) {
+                        sludgeAmountInteger = sludgeAmountInteger + 1;
                     }
+                    int aspectAmountInteger = totalAmount - sludgeAmountInteger;
+                    aspects.modifyAspectLevel(entry.getKey(), aspectAmountInteger);
+                    sludgeAspects.modifyAspectLevel(entry.getKey(), sludgeAmountInteger);
                 }
             }
             if (processItems.getCount() <= 1) {
